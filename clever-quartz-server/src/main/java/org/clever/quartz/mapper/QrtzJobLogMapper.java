@@ -1,6 +1,6 @@
 package org.clever.quartz.mapper;
 
-import org.clever.quartz.dto.request.JobLogQueryVo;
+import org.clever.quartz.dto.request.JobLogQueryRes;
 import org.clever.quartz.entity.QrtzJobLog;
 
 import java.util.List;
@@ -16,5 +16,5 @@ public interface QrtzJobLogMapper extends tk.mybatis.mapper.common.Mapper<QrtzJo
      *
      * @return 触发器日志分页数据
      */
-    List<QrtzJobLog> findByPage(JobLogQueryVo jobLogQueryVo);
+    List<QrtzJobLog> findByPage(JobLogQueryRes jobLogQueryRes);
 }

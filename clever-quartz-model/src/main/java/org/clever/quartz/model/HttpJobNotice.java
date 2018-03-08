@@ -1,5 +1,6 @@
 package org.clever.quartz.model;
 
+import lombok.Data;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.validation.constraints.Pattern;
@@ -12,6 +13,7 @@ import java.util.Map;
  * 作者：lizw <br/>
  * 创建时间：2017/6/5 10:36 <br/>
  */
+@Data
 public class HttpJobNotice implements Serializable {
     public static final String HTTP_JOB_NOTICE_KEY = "HttpJobNotice";
     private static final long serialVersionUID = 1L;
@@ -38,36 +40,4 @@ public class HttpJobNotice implements Serializable {
      * 消息数据
      */
     private Map<String, String> messageData;
-
-    public String getNoticeType() {
-        return noticeType;
-    }
-
-    public void setNoticeType(String noticeType) {
-        this.noticeType = noticeType;
-    }
-
-    public String getSendTo() {
-        return sendTo;
-    }
-
-    public void setSendTo(String sendTo) {
-        this.sendTo = sendTo;
-    }
-
-    public String getMessageTemplate() {
-        return messageTemplate;
-    }
-
-    public void setMessageTemplate(String messageTemplate) {
-        this.messageTemplate = messageTemplate;
-    }
-
-    public Map<String, String> getMessageData() {
-        return messageData;
-    }
-
-    public void setMessageData(Map<String, String> messageData) {
-        this.messageData = messageData;
-    }
 }

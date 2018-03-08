@@ -1,6 +1,6 @@
 package org.clever.quartz.mapper;
 
-import org.clever.quartz.dto.request.TriggerLogQueryVo;
+import org.clever.quartz.dto.request.TriggerLogQueryRes;
 import org.clever.quartz.entity.QrtzTriggerLog;
 
 import java.util.List;
@@ -16,5 +16,5 @@ public interface QrtzTriggerLogMapper extends tk.mybatis.mapper.common.Mapper<Qr
      *
      * @return 触发器日志分页数据
      */
-    List<QrtzTriggerLog> findByPage(TriggerLogQueryVo triggerLogQueryVo);
+    List<QrtzTriggerLog> findByPage(TriggerLogQueryRes triggerLogQueryRes);
 }

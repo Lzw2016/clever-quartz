@@ -1,6 +1,6 @@
 package org.clever.quartz.mapper;
 
-import org.clever.quartz.dto.request.QrtzSchedulerLogQuery;
+import org.clever.quartz.dto.request.QrtzSchedulerLogQueryRes;
 import org.clever.quartz.entity.QrtzSchedulerLog;
 
 import java.util.List;
@@ -16,5 +16,5 @@ public interface QrtzSchedulerLogMapper extends tk.mybatis.mapper.common.Mapper<
      *
      * @return 触发器日志分页数据
      */
-    List<QrtzSchedulerLog> findByPage(QrtzSchedulerLogQuery qrtzSchedulerLogQuery);
+    List<QrtzSchedulerLog> findByPage(QrtzSchedulerLogQueryRes qrtzSchedulerLogQueryRes);
 }

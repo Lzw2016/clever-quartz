@@ -4,8 +4,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.clever.common.model.response.AjaxMessage;
 import org.clever.common.server.controller.BaseController;
-import org.clever.quartz.dto.request.JobDetailKeyVo;
-import org.clever.quartz.dto.request.SaveJobDetailVo;
+import org.clever.quartz.dto.request.JobDetailKeyRes;
+import org.clever.quartz.dto.request.SaveJobDetailRes;
 import org.clever.quartz.model.QuartzJobDetails;
 import org.clever.quartz.service.QuartzJobDetailService;
 import org.quartz.JobKey;
@@ -66,41 +66,41 @@ public class QuartzJobDetailController extends BaseController {
 
     @ApiOperation("保存Job")
     @PostMapping("/" + JSON_SUFFIX)
-    public AjaxMessage<String> saveJobDetail(@Validated @RequestBody SaveJobDetailVo saveJobDetailVo) {
+    public AjaxMessage<String> saveJobDetail(@Validated @RequestBody SaveJobDetailRes saveJobDetailRes) {
         AjaxMessage<String> ajaxMessage = new AjaxMessage<>(true, "保存JobDetail成功", null);
-        jobDetailService.saveJobDetail(saveJobDetailVo, ajaxMessage);
+        jobDetailService.saveJobDetail(saveJobDetailRes, ajaxMessage);
         return ajaxMessage;
     }
 
     @ApiOperation("删除Job")
     @DeleteMapping("/" + JSON_SUFFIX)
-    public AjaxMessage<String> deleteJobDetail(@Validated JobDetailKeyVo jobDetailKeyVo) {
+    public AjaxMessage<String> deleteJobDetail(@Validated JobDetailKeyRes jobDetailKeyRes) {
         AjaxMessage<String> ajaxMessage = new AjaxMessage<>(true, "删除JobDetail成功", null);
-        jobDetailService.deleteJobDetail(jobDetailKeyVo, ajaxMessage);
+        jobDetailService.deleteJobDetail(jobDetailKeyRes, ajaxMessage);
         return ajaxMessage;
     }
 
     @ApiOperation("暂停Job")
     @PostMapping("/pause" + JSON_SUFFIX)
-    public AjaxMessage<String> pauseJob(@Validated @RequestBody JobDetailKeyVo jobDetailKeyVo) {
+    public AjaxMessage<String> pauseJob(@Validated @RequestBody JobDetailKeyRes jobDetailKeyRes) {
         AjaxMessage<String> ajaxMessage = new AjaxMessage<>(true, "暂停JobDetail成功", null);
-        jobDetailService.pauseJob(jobDetailKeyVo, ajaxMessage);
+        jobDetailService.pauseJob(jobDetailKeyRes, ajaxMessage);
         return ajaxMessage;
     }
 
     @ApiOperation("取消暂停Job")
     @PostMapping("/resume" + JSON_SUFFIX)
-    public AjaxMessage<String> resumeJob(@Validated @RequestBody JobDetailKeyVo jobDetailKeyVo) {
+    public AjaxMessage<String> resumeJob(@Validated @RequestBody JobDetailKeyRes jobDetailKeyRes) {
         AjaxMessage<String> ajaxMessage = new AjaxMessage<>(true, "取消暂停JobDetail成功", null);
-        jobDetailService.resumeJob(jobDetailKeyVo, ajaxMessage);
+        jobDetailService.resumeJob(jobDetailKeyRes, ajaxMessage);
         return ajaxMessage;
     }
 
     @ApiOperation("立即运行Job")
     @PostMapping("/trigger" + JSON_SUFFIX)
-    public AjaxMessage<String> triggerJob(@Validated @RequestBody JobDetailKeyVo jobDetailKeyVo) {
+    public AjaxMessage<String> triggerJob(@Validated @RequestBody JobDetailKeyRes jobDetailKeyRes) {
         AjaxMessage<String> ajaxMessage = new AjaxMessage<>(true, "立即运行JobDetail成功", null);
-        jobDetailService.triggerJob(jobDetailKeyVo, ajaxMessage);
+        jobDetailService.triggerJob(jobDetailKeyRes, ajaxMessage);
         return ajaxMessage;
     }
 }

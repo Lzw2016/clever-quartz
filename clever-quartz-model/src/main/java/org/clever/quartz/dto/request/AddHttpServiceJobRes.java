@@ -23,7 +23,7 @@ import java.util.Map;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class AddHttpServiceJobVo extends BaseRequest {
+public class AddHttpServiceJobRes extends BaseRequest {
     private static final long serialVersionUID = 1L;
 
     //--------------------------------------------------------------------------------------------------------------------------------------

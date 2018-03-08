@@ -121,15 +121,15 @@ public class QuartzSchedulerService {
             qrtzJobDetails.setSchedName(schedName);
             qrtzJobDetails.setJobGroup(jobDetail.getKey().getGroup());
             qrtzJobDetails.setJobName(jobDetail.getKey().getName());
-            qrtzJobDetails.setIsDurable(jobDetail.isDurable());
+            qrtzJobDetails.setDurable(jobDetail.isDurable());
             qrtzJobDetails.setDescription(jobDetail.getDescription());
             qrtzJobDetails.setJobClassName(jobDetail.getJobClass().getName());
             qrtzJobDetails.setJobData(jobDetail.getJobDataMap());
             qrtzJobDetails.setRequestsRecovery(jobDetail.requestsRecovery());
             // @DisallowConcurrentExecution 对应 isNonconcurrent
             // @PersistJobDataAfterExecution 对应 isUpdateData
-            qrtzJobDetails.setIsNonconcurrent(jobDetail.isConcurrentExectionDisallowed());
-            qrtzJobDetails.setIsUpdateData(jobDetail.isPersistJobDataAfterExecution());
+            qrtzJobDetails.setNonconcurrent(jobDetail.isConcurrentExectionDisallowed());
+            qrtzJobDetails.setUpdateData(jobDetail.isPersistJobDataAfterExecution());
             qrtzJobDetailsList.add(qrtzJobDetails);
 
         }

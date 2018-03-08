@@ -4,9 +4,9 @@ import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.clever.common.server.controller.BaseController;
-import org.clever.quartz.dto.request.JobLogQueryVo;
-import org.clever.quartz.dto.request.QrtzSchedulerLogQuery;
-import org.clever.quartz.dto.request.TriggerLogQueryVo;
+import org.clever.quartz.dto.request.JobLogQueryRes;
+import org.clever.quartz.dto.request.QrtzSchedulerLogQueryRes;
+import org.clever.quartz.dto.request.TriggerLogQueryRes;
 import org.clever.quartz.entity.QrtzJobLog;
 import org.clever.quartz.entity.QrtzSchedulerLog;
 import org.clever.quartz.entity.QrtzTriggerLog;
@@ -37,19 +37,19 @@ public class LogController extends BaseController {
 
     @ApiOperation("查询Job执行日志")
     @GetMapping("/job_log" + JSON_SUFFIX)
-    public PageInfo<QrtzJobLog> findJobLogByPage(@Validated JobLogQueryVo jobLogQueryVo) {
-        return qrtzJobLogService.findByPage(jobLogQueryVo);
+    public PageInfo<QrtzJobLog> findJobLogByPage(@Validated JobLogQueryRes jobLogQueryRes) {
+        return qrtzJobLogService.findByPage(jobLogQueryRes);
     }
 
     @ApiOperation("查询trigger触发日志")
     @GetMapping("/trigger_log" + JSON_SUFFIX)
-    public PageInfo<QrtzTriggerLog> findTriggerLogByPage(@Validated TriggerLogQueryVo triggerLogQueryVo) {
-        return qrtzTriggerLogService.findByPage(triggerLogQueryVo);
+    public PageInfo<QrtzTriggerLog> findTriggerLogByPage(@Validated TriggerLogQueryRes triggerLogQueryRes) {
+        return qrtzTriggerLogService.findByPage(triggerLogQueryRes);
     }
 
     @ApiOperation("查询scheduler日志")
     @GetMapping("/scheduler_log")
-    public PageInfo<QrtzSchedulerLog> findSchedulerLogByPage(@Validated QrtzSchedulerLogQuery qrtzSchedulerLogQuery) {
-        return schedulerLogService.findByPage(qrtzSchedulerLogQuery);
+    public PageInfo<QrtzSchedulerLog> findSchedulerLogByPage(@Validated QrtzSchedulerLogQueryRes qrtzSchedulerLogQueryRes) {
+        return schedulerLogService.findByPage(qrtzSchedulerLogQueryRes);
     }
 }

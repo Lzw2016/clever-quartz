@@ -2,7 +2,7 @@ package org.clever.quartz.service;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import org.clever.quartz.dto.request.TriggerLogQueryVo;
+import org.clever.quartz.dto.request.TriggerLogQueryRes;
 import org.clever.quartz.entity.QrtzTriggerLog;
 import org.clever.quartz.mapper.QrtzTriggerLogMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,10 +38,10 @@ public class TriggerLogService {
      *
      * @return 触发器日志分页数据
      */
-    public PageInfo<QrtzTriggerLog> findByPage(TriggerLogQueryVo triggerLogQueryVo) {
+    public PageInfo<QrtzTriggerLog> findByPage(TriggerLogQueryRes triggerLogQueryRes) {
         return PageHelper
-                .startPage(triggerLogQueryVo.getPageNo(), triggerLogQueryVo.getPageSize())
-                .doSelectPageInfo(() -> qrtzTriggerLogMapper.findByPage(triggerLogQueryVo));
+                .startPage(triggerLogQueryRes.getPageNo(), triggerLogQueryRes.getPageSize())
+                .doSelectPageInfo(() -> qrtzTriggerLogMapper.findByPage(triggerLogQueryRes));
     }
 }
 

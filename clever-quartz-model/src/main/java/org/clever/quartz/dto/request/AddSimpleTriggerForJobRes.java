@@ -17,7 +17,7 @@ import java.util.Map;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class AddSimpleTriggerForJobVo extends BaseRequest {
+public class AddSimpleTriggerForJobRes extends BaseRequest {
     private static final long serialVersionUID = 1L;
 
     /**

@@ -12,7 +12,7 @@ import java.util.Date;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class TriggerLogQueryVo extends QueryByPage {
+public class TriggerLogQueryRes extends QueryByPage {
     private static final long serialVersionUID = 1L;
 
     /**

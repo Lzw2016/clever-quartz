@@ -1,6 +1,7 @@
 package org.clever.quartz.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -12,6 +13,7 @@ import java.util.Map;
  * 作者：lizw <br/>
  * 创建时间：2017/6/5 10:15 <br/>
  */
+@Data
 public class HttpJobResult implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -46,52 +48,4 @@ public class HttpJobResult implements Serializable {
      * 任务执行异常-堆栈信息
      */
     private String exceptionStack;
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public Map<String, String> getResultData() {
-        return resultData;
-    }
-
-    public void setResultData(Map<String, String> resultData) {
-        this.resultData = resultData;
-    }
-
-    public Date getStartJobTime() {
-        return startJobTime;
-    }
-
-    public void setStartJobTime(Date startJobTime) {
-        this.startJobTime = startJobTime;
-    }
-
-    public Date getEndJobTime() {
-        return endJobTime;
-    }
-
-    public void setEndJobTime(Date endJobTime) {
-        this.endJobTime = endJobTime;
-    }
-
-    public String getExceptionStack() {
-        return exceptionStack;
-    }
-
-    public void setExceptionStack(String exceptionStack) {
-        this.exceptionStack = exceptionStack;
-    }
 }

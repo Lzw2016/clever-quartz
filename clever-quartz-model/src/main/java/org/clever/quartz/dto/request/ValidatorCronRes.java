@@ -14,7 +14,7 @@ import javax.validation.constraints.NotNull;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class ValidatorCronVo extends BaseRequest {
+public class ValidatorCronRes extends BaseRequest {
     private static final long serialVersionUID = 1L;
 
     /**

@@ -2,7 +2,7 @@ package org.clever.quartz.service;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import org.clever.quartz.dto.request.JobLogQueryVo;
+import org.clever.quartz.dto.request.JobLogQueryRes;
 import org.clever.quartz.entity.QrtzJobLog;
 import org.clever.quartz.mapper.QrtzJobLogMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +37,7 @@ public class JobLogService {
      *
      * @return 触发器日志分页数据
      */
-    public PageInfo<QrtzJobLog> findByPage(JobLogQueryVo jobLogQueryVo) {
-        return PageHelper.startPage(jobLogQueryVo.getPageNo(), jobLogQueryVo.getPageSize()).doSelectPageInfo(() -> qrtzJobLogMapper.findByPage(jobLogQueryVo));
+    public PageInfo<QrtzJobLog> findByPage(JobLogQueryRes jobLogQueryRes) {
+        return PageHelper.startPage(jobLogQueryRes.getPageNo(), jobLogQueryRes.getPageSize()).doSelectPageInfo(() -> qrtzJobLogMapper.findByPage(jobLogQueryRes));
     }
 }

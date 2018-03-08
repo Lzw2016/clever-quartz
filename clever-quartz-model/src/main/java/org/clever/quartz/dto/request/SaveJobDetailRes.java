@@ -15,7 +15,7 @@ import java.util.Map;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class SaveJobDetailVo extends BaseRequest {
+public class SaveJobDetailRes extends BaseRequest {
     private static final long serialVersionUID = 1L;
 
     /**

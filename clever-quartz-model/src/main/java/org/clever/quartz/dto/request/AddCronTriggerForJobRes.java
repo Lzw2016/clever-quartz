@@ -17,7 +17,7 @@ import java.util.Map;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class AddCronTriggerForJobVo extends BaseRequest {
+public class AddCronTriggerForJobRes extends BaseRequest {
     private static final long serialVersionUID = 1L;
 
     /**

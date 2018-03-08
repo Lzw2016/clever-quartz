@@ -12,7 +12,7 @@ import java.util.Date;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class QrtzSchedulerLogQuery extends QueryByPage {
+public class QrtzSchedulerLogQueryRes extends QueryByPage {
     private static final long serialVersionUID = 1L;
 
     /**
