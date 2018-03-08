@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--suppress SqlDialectInspection, SqlNoDataSourceInspection -->
+<mapper namespace="org.clever.quartz.mapper.QrtzTriggerLogMapper">
+    <!-- 表qrtz_trigger_log(Trigger触发日志表)映射 -->
+    <resultMap id="BaseResultMap" type="org.clever.quartz.entity.QrtzTriggerLog">
+        <!-- 编号 -->
+        <id column="id" property="id"/>
+        <!-- 监听器名称 -->
+        <result column="listener_name" property="listenerName"/>
+        <!-- Scheduler名称 -->
+        <result column="sched_name" property="schedName"/>
+        <!-- Scheduler实例的唯一标识，配置文件中的Instance Id -->
+        <result column="instance_name" property="instanceName"/>
+        <!-- Job key -->
+        <result column="job_name" property="jobName"/>
+        <!-- Job group 名称 -->
+        <result column="job_group" property="jobGroup"/>
+        <!-- Job类名称 -->
+        <result column="job_class_name" property="jobClassName"/>
+        <!-- Trigger key -->
+        <result column="trigger_name" property="triggerName"/>
+        <!-- Trigger group名称 -->
+        <result column="trigger_group" property="triggerGroup"/>
+        <!-- 开始触发时间 -->
+        <result column="start_time" property="startTime"/>
+        <!-- 触发完成时间 -->
+        <result column="end_time" property="endTime"/>
+        <!-- 用时(ms) -->
+        <result column="process_time" property="processTime"/>
+        <!-- 上一次触发时间 -->
+        <result column="pre_run_time" property="preRunTime"/>
+        <!-- 下一次触发时间 -->
+        <result column="next_run_time" property="nextRunTime"/>
+        <!-- 触发次数 -->
+        <result column="run_count" property="runCount"/>
+        <!-- 触发节点IP,可能有多个(‘;’分隔) -->
+        <result column="ip_address" property="ipAddress"/>
+        <!-- 是否错过了触发（0：否；1：是） -->
+        <result column="mis_fired" property="misFired"/>
+        <!-- 执行前的JobDataMap数据 -->
+        <result column="before_job_data" property="beforeJobData"/>
+        <!-- 执行后的JobDataMap数据 -->
+        <result column="after_job_data" property="afterJobData"/>
+        <!-- 触发指令码 -->
+        <result column="trigger_instruction_code" property="triggerInstructionCode"/>
+        <!-- 触发指令码说明 -->
+        <result column="instr_code" property="instrCode"/>
+    </resultMap>
+
+    <select id="findByPage" resultMap="BaseResultMap">
+        select * from qrtz_trigger_log
+        where 1=1
+        <if test="schedulerName != null and schedulerName != ''">
+            AND sched_name=#{schedulerName}
+        </if>
+        <if test="instanceName != null and instanceName != ''">
+            AND instance_name=#{instanceName}
+        </if>
+        <if test="triggerGroup != null and triggerGroup != ''">
+            AND trigger_group=#{triggerGroup}
+        </if>
+        <if test="triggerName != null and triggerName != ''">
+            AND trigger_name=#{triggerName}
+        </if>
+        <if test="jobGroup != null and jobGroup != ''">
+            AND job_group=#{jobGroup}
+        </if>
+        <if test="jobName != null and jobName != ''">
+            AND job_name=#{jobName}
+        </if>
+        <if test="jobClassName != null and jobClassName != ''">
+            AND job_class_name=#{jobClassName}
+        </if>
+        <if test="startTimeByStart != null">
+            <![CDATA[ AND start_time>=#{startTimeByStart} ]]>
+        </if>
+        <if test="startTimeByEnd != null">
+            <![CDATA[ AND start_time<=#{startTimeByEnd} ]]>
+        </if>
+        <if test="processTimeByMin != null">
+            <![CDATA[ AND (#{processTimeByMin}=-1 OR process_time>=#{processTimeByMin}) ]]>
+        </if>
+        <if test="processTimeByMax != null">
+            <![CDATA[ AND (#{processTimeByMax}=-1 OR process_time<=#{processTimeByMax}) ]]>
+        </if>
+        order by start_time desc
+    </select>
+</mapper>
