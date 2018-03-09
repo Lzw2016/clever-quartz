@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
  * Created by lzw on 2017/6/4.
  */
 @Api(description = "HTTP Job管理")
-@RequestMapping(value = "/api/quartz/http_job")
+@RequestMapping(value = "/api/quartz")
 @RestController
 public class HttpServiceJobController extends BaseController {
 
@@ -33,7 +33,7 @@ public class HttpServiceJobController extends BaseController {
 //    private JobLogService qrtzJobLogService;
 
     @ApiOperation("增加HTTP任务")
-    @PostMapping("/" + JSON_SUFFIX)
+    @PostMapping("/http_job" + JSON_SUFFIX)
     public AjaxMessage<String> addHttpServiceJob(@Validated @RequestBody AddHttpServiceJobRes addHttpServiceJobRes) {
         AjaxMessage<String> ajaxMessage = new AjaxMessage<>(true, "新增任务成功", null);
         if (triggerService.validatorCron(addHttpServiceJobRes.getCron(), 1, ajaxMessage) == null) {
@@ -44,7 +44,7 @@ public class HttpServiceJobController extends BaseController {
     }
 
 //    @ApiOperation("查询HTTP任务")
-//    @GetMapping("/" + JSON_SUFFIX)
+//    @GetMapping("/http_job" + JSON_SUFFIX)
 //    public AjaxMessage<List<QuartzJobDetails>> findJobDetail(FindJobDetailRes findJobDetailVo) {
 //        AjaxMessage<List<QuartzJobDetails>> ajaxMessage = new AjaxMessage<>(true, "查询任务成功", null);
 //        List<QuartzJobDetails> jobDetailList = jobDetailService.findJobDetail(findJobDetailVo);
@@ -53,7 +53,7 @@ public class HttpServiceJobController extends BaseController {
 //    }
 
 //    @ApiOperation("暂停、继续运行HTTP任务")
-//    @PutMapping("/" + JSON_SUFFIX)
+//    @PutMapping("/http_job" + JSON_SUFFIX)
 //    public AjaxMessage<String> pauseOrResumeJob(@Validated @RequestBody PauseOrResumeJobVo pauseOrResumeJobVo) {
 //        AjaxMessage<String> ajaxMessage = new AjaxMessage<>(true, "更新任务状态成功", null);
 //        boolean flag;
@@ -81,7 +81,7 @@ public class HttpServiceJobController extends BaseController {
 //    }
 
 //    @ApiOperation("停止并且删除HTTP任务")
-//    @DeleteMapping("/{jobGroup}/{jobName}" + JSON_SUFFIX)
+//    @DeleteMapping("/http_job/{jobGroup}/{jobName}" + JSON_SUFFIX)
 //    public AjaxMessage<String> deleteJobDetail(@PathVariable() String jobGroup, @PathVariable String jobName) {
 //        AjaxMessage<String> ajaxMessage = new AjaxMessage<>(true, "删除JobDetail成功", null);
 //        jobDetailService.deleteJobDetail(new JobDetailKeyRes(jobName, jobGroup), ajaxMessage);

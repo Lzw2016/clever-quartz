@@ -21,7 +21,7 @@ import java.util.Map;
  * 创建时间：2017/6/1 13:55 <br/>
  */
 @Api(description = "Scheduler管理")
-@RequestMapping(value = "/api/quartz/scheduler")
+@RequestMapping(value = "/api/quartz")
 @RestController
 public class QuartzSchedulerController extends BaseController {
 
@@ -29,7 +29,7 @@ public class QuartzSchedulerController extends BaseController {
     private QuartzSchedulerService schedulerService;
 
     @ApiOperation("暂停调度器")
-    @PostMapping("/standby" + JSON_SUFFIX)
+    @PostMapping("/scheduler/standby" + JSON_SUFFIX)
     public AjaxMessage<String> standby() {
         AjaxMessage<String> ajaxMessage = new AjaxMessage<>(true, "暂停调度器成功", null);
         schedulerService.standby(ajaxMessage);
@@ -37,7 +37,7 @@ public class QuartzSchedulerController extends BaseController {
     }
 
     @ApiOperation("继续运行调度器")
-    @PostMapping("/start" + JSON_SUFFIX)
+    @PostMapping("/scheduler/start" + JSON_SUFFIX)
     public AjaxMessage<String> start() {
         AjaxMessage<String> ajaxMessage = new AjaxMessage<>(true, "继续运行调度器成功", null);
         schedulerService.start(ajaxMessage);
@@ -45,7 +45,7 @@ public class QuartzSchedulerController extends BaseController {
     }
 
     @ApiOperation("暂停所有的触发器")
-    @PostMapping("/pause_all" + JSON_SUFFIX)
+    @PostMapping("/scheduler/pause_all" + JSON_SUFFIX)
     public AjaxMessage<String> pauseAll() {
         AjaxMessage<String> ajaxMessage = new AjaxMessage<>(true, "暂停所有的触发器成功", null);
         schedulerService.pauseAll(ajaxMessage);
@@ -53,7 +53,7 @@ public class QuartzSchedulerController extends BaseController {
     }
 
     @ApiOperation("取消暂停所有的触发器")
-    @PostMapping("/resume_all" + JSON_SUFFIX)
+    @PostMapping("/scheduler/resume_all" + JSON_SUFFIX)
     public AjaxMessage<String> resumeAll() {
         AjaxMessage<String> ajaxMessage = new AjaxMessage<>(true, "取消暂停所有的触发器成功", null);
         schedulerService.resumeAll(ajaxMessage);
@@ -61,7 +61,7 @@ public class QuartzSchedulerController extends BaseController {
     }
 
     @ApiOperation("获取正在运行的Job成功")
-    @GetMapping("/running_job" + JSON_SUFFIX)
+    @GetMapping("/scheduler/running_job" + JSON_SUFFIX)
     @ResponseBody
     public AjaxMessage<List<QuartzJobDetails>> getRunningJobs() {
         AjaxMessage<List<QuartzJobDetails>> ajaxMessage = new AjaxMessage<>(true, "获取正在运行的Job成功", null);
@@ -70,7 +70,7 @@ public class QuartzSchedulerController extends BaseController {
     }
 
     @ApiOperation("中断Job")
-    @PostMapping("/interrupt" + JSON_SUFFIX)
+    @PostMapping("/scheduler/interrupt" + JSON_SUFFIX)
     public AjaxMessage<String> interrupt(@Validated @RequestBody JobDetailKeyRes jobDetailKeyRes) {
         AjaxMessage<String> ajaxMessage = new AjaxMessage<>(true, "中断Job成功", null);
         schedulerService.interrupt(JobKey.jobKey(jobDetailKeyRes.getJobName(), jobDetailKeyRes.getJobGroup()), ajaxMessage);
@@ -78,7 +78,7 @@ public class QuartzSchedulerController extends BaseController {
     }
 
     @ApiOperation("获取Scheduler信息")
-    @GetMapping("/meta_data" + JSON_SUFFIX)
+    @GetMapping("/scheduler/meta_data" + JSON_SUFFIX)
     public AjaxMessage<SchedulerMetaData> getMetaData() {
         AjaxMessage<SchedulerMetaData> ajaxMessage = new AjaxMessage<>(true, "获取Scheduler信息成功", null);
         ajaxMessage.setResult(schedulerService.getMetaData(ajaxMessage));
@@ -86,7 +86,7 @@ public class QuartzSchedulerController extends BaseController {
     }
 
     @ApiOperation("获取SchedulerContext")
-    @GetMapping("/context" + JSON_SUFFIX)
+    @GetMapping("/scheduler/context" + JSON_SUFFIX)
     public AjaxMessage<Map<String, Object>> getContext() {
         AjaxMessage<Map<String, Object>> ajaxMessage = new AjaxMessage<>(true, "获取SchedulerContext成功", null);
         ajaxMessage.setResult(schedulerService.getContext(ajaxMessage));

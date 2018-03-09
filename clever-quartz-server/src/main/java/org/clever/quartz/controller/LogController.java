@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
  * 创建时间：2017/6/2 10:53 <br/>
  */
 @Api(description = "日志查询")
-@RequestMapping(value = "/api/quartz/log")
+@RequestMapping(value = "/api/quartz")
 @RestController
 public class LogController extends BaseController {
 
@@ -36,19 +36,19 @@ public class LogController extends BaseController {
     private SchedulerLogService schedulerLogService;
 
     @ApiOperation("查询Job执行日志")
-    @GetMapping("/job_log" + JSON_SUFFIX)
+    @GetMapping("/log/job_log" + JSON_SUFFIX)
     public PageInfo<QrtzJobLog> findJobLogByPage(@Validated JobLogQueryRes jobLogQueryRes) {
         return qrtzJobLogService.findByPage(jobLogQueryRes);
     }
 
     @ApiOperation("查询trigger触发日志")
-    @GetMapping("/trigger_log" + JSON_SUFFIX)
+    @GetMapping("/log/trigger_log" + JSON_SUFFIX)
     public PageInfo<QrtzTriggerLog> findTriggerLogByPage(@Validated TriggerLogQueryRes triggerLogQueryRes) {
         return qrtzTriggerLogService.findByPage(triggerLogQueryRes);
     }
 
     @ApiOperation("查询scheduler日志")
-    @GetMapping("/scheduler_log")
+    @GetMapping("/log/scheduler_log" + JSON_SUFFIX)
     public PageInfo<QrtzSchedulerLog> findSchedulerLogByPage(@Validated QrtzSchedulerLogQueryRes qrtzSchedulerLogQueryRes) {
         return schedulerLogService.findByPage(qrtzSchedulerLogQueryRes);
     }
