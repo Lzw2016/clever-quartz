@@ -12,7 +12,7 @@ import org.hibernate.validator.constraints.NotBlank;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class TriggerKeyRes extends BaseRequest {
+public class TriggerKeyReq extends BaseRequest {
     private static final long serialVersionUID = 1L;
 
     /**

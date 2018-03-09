@@ -2,7 +2,7 @@ package org.clever.quartz.service;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import org.clever.quartz.dto.request.QrtzSchedulerLogQueryRes;
+import org.clever.quartz.dto.request.QrtzSchedulerLogQueryReq;
 import org.clever.quartz.entity.QrtzSchedulerLog;
 import org.clever.quartz.mapper.QrtzSchedulerLogMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,9 +31,9 @@ public class SchedulerLogService {
      *
      * @return 触发器日志分页数据
      */
-    public PageInfo<QrtzSchedulerLog> findByPage(QrtzSchedulerLogQueryRes qrtzSchedulerLogQueryRes) {
+    public PageInfo<QrtzSchedulerLog> findByPage(QrtzSchedulerLogQueryReq qrtzSchedulerLogQueryReq) {
         return PageHelper
-                .startPage(qrtzSchedulerLogQueryRes.getPageNo(), qrtzSchedulerLogQueryRes.getPageSize())
-                .doSelectPageInfo(() -> qrtzSchedulerLogMapper.findByPage(qrtzSchedulerLogQueryRes));
+                .startPage(qrtzSchedulerLogQueryReq.getPageNo(), qrtzSchedulerLogQueryReq.getPageSize())
+                .doSelectPageInfo(() -> qrtzSchedulerLogMapper.findByPage(qrtzSchedulerLogQueryReq));
     }
 }

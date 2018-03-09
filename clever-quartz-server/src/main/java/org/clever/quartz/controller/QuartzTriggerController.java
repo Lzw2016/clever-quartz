@@ -27,34 +27,34 @@ public class QuartzTriggerController extends BaseController {
 
     @ApiOperation("验证cron表达式")
     @GetMapping("/trigger/validator_cron" + JSON_SUFFIX)
-    public AjaxMessage<List<String>> validatorCron(@Validated ValidatorCronRes validatorCronRes) {
+    public AjaxMessage<List<String>> validatorCron(@Validated ValidatorCronReq validatorCronReq) {
         AjaxMessage<List<String>> ajaxMessage = new AjaxMessage<>(true, "cron表达式验证成功", null);
-        List<String> dateList = triggerService.validatorCron(validatorCronRes.getCron(), validatorCronRes.getNum(), ajaxMessage);
+        List<String> dateList = triggerService.validatorCron(validatorCronReq.getCron(), validatorCronReq.getNum(), ajaxMessage);
         ajaxMessage.setResult(dateList);
         return ajaxMessage;
     }
 
     @ApiOperation("给JobDetail增加一个SimpleTrigger")
     @PostMapping("/trigger/add_simple_trigger_for_job" + JSON_SUFFIX)
-    public AjaxMessage<String> addSimpleTriggerForJob(@Validated @RequestBody AddSimpleTriggerForJobRes addSimpleTriggerForJobRes) {
+    public AjaxMessage<String> addSimpleTriggerForJob(@Validated @RequestBody AddSimpleTriggerForJobReq addSimpleTriggerForJobReq) {
         AjaxMessage<String> ajaxMessage = new AjaxMessage<>(true, "给JobDetail增加一个SimpleTrigger成功", null);
-        triggerService.addSimpleTriggerForJob(addSimpleTriggerForJobRes, ajaxMessage);
+        triggerService.addSimpleTriggerForJob(addSimpleTriggerForJobReq, ajaxMessage);
         return ajaxMessage;
     }
 
     @ApiOperation("给JobDetail增加一个CronTrigger")
     @PostMapping("/trigger/add_cron_trigger_for_job" + JSON_SUFFIX)
-    public AjaxMessage<String> addCronTriggerForJob(@Validated @RequestBody AddCronTriggerForJobRes addCronTriggerForJobRes) {
+    public AjaxMessage<String> addCronTriggerForJob(@Validated @RequestBody AddCronTriggerForJobReq addCronTriggerForJobReq) {
         AjaxMessage<String> ajaxMessage = new AjaxMessage<>(true, "给JobDetail增加一个CronTrigger成功", null);
-        triggerService.addCronTriggerForJob(addCronTriggerForJobRes, ajaxMessage);
+        triggerService.addCronTriggerForJob(addCronTriggerForJobReq, ajaxMessage);
         return ajaxMessage;
     }
 
     @ApiOperation("获取JobDetail的所有Trigger")
     @GetMapping("/trigger/job" + JSON_SUFFIX)
-    public AjaxMessage<List<QuartzTriggers>> getTriggerByJob(@Validated JobDetailKeyRes jobDetailKeyRes) {
+    public AjaxMessage<List<QuartzTriggers>> getTriggerByJob(@Validated JobDetailKeyReq jobDetailKeyReq) {
         AjaxMessage<List<QuartzTriggers>> ajaxMessage = new AjaxMessage<>(true, "获取JobDetail的所有Trigger成功", null);
-        List<QuartzTriggers> qrtzTriggersList = triggerService.getTriggerByJob(jobDetailKeyRes, ajaxMessage);
+        List<QuartzTriggers> qrtzTriggersList = triggerService.getTriggerByJob(jobDetailKeyReq, ajaxMessage);
         ajaxMessage.setResult(qrtzTriggersList);
         return ajaxMessage;
     }
@@ -69,33 +69,33 @@ public class QuartzTriggerController extends BaseController {
 
     @ApiOperation("删除一个JobDetail的所有Trigger")
     @DeleteMapping("/trigger/job" + JSON_SUFFIX)
-    public AjaxMessage<String> deleteTriggerByJob(@Validated JobDetailKeyRes jobDetailKeyRes) {
+    public AjaxMessage<String> deleteTriggerByJob(@Validated JobDetailKeyReq jobDetailKeyReq) {
         AjaxMessage<String> ajaxMessage = new AjaxMessage<>(true, "删除一个JobDetail的所有Trigger成功", null);
-        triggerService.deleteTriggerByJob(jobDetailKeyRes, ajaxMessage);
+        triggerService.deleteTriggerByJob(jobDetailKeyReq, ajaxMessage);
         return ajaxMessage;
     }
 
     @ApiOperation("暂停而且删除Trigger")
     @DeleteMapping("/trigger" + JSON_SUFFIX)
-    public AjaxMessage<String> deleteTrigger(@Validated TriggerKeyRes triggerKeyRes) {
+    public AjaxMessage<String> deleteTrigger(@Validated TriggerKeyReq triggerKeyReq) {
         AjaxMessage<String> ajaxMessage = new AjaxMessage<>(true, "删除Trigger成功", null);
-        triggerService.deleteTrigger(triggerKeyRes, ajaxMessage);
+        triggerService.deleteTrigger(triggerKeyReq, ajaxMessage);
         return ajaxMessage;
     }
 
     @ApiOperation("暂停Trigger")
     @PostMapping("/trigger/pause" + JSON_SUFFIX)
-    public AjaxMessage<String> pauseTrigger(@Validated @RequestBody TriggerKeyRes triggerKeyRes) {
+    public AjaxMessage<String> pauseTrigger(@Validated @RequestBody TriggerKeyReq triggerKeyReq) {
         AjaxMessage<String> ajaxMessage = new AjaxMessage<>(true, "暂停Trigger成功", null);
-        triggerService.pauseTrigger(triggerKeyRes, ajaxMessage);
+        triggerService.pauseTrigger(triggerKeyReq, ajaxMessage);
         return ajaxMessage;
     }
 
     @ApiOperation("取消暂停Trigger")
     @PostMapping("/trigger/resume" + JSON_SUFFIX)
-    public AjaxMessage<String> resumeTrigger(@Validated @RequestBody TriggerKeyRes triggerKeyRes) {
+    public AjaxMessage<String> resumeTrigger(@Validated @RequestBody TriggerKeyReq triggerKeyReq) {
         AjaxMessage<String> ajaxMessage = new AjaxMessage<>(true, "取消暂停Trigger成功", null);
-        triggerService.resumeTrigger(triggerKeyRes, ajaxMessage);
+        triggerService.resumeTrigger(triggerKeyReq, ajaxMessage);
         return ajaxMessage;
     }
 }

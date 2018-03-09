@@ -10,7 +10,7 @@ import org.clever.common.model.request.BaseRequest;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class FindJobDetailRes extends BaseRequest {
+public class FindJobDetailReq extends BaseRequest {
     private static final long serialVersionUID = 1L;
 
     private String jobName;

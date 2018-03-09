@@ -12,7 +12,7 @@ import org.hibernate.validator.constraints.NotBlank;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class JobDetailKeyRes extends BaseRequest {
+public class JobDetailKeyReq extends BaseRequest {
     private static final long serialVersionUID = 1L;
 
     /**
@@ -29,10 +29,10 @@ public class JobDetailKeyRes extends BaseRequest {
     @Length(max = 200, message = "JobGroup长度不能超过200")
     private String jobGroup;
 
-    public JobDetailKeyRes() {
+    public JobDetailKeyReq() {
     }
 
-    public JobDetailKeyRes(String jobName, String jobGroup) {
+    public JobDetailKeyReq(String jobName, String jobGroup) {
         this.jobName = jobName;
         this.jobGroup = jobGroup;
     }

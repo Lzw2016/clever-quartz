@@ -3,7 +3,7 @@ package org.clever.quartz.service;
 import lombok.extern.slf4j.Slf4j;
 import org.clever.common.model.response.AjaxMessage;
 import org.clever.common.utils.exception.ExceptionUtils;
-import org.clever.quartz.dto.request.AddHttpServiceJobRes;
+import org.clever.quartz.dto.request.AddHttpServiceJobReq;
 import org.clever.quartz.jobs.HttpServiceJob;
 import org.clever.quartz.model.HttpJobData;
 import org.clever.quartz.model.HttpJobNotice;
@@ -25,11 +25,11 @@ public class HttpServiceJobService {
      * 保存 Http任务
      */
     @Transactional
-    public boolean addHttpServiceJob(AddHttpServiceJobRes addHttpServiceJobRes, AjaxMessage ajaxMessage) {
+    public boolean addHttpServiceJob(AddHttpServiceJobReq addHttpServiceJobReq, AjaxMessage ajaxMessage) {
         Scheduler scheduler = QuartzManager.getScheduler();
         JobDetail jobDetail;
         try {
-            jobDetail = scheduler.getJobDetail(JobKey.jobKey(addHttpServiceJobRes.getName(), addHttpServiceJobRes.getGroup()));
+            jobDetail = scheduler.getJobDetail(JobKey.jobKey(addHttpServiceJobReq.getName(), addHttpServiceJobReq.getGroup()));
         } catch (SchedulerException e) {
             log.error(e.getMessage(), e);
             throw ExceptionUtils.unchecked(e);
@@ -42,17 +42,17 @@ public class HttpServiceJobService {
 
         // ----------------------------------------------------新增JobDetail
         JobBuilder jobBuilder = JobBuilder.newJob(HttpServiceJob.class);
-        jobBuilder.withIdentity(addHttpServiceJobRes.getName(), addHttpServiceJobRes.getGroup());
+        jobBuilder.withIdentity(addHttpServiceJobReq.getName(), addHttpServiceJobReq.getGroup());
         // 需要存储的job必须调用此方法
         jobBuilder.storeDurably();
-        jobBuilder.withDescription(addHttpServiceJobRes.getDescription());
-        jobBuilder.requestRecovery(addHttpServiceJobRes.isRequestsRecovery());
+        jobBuilder.withDescription(addHttpServiceJobReq.getDescription());
+        jobBuilder.requestRecovery(addHttpServiceJobReq.isRequestsRecovery());
         // @DisallowConcurrentExecution 对应 isNonconcurrent
         // @PersistJobDataAfterExecution 对应 isUpdateData
         jobDetail = jobBuilder.build();
-        jobDetail.getJobDataMap().put(HttpJobData.HTTP_JOB_DATA_KEY, addHttpServiceJobRes.getHttpJobData());
-        jobDetail.getJobDataMap().put(HttpJobNotice.HTTP_JOB_NOTICE_KEY, addHttpServiceJobRes.getNotice());
-        jobDetail.getJobDataMap().put("jobExtendData", addHttpServiceJobRes.getJobExtendData());
+        jobDetail.getJobDataMap().put(HttpJobData.HTTP_JOB_DATA_KEY, addHttpServiceJobReq.getHttpJobData());
+        jobDetail.getJobDataMap().put(HttpJobNotice.HTTP_JOB_NOTICE_KEY, addHttpServiceJobReq.getNotice());
+        jobDetail.getJobDataMap().put("jobExtendData", addHttpServiceJobReq.getJobExtendData());
         try {
             scheduler.addJob(jobDetail, false);
         } catch (Throwable e) {
@@ -62,18 +62,18 @@ public class HttpServiceJobService {
 
         // ----------------------------------------------------新增Trigger
         TriggerBuilder<Trigger> triggerBuilder = QuartzTriggerService.newTriggerBuilder(
-                addHttpServiceJobRes.getName(),
-                addHttpServiceJobRes.getGroup(),
-                addHttpServiceJobRes.getName(),
-                addHttpServiceJobRes.getGroup(),
-                addHttpServiceJobRes.getDescription(),
-                addHttpServiceJobRes.getStartTime(),
-                addHttpServiceJobRes.getEndTime(),
-                addHttpServiceJobRes.getPriority(),
+                addHttpServiceJobReq.getName(),
+                addHttpServiceJobReq.getGroup(),
+                addHttpServiceJobReq.getName(),
+                addHttpServiceJobReq.getGroup(),
+                addHttpServiceJobReq.getDescription(),
+                addHttpServiceJobReq.getStartTime(),
+                addHttpServiceJobReq.getEndTime(),
+                addHttpServiceJobReq.getPriority(),
                 null);
         CronScheduleBuilder cronScheduleBuilder = QuartzTriggerService.newCronScheduleBuilder(
-                addHttpServiceJobRes.getCron(),
-                addHttpServiceJobRes.getMisfireInstruction());
+                addHttpServiceJobReq.getCron(),
+                addHttpServiceJobReq.getMisfireInstruction());
         triggerBuilder.withSchedule(cronScheduleBuilder);
         Trigger trigger = triggerBuilder.build();
         try {

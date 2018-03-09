@@ -8,11 +8,11 @@ import java.util.Date;
 
 /**
  * 作者：LiZW <br/>
- * 创建时间：2016-8-15 15:06 <br/>
+ * 创建时间：2016-8-16 15:46 <br/>
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class TriggerLogQueryRes extends QueryByPage {
+public class JobLogQueryReq extends QueryByPage {
     private static final long serialVersionUID = 1L;
 
     /**
@@ -24,16 +24,6 @@ public class TriggerLogQueryRes extends QueryByPage {
      * 调度器ID
      */
     private String instanceName;
-
-    /**
-     * 触发器分组
-     */
-    private String triggerGroup;
-
-    /**
-     * 触发器名称
-     */
-    private String triggerName;
 
     /**
      * 任务分组

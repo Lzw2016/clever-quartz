@@ -4,7 +4,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.clever.common.model.response.AjaxMessage;
 import org.clever.common.server.controller.BaseController;
-import org.clever.quartz.dto.request.JobDetailKeyRes;
+import org.clever.quartz.dto.request.JobDetailKeyReq;
 import org.clever.quartz.model.QuartzJobDetails;
 import org.clever.quartz.service.QuartzSchedulerService;
 import org.quartz.JobKey;
@@ -71,9 +71,9 @@ public class QuartzSchedulerController extends BaseController {
 
     @ApiOperation("中断Job")
     @PostMapping("/scheduler/interrupt" + JSON_SUFFIX)
-    public AjaxMessage<String> interrupt(@Validated @RequestBody JobDetailKeyRes jobDetailKeyRes) {
+    public AjaxMessage<String> interrupt(@Validated @RequestBody JobDetailKeyReq jobDetailKeyReq) {
         AjaxMessage<String> ajaxMessage = new AjaxMessage<>(true, "中断Job成功", null);
-        schedulerService.interrupt(JobKey.jobKey(jobDetailKeyRes.getJobName(), jobDetailKeyRes.getJobGroup()), ajaxMessage);
+        schedulerService.interrupt(JobKey.jobKey(jobDetailKeyReq.getJobName(), jobDetailKeyReq.getJobGroup()), ajaxMessage);
         return ajaxMessage;
     }
 

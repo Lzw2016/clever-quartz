@@ -4,7 +4,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.clever.common.model.response.AjaxMessage;
 import org.clever.common.server.controller.BaseController;
-import org.clever.quartz.dto.request.AddHttpServiceJobRes;
+import org.clever.quartz.dto.request.AddHttpServiceJobReq;
 import org.clever.quartz.service.HttpServiceJobService;
 import org.clever.quartz.service.QuartzTriggerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,18 +34,18 @@ public class HttpServiceJobController extends BaseController {
 
     @ApiOperation("增加HTTP任务")
     @PostMapping("/http_job" + JSON_SUFFIX)
-    public AjaxMessage<String> addHttpServiceJob(@Validated @RequestBody AddHttpServiceJobRes addHttpServiceJobRes) {
+    public AjaxMessage<String> addHttpServiceJob(@Validated @RequestBody AddHttpServiceJobReq addHttpServiceJobReq) {
         AjaxMessage<String> ajaxMessage = new AjaxMessage<>(true, "新增任务成功", null);
-        if (triggerService.validatorCron(addHttpServiceJobRes.getCron(), 1, ajaxMessage) == null) {
+        if (triggerService.validatorCron(addHttpServiceJobReq.getCron(), 1, ajaxMessage) == null) {
             return ajaxMessage;
         }
-        httpServiceJobService.addHttpServiceJob(addHttpServiceJobRes, ajaxMessage);
+        httpServiceJobService.addHttpServiceJob(addHttpServiceJobReq, ajaxMessage);
         return ajaxMessage;
     }
 
 //    @ApiOperation("查询HTTP任务")
 //    @GetMapping("/http_job" + JSON_SUFFIX)
-//    public AjaxMessage<List<QuartzJobDetails>> findJobDetail(FindJobDetailRes findJobDetailVo) {
+//    public AjaxMessage<List<QuartzJobDetails>> findJobDetail(FindJobDetailReq findJobDetailVo) {
 //        AjaxMessage<List<QuartzJobDetails>> ajaxMessage = new AjaxMessage<>(true, "查询任务成功", null);
 //        List<QuartzJobDetails> jobDetailList = jobDetailService.findJobDetail(findJobDetailVo);
 //        ajaxMessage.setResult(jobDetailList);
@@ -57,7 +57,7 @@ public class HttpServiceJobController extends BaseController {
 //    public AjaxMessage<String> pauseOrResumeJob(@Validated @RequestBody PauseOrResumeJobVo pauseOrResumeJobVo) {
 //        AjaxMessage<String> ajaxMessage = new AjaxMessage<>(true, "更新任务状态成功", null);
 //        boolean flag;
-//        JobDetailKeyRes jobDetailKeyVo = new JobDetailKeyRes(pauseOrResumeJobVo.getJobName(), pauseOrResumeJobVo.getJobGroup());
+//        JobDetailKeyReq jobDetailKeyVo = new JobDetailKeyReq(pauseOrResumeJobVo.getJobName(), pauseOrResumeJobVo.getJobGroup());
 //        if ("pause".equalsIgnoreCase(pauseOrResumeJobVo.getStatus())) {
 //            flag = jobDetailService.pauseJob(jobDetailKeyVo, ajaxMessage);
 //            if (flag) {
@@ -84,7 +84,7 @@ public class HttpServiceJobController extends BaseController {
 //    @DeleteMapping("/http_job/{jobGroup}/{jobName}" + JSON_SUFFIX)
 //    public AjaxMessage<String> deleteJobDetail(@PathVariable() String jobGroup, @PathVariable String jobName) {
 //        AjaxMessage<String> ajaxMessage = new AjaxMessage<>(true, "删除JobDetail成功", null);
-//        jobDetailService.deleteJobDetail(new JobDetailKeyRes(jobName, jobGroup), ajaxMessage);
+//        jobDetailService.deleteJobDetail(new JobDetailKeyReq(jobName, jobGroup), ajaxMessage);
 //        return ajaxMessage;
 //    }
 }

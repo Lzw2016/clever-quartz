@@ -4,10 +4,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.clever.common.model.response.AjaxMessage;
 import org.clever.common.utils.DateTimeUtils;
 import org.clever.common.utils.exception.ExceptionUtils;
-import org.clever.quartz.dto.request.AddCronTriggerForJobRes;
-import org.clever.quartz.dto.request.AddSimpleTriggerForJobRes;
-import org.clever.quartz.dto.request.JobDetailKeyRes;
-import org.clever.quartz.dto.request.TriggerKeyRes;
+import org.clever.quartz.dto.request.AddCronTriggerForJobReq;
+import org.clever.quartz.dto.request.AddSimpleTriggerForJobReq;
+import org.clever.quartz.dto.request.JobDetailKeyReq;
+import org.clever.quartz.dto.request.TriggerKeyReq;
 import org.clever.quartz.entity.QrtzTriggers;
 import org.clever.quartz.mapper.QrtzTriggersMapper;
 import org.clever.quartz.model.QuartzTriggers;
@@ -209,21 +209,21 @@ public class QuartzTriggerService {
      * @return 成功返回true
      */
     @Transactional
-    public boolean addSimpleTriggerForJob(AddSimpleTriggerForJobRes addSimpleTriggerForJobRes, AjaxMessage ajaxMessage) {
+    public boolean addSimpleTriggerForJob(AddSimpleTriggerForJobReq addSimpleTriggerForJobReq, AjaxMessage ajaxMessage) {
         TriggerBuilder<Trigger> triggerBuilder = newTriggerBuilder(
-                addSimpleTriggerForJobRes.getJobName(),
-                addSimpleTriggerForJobRes.getJobGroup(),
-                addSimpleTriggerForJobRes.getTriggerName(),
-                addSimpleTriggerForJobRes.getTriggerGroup(),
-                addSimpleTriggerForJobRes.getDescription(),
-                addSimpleTriggerForJobRes.getStartTime(),
-                addSimpleTriggerForJobRes.getEndTime(),
-                addSimpleTriggerForJobRes.getPriority(),
-                addSimpleTriggerForJobRes.getJobData());
+                addSimpleTriggerForJobReq.getJobName(),
+                addSimpleTriggerForJobReq.getJobGroup(),
+                addSimpleTriggerForJobReq.getTriggerName(),
+                addSimpleTriggerForJobReq.getTriggerGroup(),
+                addSimpleTriggerForJobReq.getDescription(),
+                addSimpleTriggerForJobReq.getStartTime(),
+                addSimpleTriggerForJobReq.getEndTime(),
+                addSimpleTriggerForJobReq.getPriority(),
+                addSimpleTriggerForJobReq.getJobData());
         SimpleScheduleBuilder simpleScheduleBuilder = newSimpleScheduleBuilder(
-                addSimpleTriggerForJobRes.getInterval(),
-                addSimpleTriggerForJobRes.getRepeatCount(),
-                addSimpleTriggerForJobRes.getMisfireInstruction());
+                addSimpleTriggerForJobReq.getInterval(),
+                addSimpleTriggerForJobReq.getRepeatCount(),
+                addSimpleTriggerForJobReq.getMisfireInstruction());
         triggerBuilder.withSchedule(simpleScheduleBuilder);
         Trigger trigger = triggerBuilder.build();
         Scheduler scheduler = QuartzManager.getScheduler();
@@ -256,18 +256,18 @@ public class QuartzTriggerService {
      * @return 成功返回true
      */
     @Transactional
-    public boolean addCronTriggerForJob(AddCronTriggerForJobRes addCronTriggerForJobRes, AjaxMessage ajaxMessage) {
+    public boolean addCronTriggerForJob(AddCronTriggerForJobReq addCronTriggerForJobReq, AjaxMessage ajaxMessage) {
         TriggerBuilder<Trigger> triggerBuilder = newTriggerBuilder(
-                addCronTriggerForJobRes.getJobName(),
-                addCronTriggerForJobRes.getJobGroup(),
-                addCronTriggerForJobRes.getTriggerName(),
-                addCronTriggerForJobRes.getTriggerGroup(),
-                addCronTriggerForJobRes.getDescription(),
-                addCronTriggerForJobRes.getStartTime(),
-                addCronTriggerForJobRes.getEndTime(),
-                addCronTriggerForJobRes.getPriority(),
-                addCronTriggerForJobRes.getJobData());
-        CronScheduleBuilder cronScheduleBuilder = newCronScheduleBuilder(addCronTriggerForJobRes.getCron(), addCronTriggerForJobRes.getMisfireInstruction());
+                addCronTriggerForJobReq.getJobName(),
+                addCronTriggerForJobReq.getJobGroup(),
+                addCronTriggerForJobReq.getTriggerName(),
+                addCronTriggerForJobReq.getTriggerGroup(),
+                addCronTriggerForJobReq.getDescription(),
+                addCronTriggerForJobReq.getStartTime(),
+                addCronTriggerForJobReq.getEndTime(),
+                addCronTriggerForJobReq.getPriority(),
+                addCronTriggerForJobReq.getJobData());
+        CronScheduleBuilder cronScheduleBuilder = newCronScheduleBuilder(addCronTriggerForJobReq.getCron(), addCronTriggerForJobReq.getMisfireInstruction());
         triggerBuilder.withSchedule(cronScheduleBuilder);
         Trigger trigger = triggerBuilder.build();
         Scheduler scheduler = QuartzManager.getScheduler();
@@ -287,9 +287,9 @@ public class QuartzTriggerService {
      *
      * @return 失败返回null
      */
-    public List<QuartzTriggers> getTriggerByJob(JobDetailKeyRes jobDetailKeyRes, AjaxMessage ajaxMessage) {
+    public List<QuartzTriggers> getTriggerByJob(JobDetailKeyReq jobDetailKeyReq, AjaxMessage ajaxMessage) {
         List<QuartzTriggers> qrtzTriggersList = new ArrayList<>();
-        List<? extends Trigger> triggerList = QuartzManager.getTriggerByJob(jobDetailKeyRes.getJobName(), jobDetailKeyRes.getJobGroup());
+        List<? extends Trigger> triggerList = QuartzManager.getTriggerByJob(jobDetailKeyReq.getJobName(), jobDetailKeyReq.getJobGroup());
         if (triggerList == null) {
             ajaxMessage.setSuccess(false);
             ajaxMessage.setFailMessage("获取JobDetail的所有Trigger失败");
@@ -374,9 +374,9 @@ public class QuartzTriggerService {
      * @return 成功返回true
      */
     @Transactional
-    public boolean deleteTriggerByJob(JobDetailKeyRes jobDetailKeyRes, AjaxMessage ajaxMessage) {
+    public boolean deleteTriggerByJob(JobDetailKeyReq jobDetailKeyReq, AjaxMessage ajaxMessage) {
         Scheduler scheduler = QuartzManager.getScheduler();
-        List<? extends Trigger> jobTriggers = QuartzManager.getTriggerByJob(jobDetailKeyRes.getJobName(), jobDetailKeyRes.getJobGroup());
+        List<? extends Trigger> jobTriggers = QuartzManager.getTriggerByJob(jobDetailKeyReq.getJobName(), jobDetailKeyReq.getJobGroup());
         if (jobTriggers == null) {
             ajaxMessage.setSuccess(false);
             ajaxMessage.setFailMessage("删除一个JobDetail的所有Trigger失败-获取JobDetail的所有Trigger失败");
@@ -402,13 +402,13 @@ public class QuartzTriggerService {
      * @return 成功返回true
      */
     @Transactional
-    public boolean deleteTrigger(TriggerKeyRes triggerKeyRes, AjaxMessage ajaxMessage) {
+    public boolean deleteTrigger(TriggerKeyReq triggerKeyReq, AjaxMessage ajaxMessage) {
         Scheduler scheduler = QuartzManager.getScheduler();
         try {
             // 暂停触发器
-            scheduler.pauseTrigger(TriggerKey.triggerKey(triggerKeyRes.getTriggerName(), triggerKeyRes.getTriggerGroup()));
+            scheduler.pauseTrigger(TriggerKey.triggerKey(triggerKeyReq.getTriggerName(), triggerKeyReq.getTriggerGroup()));
             // 移除触发器
-            scheduler.unscheduleJob(TriggerKey.triggerKey(triggerKeyRes.getTriggerName(), triggerKeyRes.getTriggerGroup()));
+            scheduler.unscheduleJob(TriggerKey.triggerKey(triggerKeyReq.getTriggerName(), triggerKeyReq.getTriggerGroup()));
         } catch (Throwable e) {
             log.error("删除一个Trigger异常", e);
             ajaxMessage.setSuccess(false);
@@ -424,11 +424,11 @@ public class QuartzTriggerService {
      * @return 成功返回true
      */
     @Transactional
-    public boolean pauseTrigger(TriggerKeyRes triggerKeyRes, AjaxMessage ajaxMessage) {
+    public boolean pauseTrigger(TriggerKeyReq triggerKeyReq, AjaxMessage ajaxMessage) {
         Scheduler scheduler = QuartzManager.getScheduler();
         try {
             // 暂停触发器
-            scheduler.pauseTrigger(TriggerKey.triggerKey(triggerKeyRes.getTriggerName(), triggerKeyRes.getTriggerGroup()));
+            scheduler.pauseTrigger(TriggerKey.triggerKey(triggerKeyReq.getTriggerName(), triggerKeyReq.getTriggerGroup()));
         } catch (Throwable e) {
             log.error("暂停一个Trigger异常", e);
             ajaxMessage.setSuccess(false);
@@ -444,11 +444,11 @@ public class QuartzTriggerService {
      * @return 成功返回true
      */
     @Transactional
-    public boolean resumeTrigger(TriggerKeyRes triggerKeyRes, AjaxMessage ajaxMessage) {
+    public boolean resumeTrigger(TriggerKeyReq triggerKeyReq, AjaxMessage ajaxMessage) {
         Scheduler scheduler = QuartzManager.getScheduler();
         try {
             // 取消暂停触发器
-            scheduler.resumeTrigger(TriggerKey.triggerKey(triggerKeyRes.getTriggerName(), triggerKeyRes.getTriggerGroup()));
+            scheduler.resumeTrigger(TriggerKey.triggerKey(triggerKeyReq.getTriggerName(), triggerKeyReq.getTriggerGroup()));
         } catch (Throwable e) {
             log.error("取消暂停一个Trigger异常", e);
             ajaxMessage.setSuccess(false);

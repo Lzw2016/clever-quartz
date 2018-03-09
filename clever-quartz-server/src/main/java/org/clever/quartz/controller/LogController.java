@@ -4,9 +4,9 @@ import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.clever.common.server.controller.BaseController;
-import org.clever.quartz.dto.request.JobLogQueryRes;
-import org.clever.quartz.dto.request.QrtzSchedulerLogQueryRes;
-import org.clever.quartz.dto.request.TriggerLogQueryRes;
+import org.clever.quartz.dto.request.JobLogQueryReq;
+import org.clever.quartz.dto.request.QrtzSchedulerLogQueryReq;
+import org.clever.quartz.dto.request.TriggerLogQueryReq;
 import org.clever.quartz.entity.QrtzJobLog;
 import org.clever.quartz.entity.QrtzSchedulerLog;
 import org.clever.quartz.entity.QrtzTriggerLog;
@@ -37,19 +37,19 @@ public class LogController extends BaseController {
 
     @ApiOperation("查询Job执行日志")
     @GetMapping("/log/job_log" + JSON_SUFFIX)
-    public PageInfo<QrtzJobLog> findJobLogByPage(@Validated JobLogQueryRes jobLogQueryRes) {
-        return qrtzJobLogService.findByPage(jobLogQueryRes);
+    public PageInfo<QrtzJobLog> findJobLogByPage(@Validated JobLogQueryReq jobLogQueryReq) {
+        return qrtzJobLogService.findByPage(jobLogQueryReq);
     }
 
     @ApiOperation("查询trigger触发日志")
     @GetMapping("/log/trigger_log" + JSON_SUFFIX)
-    public PageInfo<QrtzTriggerLog> findTriggerLogByPage(@Validated TriggerLogQueryRes triggerLogQueryRes) {
-        return qrtzTriggerLogService.findByPage(triggerLogQueryRes);
+    public PageInfo<QrtzTriggerLog> findTriggerLogByPage(@Validated TriggerLogQueryReq triggerLogQueryReq) {
+        return qrtzTriggerLogService.findByPage(triggerLogQueryReq);
     }
 
     @ApiOperation("查询scheduler日志")
     @GetMapping("/log/scheduler_log" + JSON_SUFFIX)
-    public PageInfo<QrtzSchedulerLog> findSchedulerLogByPage(@Validated QrtzSchedulerLogQueryRes qrtzSchedulerLogQueryRes) {
-        return schedulerLogService.findByPage(qrtzSchedulerLogQueryRes);
+    public PageInfo<QrtzSchedulerLog> findSchedulerLogByPage(@Validated QrtzSchedulerLogQueryReq qrtzSchedulerLogQueryReq) {
+        return schedulerLogService.findByPage(qrtzSchedulerLogQueryReq);
     }
 }

@@ -13,11 +13,11 @@ import java.util.Map;
 
 /**
  * 作者：LiZW <br/>
- * 创建时间：2016-7-31 17:13 <br/>
+ * 创建时间：2016-7-31 16:54 <br/>
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class AddCronTriggerForJobRes extends BaseRequest {
+public class AddSimpleTriggerForJobReq extends BaseRequest {
     private static final long serialVersionUID = 1L;
 
     /**
@@ -73,15 +73,21 @@ public class AddCronTriggerForJobRes extends BaseRequest {
     private Integer priority;
 
     /**
-     * 存储JobDataMap
+     * 存储JobDataMap等
      */
     private Map<String, String> jobData;
 
     /**
-     * cron表达式
+     * 触发的时间间隔(毫秒)
      */
-    @NotBlank(message = "触发的时间间隔不能为空")
-    private String cron;
+    @NotNull(message = "触发的时间间隔不能为空")
+    @Range(min = 1, message = "触发的时间间隔大于0")
+    private Integer interval;
+
+    /**
+     * 触发的次数
+     */
+    private Integer repeatCount;
 
     /**
      * Quartz的Misfire处理规则取值
