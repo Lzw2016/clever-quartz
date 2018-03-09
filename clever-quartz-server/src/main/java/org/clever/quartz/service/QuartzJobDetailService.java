@@ -101,7 +101,7 @@ public class QuartzJobDetailService {
     public List<String> getAllJobClassName() {
         List<String> jobClassNameList = new ArrayList<>();
         jobClassNameList.addAll(QuartzManager.getAllJobClassName("org.clever.quartz.jobs"));
-        jobClassNameList.addAll(QuartzManager.getAllJobClassName("org.quartz"));
+//        jobClassNameList.addAll(QuartzManager.getAllJobClassName("org.quartz"));
         return jobClassNameList;
     }
 
