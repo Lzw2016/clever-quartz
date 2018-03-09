@@ -4,6 +4,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.clever.common.model.response.AjaxMessage;
 import org.clever.common.server.controller.BaseController;
+import org.clever.quartz.dto.request.FindJobDetailReq;
 import org.clever.quartz.dto.request.JobDetailKeyReq;
 import org.clever.quartz.dto.request.SaveJobDetailReq;
 import org.clever.quartz.model.QuartzJobDetails;
@@ -36,9 +37,14 @@ public class QuartzJobDetailController extends BaseController {
         return ajaxMessage;
     }
 
-    // TODO 条件查询Job
-
-
+    @ApiOperation("查询Job信息")
+    @GetMapping("/job_detail" + JSON_SUFFIX)
+    public AjaxMessage<List<QuartzJobDetails>> findJobDetail(FindJobDetailReq findJobDetailReq) {
+        AjaxMessage<List<QuartzJobDetails>> ajaxMessage = new AjaxMessage<>(true, "查询Job信息成功", null);
+        List<QuartzJobDetails> jobDetailList = jobDetailService.findJobDetail(findJobDetailReq);
+        ajaxMessage.setResult(jobDetailList);
+        return ajaxMessage;
+    }
 
     @ApiOperation("获取所有的Job信息")
     @GetMapping("/job_detail/all_job_detail" + JSON_SUFFIX)

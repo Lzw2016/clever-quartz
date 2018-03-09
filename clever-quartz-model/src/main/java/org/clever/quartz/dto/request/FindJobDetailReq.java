@@ -2,7 +2,7 @@ package org.clever.quartz.dto.request;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.clever.common.model.request.BaseRequest;
+import org.clever.common.model.request.QueryByPage;
 
 /**
  * 作者：lizw <br/>
@@ -10,10 +10,21 @@ import org.clever.common.model.request.BaseRequest;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class FindJobDetailReq extends BaseRequest {
+public class FindJobDetailReq extends QueryByPage {
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Job key
+     */
     private String jobName;
 
+    /**
+     * Job group 名称
+     */
     private String jobGroup;
+
+    /**
+     * 实现Job的类名，trigger触发时调度此类的execute方法
+     */
+    private String jobClassName;
 }
