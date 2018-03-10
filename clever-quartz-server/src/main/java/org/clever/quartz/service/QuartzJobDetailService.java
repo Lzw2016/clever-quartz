@@ -10,7 +10,6 @@ import org.clever.quartz.dto.request.SaveJobDetailReq;
 import org.clever.quartz.dto.response.JobDetailInfoRes;
 import org.clever.quartz.dto.response.JobDetailsRes;
 import org.clever.quartz.dto.response.JobKeyRes;
-import org.clever.quartz.entity.QrtzJobDetails;
 import org.clever.quartz.entity.QrtzTriggers;
 import org.clever.quartz.mapper.QrtzJobDetailsMapper;
 import org.clever.quartz.mapper.QrtzTriggersMapper;
@@ -84,7 +83,7 @@ public class QuartzJobDetailService {
      */
     public List<JobDetailsRes> findJobDetail(FindJobDetailReq req, AjaxMessage ajaxMessage) {
         Scheduler scheduler = QuartzManager.getScheduler();
-        List<QrtzJobDetails> list = null;
+        List<JobDetailsRes> list = null;
         try {
             PageHelper.startPage(req.getPageNo(), req.getPageSize());
             list = qrtzJobDetailsMapper.find(scheduler.getSchedulerName(), req.getJobName(), req.getJobGroup(), req.getJobClassName());
@@ -93,7 +92,7 @@ public class QuartzJobDetailService {
             ajaxMessage.setSuccess(false);
             ajaxMessage.setFailMessage("查询JobDetail失败");
         }
-        return ConvertUtils.convert(list);
+        return list;
     }
 
     public JobDetailInfoRes getJobDetails(String jobGroup, String jobName, AjaxMessage ajaxMessage) {

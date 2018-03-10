@@ -1,6 +1,7 @@
 package org.clever.quartz.mapper;
 
 import org.apache.ibatis.annotations.Param;
+import org.clever.quartz.dto.response.JobDetailsRes;
 import org.clever.quartz.dto.response.JobKeyRes;
 import org.clever.quartz.entity.QrtzJobDetails;
 import tk.mybatis.mapper.common.Mapper;
@@ -13,7 +14,7 @@ import java.util.List;
  */
 public interface QrtzJobDetailsMapper extends Mapper<QrtzJobDetails> {
 
-    List<QrtzJobDetails> find(
+    List<JobDetailsRes> find(
             @Param("schedName") String schedName,
             @Param("jobName") String jobName,
             @Param("jobGroup") String jobGroup,

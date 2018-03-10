@@ -1,17 +1,35 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="org.clever.quartz.mapper.QrtzJobDetailsMapper">
-    <select id="find" resultType="org.clever.quartz.entity.QrtzJobDetails">
-        SELECT * FROM QRTZ_JOB_DETAILS
-        WHERE SCHED_NAME = #{schedName}
+    <select id="find" resultType="org.clever.quartz.dto.response.JobDetailsRes">
+        SELECT
+        a.*,
+        b.NEXT_FIRE_TIME,
+        b.PREV_FIRE_TIME,
+        b.PRIORITY,
+        b.TRIGGER_STATE,
+        b.TRIGGER_TYPE,
+        b.START_TIME,
+        b.END_TIME,
+        b.CALENDAR_NAME,
+        b.MISFIRE_INSTR
+        FROM QRTZ_JOB_DETAILS a LEFT JOIN QRTZ_TRIGGERS b ON (a.SCHED_NAME=b.SCHED_NAME AND a.JOB_GROUP=b.JOB_GROUP AND a.JOB_NAME=b.JOB_NAME)
+        WHERE b.NEXT_FIRE_TIME = (
+            SELECT MIN(NEXT_FIRE_TIME)
+            FROM QRTZ_TRIGGERS
+            WHERE b.SCHED_NAME=SCHED_NAME
+            AND b.JOB_GROUP=JOB_GROUP
+            AND b.JOB_NAME=JOB_NAME
+        )
+            AND a.SCHED_NAME = #{schedName}
         <if test="jobName!=null and jobName!=''">
-            AND JOB_NAME = #{jobName}
+            AND a.JOB_NAME = #{jobName}
         </if>
         <if test="jobGroup!=null and jobGroup!=''">
-            AND JOB_GROUP = #{jobGroup}
+            AND a.JOB_GROUP = #{jobGroup}
         </if>
         <if test="jobClassName!=null and jobClassName!=''">
-            AND JOB_CLASS_NAME = #{jobClassName}
+            AND a.JOB_CLASS_NAME = #{jobClassName}
         </if>
     </select>
     <select id="getJobKeyByGroup" resultType="org.clever.quartz.dto.response.JobKeyRes">
