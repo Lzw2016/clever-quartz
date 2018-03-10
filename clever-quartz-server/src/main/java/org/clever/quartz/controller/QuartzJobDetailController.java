@@ -7,6 +7,7 @@ import org.clever.common.server.controller.BaseController;
 import org.clever.quartz.dto.request.FindJobDetailReq;
 import org.clever.quartz.dto.request.JobDetailKeyReq;
 import org.clever.quartz.dto.request.SaveJobDetailReq;
+import org.clever.quartz.dto.response.JobDetailInfoRes;
 import org.clever.quartz.dto.response.JobDetailsRes;
 import org.clever.quartz.dto.response.JobKeyRes;
 import org.clever.quartz.service.QuartzJobDetailService;
@@ -61,6 +62,15 @@ public class QuartzJobDetailController extends BaseController {
         AjaxMessage<List<JobDetailsRes>> ajaxMessage = new AjaxMessage<>(true, "查询Job信息成功", null);
         List<JobDetailsRes> jobDetailList = jobDetailService.findJobDetail(findJobDetailReq, ajaxMessage);
         ajaxMessage.setResult(jobDetailList);
+        return ajaxMessage;
+    }
+
+    @ApiOperation("获取Job信息")
+    @GetMapping("/job_detail/info/{jobGroup}/{jobName}" + JSON_SUFFIX)
+    public AjaxMessage<JobDetailInfoRes> getJobDetails(@PathVariable String jobGroup, @PathVariable String jobName) {
+        AjaxMessage<JobDetailInfoRes> ajaxMessage = new AjaxMessage<>(true, "获取Job信息成功", null);
+        JobDetailInfoRes jobDetail = jobDetailService.getJobDetails(jobGroup, jobName, ajaxMessage);
+        ajaxMessage.setResult(jobDetail);
         return ajaxMessage;
     }
 

@@ -8,10 +8,12 @@ import org.clever.quartz.dto.request.AddCronTriggerForJobReq;
 import org.clever.quartz.dto.request.AddSimpleTriggerForJobReq;
 import org.clever.quartz.dto.request.JobDetailKeyReq;
 import org.clever.quartz.dto.request.TriggerKeyReq;
+import org.clever.quartz.dto.response.TriggerInfoRes;
 import org.clever.quartz.dto.response.TriggerKeyRes;
 import org.clever.quartz.dto.response.TriggersRes;
 import org.clever.quartz.entity.QrtzTriggers;
 import org.clever.quartz.mapper.QrtzTriggersMapper;
+import org.clever.quartz.utils.ConvertUtils;
 import org.clever.quartz.utils.QuartzManager;
 import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -385,6 +387,22 @@ public class QuartzTriggerService {
             ajaxMessage.setFailMessage("获取一个Job的所有Trigger异常");
         }
         return qrtzTriggersList;
+    }
+
+    public TriggerInfoRes getTrigger(String triggerGroup, String triggerName, AjaxMessage ajaxMessage) {
+        Scheduler scheduler = QuartzManager.getScheduler();
+        TriggerInfoRes triggerInfoRes = null;
+        try {
+            String schedName = scheduler.getSchedulerName();
+            Trigger trigger = scheduler.getTrigger(new TriggerKey(triggerName, triggerGroup));
+            Trigger.TriggerState state = scheduler.getTriggerState(trigger.getKey());
+            triggerInfoRes = ConvertUtils.convert(schedName, trigger, state);
+        } catch (Throwable e) {
+            log.error("获取Trigger异常", e);
+            ajaxMessage.setSuccess(false);
+            ajaxMessage.setFailMessage("获取Trigger异常");
+        }
+        return triggerInfoRes;
     }
 
     /**

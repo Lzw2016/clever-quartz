@@ -7,6 +7,7 @@ import org.clever.common.utils.exception.ExceptionUtils;
 import org.clever.quartz.dto.request.FindJobDetailReq;
 import org.clever.quartz.dto.request.JobDetailKeyReq;
 import org.clever.quartz.dto.request.SaveJobDetailReq;
+import org.clever.quartz.dto.response.JobDetailInfoRes;
 import org.clever.quartz.dto.response.JobDetailsRes;
 import org.clever.quartz.dto.response.JobKeyRes;
 import org.clever.quartz.entity.QrtzJobDetails;
@@ -93,6 +94,20 @@ public class QuartzJobDetailService {
             ajaxMessage.setFailMessage("查询JobDetail失败");
         }
         return ConvertUtils.convert(list);
+    }
+
+    public JobDetailInfoRes getJobDetails(String jobGroup, String jobName, AjaxMessage ajaxMessage) {
+        Scheduler scheduler = QuartzManager.getScheduler();
+        JobDetailInfoRes jobDetailInfoRes = null;
+        try {
+            JobDetail jobDetail = scheduler.getJobDetail(new JobKey(jobName, jobGroup));
+            jobDetailInfoRes = ConvertUtils.convert(scheduler.getSchedulerName(), jobDetail);
+        } catch (Throwable e) {
+            log.error("### 获取Job信息失败", e);
+            ajaxMessage.setSuccess(false);
+            ajaxMessage.setFailMessage("获取Job信息失败");
+        }
+        return jobDetailInfoRes;
     }
 
     /**

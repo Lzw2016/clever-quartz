@@ -1,10 +1,17 @@
 package org.clever.quartz.utils;
 
 import org.clever.quartz.dto.response.CurrentlyExecutingJobsRes;
+import org.clever.quartz.dto.response.JobDetailInfoRes;
 import org.clever.quartz.dto.response.JobDetailsRes;
+import org.clever.quartz.dto.response.TriggerInfoRes;
 import org.clever.quartz.entity.QrtzJobDetails;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
+import org.quartz.Trigger;
+import org.quartz.impl.triggers.CalendarIntervalTriggerImpl;
+import org.quartz.impl.triggers.CronTriggerImpl;
+import org.quartz.impl.triggers.DailyTimeIntervalTriggerImpl;
+import org.quartz.impl.triggers.SimpleTriggerImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,5 +90,63 @@ public class ConvertUtils {
             currentlyExecutingJobsResList.add(convert(schedName, jobExecutionContext));
         }
         return currentlyExecutingJobsResList;
+    }
+
+    public static TriggerInfoRes convert(String schedName, Trigger trigger, Trigger.TriggerState state) {
+        TriggerInfoRes triggerInfoRes = new TriggerInfoRes();
+        triggerInfoRes.setSchedName(schedName);
+        triggerInfoRes.setTriggerName(trigger.getKey().getName());
+        triggerInfoRes.setTriggerGroup(trigger.getKey().getGroup());
+        triggerInfoRes.setJobName(trigger.getJobKey().getName());
+        triggerInfoRes.setJobGroup(trigger.getJobKey().getGroup());
+        triggerInfoRes.setDescription(trigger.getDescription());
+        triggerInfoRes.setNextFireTime(trigger.getNextFireTime());
+        triggerInfoRes.setPrevFireTime(trigger.getPreviousFireTime());
+        triggerInfoRes.setPriority(trigger.getPriority());
+        triggerInfoRes.setTriggerState(state.name());
+        triggerInfoRes.setTriggerType(trigger.getClass().getName());
+        triggerInfoRes.setStartTime(trigger.getStartTime());
+        triggerInfoRes.setEndTime(trigger.getEndTime());
+        triggerInfoRes.setCalendarName(trigger.getCalendarName());
+        triggerInfoRes.setMisfireInstr(trigger.getMisfireInstruction());
+        triggerInfoRes.setJobData(trigger.getJobDataMap());
+        if (trigger instanceof SimpleTriggerImpl) {
+            SimpleTriggerImpl simpleTrigger = (SimpleTriggerImpl) trigger;
+            triggerInfoRes.setRepeatCount(simpleTrigger.getRepeatCount());
+            triggerInfoRes.setRepeatInterval(simpleTrigger.getRepeatInterval());
+            triggerInfoRes.setTimesTriggered(simpleTrigger.getTimesTriggered());
+        }
+        if (trigger instanceof CronTriggerImpl) {
+            CronTriggerImpl cronTrigger = (CronTriggerImpl) trigger;
+            triggerInfoRes.setCronEx(cronTrigger.getCronExpression());
+            triggerInfoRes.setTimeZoneId(cronTrigger.getTimeZone() == null ? null : cronTrigger.getTimeZone().getID());
+        }
+        //noinspection StatementWithEmptyBody
+        if (trigger instanceof CalendarIntervalTriggerImpl) {
+            // TODO CalendarIntervalTriggerImpl
+
+        }
+        //noinspection StatementWithEmptyBody
+        if (trigger instanceof DailyTimeIntervalTriggerImpl) {
+            // TODO CalendarIntervalTriggerImpl
+        }
+        return triggerInfoRes;
+    }
+
+    public static JobDetailInfoRes convert(String schedName, JobDetail jobDetail) {
+        JobDetailInfoRes jobDetailInfoRes = new JobDetailInfoRes();
+        jobDetailInfoRes.setSchedName(schedName);
+        jobDetailInfoRes.setJobGroup(jobDetail.getKey().getGroup());
+        jobDetailInfoRes.setJobName(jobDetail.getKey().getName());
+        jobDetailInfoRes.setDurable(jobDetail.isDurable());
+        jobDetailInfoRes.setDescription(jobDetail.getDescription());
+        jobDetailInfoRes.setJobClassName(jobDetail.getJobClass().getName());
+        jobDetailInfoRes.setJobData(jobDetail.getJobDataMap());
+        jobDetailInfoRes.setRequestsRecovery(jobDetail.requestsRecovery());
+        // @DisallowConcurrentExecution 对应 isNonconcurrent
+        // @PersistJobDataAfterExecution 对应 isUpdateData
+        jobDetailInfoRes.setNonconcurrent(jobDetail.isConcurrentExectionDisallowed());
+        jobDetailInfoRes.setUpdateData(jobDetail.isPersistJobDataAfterExecution());
+        return jobDetailInfoRes;
     }
 }
