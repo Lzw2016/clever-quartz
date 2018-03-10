@@ -47,4 +47,8 @@
     <select id="getByJobKey" resultType="org.clever.quartz.entity.QrtzTriggers">
         SELECT * FROM QRTZ_TRIGGERS WHERE SCHED_NAME = #{schedName} AND TRIGGER_NAME = #{jobName} AND TRIGGER_GROUP = #{jobGroup}
     </select>
+
+    <select id="getTriggerKeyByGroup" resultType="org.clever.quartz.dto.response.TriggerKeyRes">
+        SELECT TRIGGER_NAME, TRIGGER_GROUP FROM QRTZ_TRIGGERS WHERE SCHED_NAME = #{schedName} AND TRIGGER_GROUP = #{triggerGroup}
+    </select>
 </mapper>

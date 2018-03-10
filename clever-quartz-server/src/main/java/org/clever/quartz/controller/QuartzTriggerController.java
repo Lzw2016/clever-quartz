@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiOperation;
 import org.clever.common.model.response.AjaxMessage;
 import org.clever.common.server.controller.BaseController;
 import org.clever.quartz.dto.request.*;
+import org.clever.quartz.dto.response.TriggerKeyRes;
 import org.clever.quartz.dto.response.TriggersRes;
 import org.clever.quartz.service.QuartzTriggerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,6 +97,15 @@ public class QuartzTriggerController extends BaseController {
     public AjaxMessage<List<String>> getTriggerGroupNames() {
         AjaxMessage<List<String>> ajaxMessage = new AjaxMessage<>(true, "获取所有的TriggerGroupName成功", null);
         ajaxMessage.setResult(triggerService.getTriggerGroupNames(ajaxMessage));
+        return ajaxMessage;
+    }
+
+    @ApiOperation("获取所有的TriggerKey")
+    @GetMapping("/trigger/trigger_group/{triggerGroup}" + JSON_SUFFIX)
+    public AjaxMessage<List<TriggerKeyRes>> getTriggerKeyByGroup(@PathVariable String triggerGroup) {
+        AjaxMessage<List<TriggerKeyRes>> ajaxMessage = new AjaxMessage<>(true, "获取所有的TriggerKey成功", null);
+        List<TriggerKeyRes> jobKeyList = triggerService.getTriggerKeyByGroup(triggerGroup, ajaxMessage);
+        ajaxMessage.setResult(jobKeyList);
         return ajaxMessage;
     }
 

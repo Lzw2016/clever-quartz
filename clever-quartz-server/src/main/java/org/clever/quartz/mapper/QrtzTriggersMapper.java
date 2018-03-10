@@ -1,6 +1,7 @@
 package org.clever.quartz.mapper;
 
 import org.apache.ibatis.annotations.Param;
+import org.clever.quartz.dto.response.TriggerKeyRes;
 import org.clever.quartz.dto.response.TriggersRes;
 import org.clever.quartz.entity.QrtzTriggers;
 
@@ -20,5 +21,5 @@ public interface QrtzTriggersMapper extends tk.mybatis.mapper.common.Mapper<Qrtz
 
     List<QrtzTriggers> getByJobKey(@Param("schedName") String schedName, @Param("jobName") String jobName, @Param("jobGroup") String jobGroup);
 
-
+    List<TriggerKeyRes> getTriggerKeyByGroup(@Param("schedName") String schedName, @Param("triggerGroup") String triggerGroup);
 }

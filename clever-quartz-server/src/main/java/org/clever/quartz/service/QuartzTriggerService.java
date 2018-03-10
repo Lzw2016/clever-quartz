@@ -8,6 +8,7 @@ import org.clever.quartz.dto.request.AddCronTriggerForJobReq;
 import org.clever.quartz.dto.request.AddSimpleTriggerForJobReq;
 import org.clever.quartz.dto.request.JobDetailKeyReq;
 import org.clever.quartz.dto.request.TriggerKeyReq;
+import org.clever.quartz.dto.response.TriggerKeyRes;
 import org.clever.quartz.dto.response.TriggersRes;
 import org.clever.quartz.entity.QrtzTriggers;
 import org.clever.quartz.mapper.QrtzTriggersMapper;
@@ -402,6 +403,24 @@ public class QuartzTriggerService {
             ajaxMessage.setFailMessage("获取所有的TriggerGroupName失败");
         }
         return triggerGroupNames;
+    }
+
+    /**
+     * 获取所有的TriggerKey
+     *
+     * @return 失败返回null
+     */
+    public List<TriggerKeyRes> getTriggerKeyByGroup(String triggerGroup, AjaxMessage ajaxMessage) {
+        List<TriggerKeyRes> triggerKeyResList = null;
+        Scheduler scheduler = QuartzManager.getScheduler();
+        try {
+            triggerKeyResList = qrtzTriggersMapper.getTriggerKeyByGroup(scheduler.getSchedulerName(), triggerGroup);
+        } catch (Throwable e) {
+            log.error("### 获取所有的TriggerKey失败", e);
+            ajaxMessage.setSuccess(false);
+            ajaxMessage.setFailMessage("获取所有的TriggerKey失败");
+        }
+        return triggerKeyResList;
     }
 
     /**
