@@ -4,15 +4,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.clever.common.utils.exception.ExceptionUtils;
 import org.clever.common.utils.spring.SpringContextHolder;
+import org.clever.quartz.mapper.QrtzJobDetailsMapper;
 import org.quartz.*;
 import org.quartz.impl.matchers.GroupMatcher;
 import org.reflections.Reflections;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -48,21 +46,19 @@ public class QuartzManager {
      * @param basePackage 扫描的基础包
      * @return 所有的Job子类集合
      */
-    @SuppressWarnings("deprecation")
+    @SuppressWarnings({"deprecation"})
     public static List<String> getAllJobClassName(String basePackage) {
-        List<String> JobClassNameList = new ArrayList<>();
         Reflections reflections = new Reflections(basePackage);
-        Set<Class<? extends Job>> jobClassSet = reflections.getSubTypesOf(Job.class);
-        JobClassNameList.addAll(jobClassSet.stream().map(Class::getName).collect(Collectors.toList()));
-
-        Set<Class<? extends InterruptableJob>> interruptableJobClassSet = reflections.getSubTypesOf(InterruptableJob.class);
-        JobClassNameList.addAll(interruptableJobClassSet.stream().map(Class::getName).collect(Collectors.toList()));
-
-        Set<Class<? extends QuartzJobBean>> quartzJobBeanClassSet = reflections.getSubTypesOf(QuartzJobBean.class);
-        JobClassNameList.addAll(quartzJobBeanClassSet.stream().map(Class::getName).collect(Collectors.toList()));
-
-        Set<Class<? extends StatefulJob>> statefulJobClassSet = reflections.getSubTypesOf(StatefulJob.class);
-        JobClassNameList.addAll(statefulJobClassSet.stream().map(Class::getName).collect(Collectors.toList()));
+        Set<Class<? extends Job>> jobClassSet = new HashSet<>();
+        jobClassSet.addAll(reflections.getSubTypesOf(Job.class));
+        jobClassSet.addAll(reflections.getSubTypesOf(InterruptableJob.class));
+        jobClassSet.addAll(reflections.getSubTypesOf(StatefulJob.class));
+        jobClassSet.addAll(reflections.getSubTypesOf(QuartzJobBean.class));
+        List<String> JobClassNameList = jobClassSet.stream().map(Class::getName).collect(Collectors.toList());
+        JobClassNameList.remove("org.quartz.Job");
+        JobClassNameList.remove("org.quartz.InterruptableJob");
+        JobClassNameList.remove("org.quartz.StatefulJob");
+        JobClassNameList.remove("org.springframework.scheduling.quartz.QuartzJobBean");
         return JobClassNameList;
     }
 
@@ -152,19 +148,32 @@ public class QuartzManager {
     }
 
     /**
-     * 获取所有的JobGroupName
+     * 验证cron表达式,失败返回null
      *
+     * @param cron cron表达式
+     * @param num  获取cron表达式表示时间数量
      * @return 失败返回null
      */
-    public static List<String> getJobGroupNames() {
-        List<String> jobGroupNames = null;
+    public static List<Date> validatorCron(String cron, int num) {
+        List<Date> dateList = new ArrayList<>();
+        CronExpression exp;
         try {
-            jobGroupNames = SCHEDULER.getJobGroupNames();
+            exp = new CronExpression(cron);
         } catch (Throwable e) {
-            log.error("### 获取所有的JobGroupName失败", e);
+            log.error("cron表达式错误[" + cron + "]", e);
+            return null;
         }
-        return jobGroupNames;
+        Date date = new Date();
+        // 循环得到接下来n此的触发时间点，供验证
+        for (int i = 0; i < num; i++) {
+            date = exp.getNextValidTimeAfter(date);
+            dateList.add(date);
+        }
+        return dateList;
     }
+
+    // --------------------------------------------------------------------------------------------------
+
 
     /**
      * 获取所有的TriggerGroupName
@@ -196,79 +205,84 @@ public class QuartzManager {
         return calendarName;
     }
 
-    /**
-     * 获取所有的JobKey
-     *
-     * @return 失败返回null
-     */
-    public static List<JobKey> getAllJobKey() {
-        List<JobKey> jobKeyList = new ArrayList<>();
-        try {
-            List<String> jobGroupNames = SCHEDULER.getJobGroupNames();
-            for (String group : jobGroupNames) {
-                Set<JobKey> jobKeySet = SCHEDULER.getJobKeys(GroupMatcher.groupEquals(group));
-                jobKeyList.addAll(jobKeySet);
-            }
-        } catch (Throwable e) {
-            log.error("### 获取所有的JobKey失败", e);
-            return null;
-        }
-        return jobKeyList;
-    }
+//    /**
+//     * 获取所有的JobKey
+//     *
+//     * @return 失败返回null
+//     */
+//    public static List<JobKey> getAllJobKey() {
+//        List<JobKey> jobKeyList;
+//        try {
+//            jobKeyList = new ArrayList<>(SCHEDULER.getJobKeys(GroupMatcher.anyGroup()));
+//        } catch (Throwable e) {
+//            log.error("### 获取所有的JobKey失败", e);
+//            return null;
+//        }
+//        return jobKeyList;
+//    }
 
-    /**
-     * 获取所有的 JobDetail
-     *
-     * @return JobDetail集合
-     */
-    public static List<JobDetail> getAllJobDetail() {
-        List<JobDetail> jobDetailList = new ArrayList<>();
-        List<JobKey> jobKeyList = getAllJobKey();
-        if (jobKeyList == null) {
-            return null;
-        }
-        for (JobKey jobKey : jobKeyList) {
-            JobDetail jobDetail = null;
-            try {
-                jobDetail = SCHEDULER.getJobDetail(jobKey);
-            } catch (Throwable e) {
-                log.error("### 获取JobDetail失败[jobName=" + jobKey.getName() + ",jobGroup=" + jobKey.getGroup() + "]", e);
-            }
-            if (jobDetail != null) {
-                jobDetailList.add(jobDetail);
-            }
-        }
-        return jobDetailList;
-    }
 
-    /**
-     * 查询 JobDetail
-     *
-     * @param jobName  任务名
-     * @param jobGroup 任务组名
-     * @return JobDetail集合
-     */
-    public static List<JobDetail> findJobDetail(String jobName, String jobGroup) {
-        List<JobDetail> jobDetailList = new ArrayList<>();
-        List<JobKey> jobKeyList = getAllJobKey();
-        if (jobKeyList == null) {
-            return null;
-        }
-        for (JobKey jobKey : jobKeyList) {
-            if ((StringUtils.isBlank(jobName) || jobKey.getName().contains(jobName)) && (StringUtils.isBlank(jobGroup) || jobKey.getGroup().contains(jobGroup))) {
-                JobDetail jobDetail = null;
-                try {
-                    jobDetail = SCHEDULER.getJobDetail(jobKey);
-                } catch (Throwable e) {
-                    log.error("### 获取JobDetail失败[jobName=" + jobKey.getName() + ",jobGroup=" + jobKey.getGroup() + "]", e);
-                }
-                if (jobDetail != null) {
-                    jobDetailList.add(jobDetail);
-                }
-            }
-        }
-        return jobDetailList;
-    }
+//    /**
+//     * 获取所有的 JobDetail
+//     *
+//     * @return JobDetail集合
+//     */
+//    public static List<JobDetail> getAllJobDetail() {
+//        QrtzJobDetailsMapper qrtzJobDetailsMapper = SpringContextHolder.getBean(QrtzJobDetailsMapper.class);
+////        qrtzJobDetailsMapper.find(SCHEDULER.getSchedulerName(), null, null);
+//
+//
+//        List<JobDetail> jobDetailList = new ArrayList<>();
+//
+////
+//
+//
+//        List<JobKey> jobKeyList = getAllJobKey();
+//        if (jobKeyList == null) {
+//            return null;
+//        }
+//        for (JobKey jobKey : jobKeyList) {
+//            JobDetail jobDetail = null;
+//            try {
+//                jobDetail = SCHEDULER.getJobDetail(jobKey);
+//            } catch (Throwable e) {
+//                log.error("### 获取JobDetail失败[jobName=" + jobKey.getName() + ",jobGroup=" + jobKey.getGroup() + "]", e);
+//            }
+//            if (jobDetail != null) {
+//                jobDetailList.add(jobDetail);
+//            }
+//        }
+//        return jobDetailList;
+//    }
+
+//    /**
+//     * 查询 JobDetail
+//     *
+//     * @param jobName  任务名
+//     * @param jobGroup 任务组名
+//     * @return JobDetail集合
+//     */
+//    public static List<JobDetail> findJobDetail(String jobName, String jobGroup) {
+//        List<JobDetail> jobDetailList = new ArrayList<>();
+//        List<JobKey> jobKeyList = getAllJobKey();
+//        if (jobKeyList == null) {
+//            return null;
+//        }
+//        for (JobKey jobKey : jobKeyList) {
+//            if ((StringUtils.isBlank(jobName) || jobKey.getName().contains(jobName)) && (StringUtils.isBlank(jobGroup) || jobKey.getGroup().contains(jobGroup))) {
+//                JobDetail jobDetail = null;
+//                try {
+//                    jobDetail = SCHEDULER.getJobDetail(jobKey);
+//                } catch (Throwable e) {
+//                    log.error("### 获取JobDetail失败[jobName=" + jobKey.getName() + ",jobGroup=" + jobKey.getGroup() + "]", e);
+//                }
+//                if (jobDetail != null) {
+//                    jobDetailList.add(jobDetail);
+//                }
+//            }
+//        }
+//        return jobDetailList;
+//    }
 
     /**
      * 获取一个Job的所有 Trigger
@@ -285,30 +299,5 @@ public class QuartzManager {
             log.error("### 获取一个Job的所有Trigger失败 [jobName=" + jobName + ", jobGroup=" + jobGroup + "]", e);
         }
         return jobTriggers;
-    }
-
-    /**
-     * 验证cron表达式,失败返回null
-     *
-     * @param cron cron表达式
-     * @param num  获取cron表达式表示时间数量
-     * @return 失败返回null
-     */
-    public static List<Date> validatorCron(String cron, int num) {
-        List<Date> dateList = new ArrayList<>();
-        CronExpression exp;
-        try {
-            exp = new CronExpression(cron);
-        } catch (Throwable e) {
-            log.error("cron表达式错误[" + cron + "]", e);
-            return null;
-        }
-        Date date = new Date();
-        // 循环得到接下来n此的触发时间点，供验证
-        for (int i = 0; i < num; i++) {
-            date = exp.getNextValidTimeAfter(date);
-            dateList.add(date);
-        }
-        return dateList;
     }
 }

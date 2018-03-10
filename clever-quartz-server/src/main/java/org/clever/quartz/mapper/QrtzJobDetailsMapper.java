@@ -1,7 +1,12 @@
 package org.clever.quartz.mapper;
 
+import org.apache.ibatis.annotations.Param;
+import org.clever.quartz.dto.response.JobKeyRes;
 import org.clever.quartz.entity.QrtzJobDetails;
+import org.quartz.JobKey;
 import tk.mybatis.mapper.common.Mapper;
+
+import java.util.List;
 
 /**
  * 作者： lzw<br/>
@@ -9,4 +14,11 @@ import tk.mybatis.mapper.common.Mapper;
  */
 public interface QrtzJobDetailsMapper extends Mapper<QrtzJobDetails> {
 
+    List<QrtzJobDetails> find(
+            @Param("schedName") String schedName,
+            @Param("jobName") String jobName,
+            @Param("jobGroup") String jobGroup,
+            @Param("jobClassName") String jobClassName);
+
+    List<JobKeyRes> getJobKeyByGroup(@Param("schedName") String schedName, @Param("jobGroup") String jobGroup);
 }

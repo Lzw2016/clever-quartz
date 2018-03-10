@@ -1,20 +1,23 @@
 package org.clever.quartz.service;
 
+import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.clever.common.model.response.AjaxMessage;
 import org.clever.common.utils.exception.ExceptionUtils;
 import org.clever.quartz.dto.request.FindJobDetailReq;
 import org.clever.quartz.dto.request.JobDetailKeyReq;
 import org.clever.quartz.dto.request.SaveJobDetailReq;
-import org.clever.quartz.model.QuartzJobDetails;
-import org.clever.quartz.model.QuartzTriggers;
+import org.clever.quartz.dto.response.JobDetailsRes;
+import org.clever.quartz.dto.response.JobKeyRes;
+import org.clever.quartz.entity.QrtzJobDetails;
+import org.clever.quartz.mapper.QrtzJobDetailsMapper;
+import org.clever.quartz.utils.ConvertUtils;
 import org.clever.quartz.utils.QuartzManager;
 import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -28,61 +31,47 @@ import java.util.Map;
 public class QuartzJobDetailService {
 
     @Autowired
+    private QrtzJobDetailsMapper qrtzJobDetailsMapper;
+    @Autowired
     private QuartzTriggerService triggerService;
 
     /**
-     * 数据转换
+     * 返回basePackage包下面所有的Job子类
      */
-    private List<QuartzJobDetails> convertQuartzJobDetails(List<JobDetail> jobDetailList) {
-        List<QuartzJobDetails> qrtzJobDetailsList = new ArrayList<>();
-        String schedName = null;
+    public List<String> getAllJobClassName() {
+        return QuartzManager.getAllJobClassName("org.clever.quartz.jobs");
+    }
+
+    /**
+     * 获取所有的JobGroupName
+     */
+    public List<String> getJobGroupNames(AjaxMessage<List<String>> ajaxMessage) {
+        Scheduler scheduler = QuartzManager.getScheduler();
+        List<String> jobGroupNames = null;
         try {
-            schedName = QuartzManager.getScheduler().getSchedulerName();
+            jobGroupNames = scheduler.getJobGroupNames();
         } catch (Throwable e) {
-            log.error("获取SchedulerName失败", e);
-        }
-        for (JobDetail jobDetail : jobDetailList) {
-            QuartzJobDetails qrtzJobDetails = new QuartzJobDetails();
-            qrtzJobDetails.setSchedName(schedName);
-            qrtzJobDetails.setJobGroup(jobDetail.getKey().getGroup());
-            qrtzJobDetails.setJobName(jobDetail.getKey().getName());
-            qrtzJobDetails.setDurable(jobDetail.isDurable());
-            qrtzJobDetails.setDescription(jobDetail.getDescription());
-            qrtzJobDetails.setJobClassName(jobDetail.getJobClass().getName());
-            qrtzJobDetails.setJobData(jobDetail.getJobDataMap());
-            qrtzJobDetails.setRequestsRecovery(jobDetail.requestsRecovery());
-            // @DisallowConcurrentExecution 对应 isNonconcurrent
-            // @PersistJobDataAfterExecution 对应 isUpdateData
-            qrtzJobDetails.setNonconcurrent(jobDetail.isConcurrentExectionDisallowed());
-            qrtzJobDetails.setUpdateData(jobDetail.isPersistJobDataAfterExecution());
-
-            AjaxMessage ajaxMessage = new AjaxMessage(true, null, null);
-            List<QuartzTriggers> triggersList = triggerService.getTriggerByJob(new JobDetailKeyReq(jobDetail.getKey().getName(), jobDetail.getKey().getGroup()), ajaxMessage);
-            qrtzJobDetails.setTriggersList(triggersList);
-
-            qrtzJobDetailsList.add(qrtzJobDetails);
-        }
-        return qrtzJobDetailsList;
-    }
-
-    /**
-     * 获取所有的JobKey
-     */
-    public List<JobKey> getAllJobKey(AjaxMessage<List<JobKey>> ajaxMessage) {
-        List<JobKey> jobKeyList = QuartzManager.getAllJobKey();
-        if (jobKeyList == null) {
+            log.error("### 获取所有的JobGroupName失败", e);
             ajaxMessage.setSuccess(false);
-            ajaxMessage.setFailMessage("获取所有的JobKey失败");
+            ajaxMessage.setFailMessage("获取所有的JobGroupName失败");
         }
-        return jobKeyList;
+        return jobGroupNames;
     }
 
     /**
-     * 获取所有的 JobDetail
+     * 根据JobGroup查询JobKey
      */
-    public List<QuartzJobDetails> getAllJobDetail() {
-        List<JobDetail> jobDetailList = QuartzManager.getAllJobDetail();
-        return convertQuartzJobDetails(jobDetailList);
+    public List<JobKeyRes> getJobKeyByGroup(String jobGroup, AjaxMessage ajaxMessage) {
+        Scheduler scheduler = QuartzManager.getScheduler();
+        List<JobKeyRes> jobKeyResList = null;
+        try {
+            jobKeyResList = qrtzJobDetailsMapper.getJobKeyByGroup(scheduler.getSchedulerName(), jobGroup);
+        } catch (Throwable e) {
+            log.error("### 根据JobGroup查询JobKey失败", e);
+            ajaxMessage.setSuccess(false);
+            ajaxMessage.setFailMessage("根据JobGroup查询JobKey失败");
+        }
+        return jobKeyResList;
     }
 
     /**
@@ -90,31 +79,18 @@ public class QuartzJobDetailService {
      *
      * @return JobDetail集合
      */
-    public List<QuartzJobDetails> findJobDetail(FindJobDetailReq findJobDetailReq) {
-        List<JobDetail> jobDetailList = QuartzManager.findJobDetail(findJobDetailReq.getJobName(), findJobDetailReq.getJobGroup());
-        return convertQuartzJobDetails(jobDetailList);
-    }
-
-    /**
-     * 返回basePackage包下面所有的Job子类
-     */
-    public List<String> getAllJobClassName() {
-        List<String> jobClassNameList = new ArrayList<>();
-        jobClassNameList.addAll(QuartzManager.getAllJobClassName("org.clever.quartz.jobs"));
-//        jobClassNameList.addAll(QuartzManager.getAllJobClassName("org.quartz"));
-        return jobClassNameList;
-    }
-
-    /**
-     * 获取所有的JobGroupName
-     */
-    public List<String> getJobGroupNames(AjaxMessage<List<String>> ajaxMessage) {
-        List<String> jobGroupNames = QuartzManager.getJobGroupNames();
-        if (jobGroupNames == null) {
+    public List<JobDetailsRes> findJobDetail(FindJobDetailReq req, AjaxMessage ajaxMessage) {
+        Scheduler scheduler = QuartzManager.getScheduler();
+        List<QrtzJobDetails> list = null;
+        try {
+            PageHelper.startPage(req.getPageNo(), req.getPageSize());
+            list = qrtzJobDetailsMapper.find(scheduler.getSchedulerName(), req.getJobName(), req.getJobGroup(), req.getJobClassName());
+        } catch (Throwable e) {
+            log.error("### 查询JobDetail失败", e);
             ajaxMessage.setSuccess(false);
-            ajaxMessage.setFailMessage("获取所有的JobGroupName失败");
+            ajaxMessage.setFailMessage("查询JobDetail失败");
         }
-        return jobGroupNames;
+        return ConvertUtils.convert(list);
     }
 
     /**

@@ -1,35 +1,30 @@
-package org.clever.quartz.entity;
+package org.clever.quartz.dto.response;
 
 import lombok.Data;
-
-import javax.persistence.Id;
-import javax.persistence.Table;
-import java.io.Serializable;
+import lombok.EqualsAndHashCode;
+import org.clever.common.model.response.BaseResponse;
 
 /**
  * 作者： lzw<br/>
- * 创建时间：2018-03-09 18:26 <br/>
+ * 创建时间：2018-03-10 11:48 <br/>
  */
-@Table(name = "qrtz_job_details")
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class QrtzJobDetails implements Serializable {
+public class JobDetailsRes extends BaseResponse {
 
     /**
      * Scheduler名称
      */
-    @Id
     private String schedName;
 
     /**
      * Job key
      */
-    @Id
     private String jobName;
 
     /**
      * Job group 名称
      */
-    @Id
     private String jobGroup;
 
     /**
@@ -45,26 +40,22 @@ public class QrtzJobDetails implements Serializable {
     /**
      * 为true时，Job相关的trigger完成以后，Job数据继续保留
      */
-    private String isDurable;
+    private boolean isDurable;
 
     /**
      * 是否不允许并发，为true时，如果下一次的触发事件到了，而上一次的job执行还未结束，则后续的触发会放入队列等待
      */
-    private String isNonconcurrent;
+    private boolean isNonconcurrent;
 
     /**
      * 是否在多次调度之间更新JobDataMap
      */
-    private String isUpdateData;
+    private boolean isUpdateData;
 
     /**
      * Scheduler实例发生故障时，故障恢复节点会检测故障的Scheduler正在调度的任务是否需要recovery(复苏)，如果需要会添加一个只执行一次的simple trigger重新触发
      */
-    private String requestsRecovery;
+    private boolean requestsRecovery;
 
-    /**
-     * 存储JobDataMap等
-     */
-    private Byte[] jobData;
 
 }

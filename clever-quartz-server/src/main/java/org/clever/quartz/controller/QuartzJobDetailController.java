@@ -7,9 +7,9 @@ import org.clever.common.server.controller.BaseController;
 import org.clever.quartz.dto.request.FindJobDetailReq;
 import org.clever.quartz.dto.request.JobDetailKeyReq;
 import org.clever.quartz.dto.request.SaveJobDetailReq;
-import org.clever.quartz.model.QuartzJobDetails;
+import org.clever.quartz.dto.response.JobDetailsRes;
+import org.clever.quartz.dto.response.JobKeyRes;
 import org.clever.quartz.service.QuartzJobDetailService;
-import org.quartz.JobKey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -28,33 +28,6 @@ public class QuartzJobDetailController extends BaseController {
     @Autowired
     private QuartzJobDetailService jobDetailService;
 
-    @ApiOperation("获取所有的Job Key")
-    @GetMapping("/job_detail/all_job_key" + JSON_SUFFIX)
-    public AjaxMessage<List<JobKey>> getAllJobKey() {
-        AjaxMessage<List<JobKey>> ajaxMessage = new AjaxMessage<>(true, "获取所有的JobKey成功", null);
-        List<JobKey> jobKeyList = jobDetailService.getAllJobKey(ajaxMessage);
-        ajaxMessage.setResult(jobKeyList);
-        return ajaxMessage;
-    }
-
-    @ApiOperation("查询Job信息")
-    @GetMapping("/job_detail" + JSON_SUFFIX)
-    public AjaxMessage<List<QuartzJobDetails>> findJobDetail(FindJobDetailReq findJobDetailReq) {
-        AjaxMessage<List<QuartzJobDetails>> ajaxMessage = new AjaxMessage<>(true, "查询Job信息成功", null);
-        List<QuartzJobDetails> jobDetailList = jobDetailService.findJobDetail(findJobDetailReq);
-        ajaxMessage.setResult(jobDetailList);
-        return ajaxMessage;
-    }
-
-    @ApiOperation("获取所有的Job信息")
-    @GetMapping("/job_detail/all_job_detail" + JSON_SUFFIX)
-    public AjaxMessage<List<QuartzJobDetails>> getAllJobDetail() {
-        AjaxMessage<List<QuartzJobDetails>> ajaxMessage = new AjaxMessage<>(true, "获取所有的JobDetail成功", null);
-        List<QuartzJobDetails> jobDetailList = jobDetailService.getAllJobDetail();
-        ajaxMessage.setResult(jobDetailList);
-        return ajaxMessage;
-    }
-
     @ApiOperation("获取所有的Job类型")
     @GetMapping("/job_detail/all_job_classname" + JSON_SUFFIX)
     public AjaxMessage<List<String>> getAllJobClassName() {
@@ -70,6 +43,24 @@ public class QuartzJobDetailController extends BaseController {
         AjaxMessage<List<String>> ajaxMessage = new AjaxMessage<>(true, "获取所有的JobGroupName成功", null);
         List<String> jobGroupNames = jobDetailService.getJobGroupNames(ajaxMessage);
         ajaxMessage.setResult(jobGroupNames);
+        return ajaxMessage;
+    }
+
+    @ApiOperation("获取所有的Job Key")
+    @GetMapping("/job_detail/job_group/{jobGroup}" + JSON_SUFFIX)
+    public AjaxMessage<List<JobKeyRes>> getJobKeyByGroup(@PathVariable String jobGroup) {
+        AjaxMessage<List<JobKeyRes>> ajaxMessage = new AjaxMessage<>(true, "获取所有的JobKey成功", null);
+        List<JobKeyRes> jobKeyList = jobDetailService.getJobKeyByGroup(jobGroup, ajaxMessage);
+        ajaxMessage.setResult(jobKeyList);
+        return ajaxMessage;
+    }
+
+    @ApiOperation("查询Job信息")
+    @GetMapping("/job_detail" + JSON_SUFFIX)
+    public AjaxMessage<List<JobDetailsRes>> findJobDetail(FindJobDetailReq findJobDetailReq) {
+        AjaxMessage<List<JobDetailsRes>> ajaxMessage = new AjaxMessage<>(true, "查询Job信息成功", null);
+        List<JobDetailsRes> jobDetailList = jobDetailService.findJobDetail(findJobDetailReq, ajaxMessage);
+        ajaxMessage.setResult(jobDetailList);
         return ajaxMessage;
     }
 
