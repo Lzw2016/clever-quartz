@@ -1,6 +1,5 @@
 package org.clever.quartz.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import javax.persistence.GeneratedValue;
@@ -82,13 +81,11 @@ public class QrtzJobLog implements Serializable {
     /**
      * 开始执行时间
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", locale = "zh", timezone = "GMT+8")
     private Date startTime;
 
     /**
      * 执行结束时间
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", locale = "zh", timezone = "GMT+8")
     private Date endTime;
 
     /**
@@ -99,13 +96,11 @@ public class QrtzJobLog implements Serializable {
     /**
      * 上一次执行时间
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", locale = "zh", timezone = "GMT+8")
     private Date preRunTime;
 
     /**
      * 下一次执行时间
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", locale = "zh", timezone = "GMT+8")
     private Date nextRunTime;
 
     /**

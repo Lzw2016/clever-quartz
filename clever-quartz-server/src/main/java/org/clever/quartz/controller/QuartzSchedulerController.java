@@ -5,7 +5,7 @@ import io.swagger.annotations.ApiOperation;
 import org.clever.common.model.response.AjaxMessage;
 import org.clever.common.server.controller.BaseController;
 import org.clever.quartz.dto.request.JobDetailKeyReq;
-import org.clever.quartz.model.QuartzJobDetails;
+import org.clever.quartz.dto.response.CurrentlyExecutingJobsRes;
 import org.clever.quartz.service.QuartzSchedulerService;
 import org.quartz.JobKey;
 import org.quartz.SchedulerMetaData;
@@ -63,8 +63,8 @@ public class QuartzSchedulerController extends BaseController {
     @ApiOperation("获取正在运行的Job成功")
     @GetMapping("/scheduler/running_job" + JSON_SUFFIX)
     @ResponseBody
-    public AjaxMessage<List<QuartzJobDetails>> getRunningJobs() {
-        AjaxMessage<List<QuartzJobDetails>> ajaxMessage = new AjaxMessage<>(true, "获取正在运行的Job成功", null);
+    public AjaxMessage<List<CurrentlyExecutingJobsRes>> getRunningJobs() {
+        AjaxMessage<List<CurrentlyExecutingJobsRes>> ajaxMessage = new AjaxMessage<>(true, "获取正在运行的Job成功", null);
         ajaxMessage.setResult(schedulerService.getRunningJobs(ajaxMessage));
         return ajaxMessage;
     }

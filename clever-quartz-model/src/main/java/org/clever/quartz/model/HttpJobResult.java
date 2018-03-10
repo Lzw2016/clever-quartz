@@ -1,6 +1,5 @@
 package org.clever.quartz.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -35,13 +34,11 @@ public class HttpJobResult implements Serializable {
     /**
      * 任务执行开始时间
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", locale = "zh", timezone = "GMT+8")
     private Date startJobTime;
 
     /**
      * 任务结束时间
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", locale = "zh", timezone = "GMT+8")
     private Date endJobTime;
 
     /**

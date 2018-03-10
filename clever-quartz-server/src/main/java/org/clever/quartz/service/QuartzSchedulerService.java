@@ -3,16 +3,14 @@ package org.clever.quartz.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.clever.common.model.response.AjaxMessage;
-import org.clever.quartz.model.QuartzJobDetails;
+import org.clever.quartz.dto.response.CurrentlyExecutingJobsRes;
+import org.clever.quartz.utils.ConvertUtils;
 import org.clever.quartz.utils.QuartzManager;
 import org.quartz.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -100,8 +98,7 @@ public class QuartzSchedulerService {
      *
      * @return 失败返回null
      */
-    public List<QuartzJobDetails> getRunningJobs(AjaxMessage ajaxMessage) {
-        List<QuartzJobDetails> qrtzJobDetailsList;
+    public List<CurrentlyExecutingJobsRes> getRunningJobs(AjaxMessage ajaxMessage) {
         Scheduler scheduler = QuartzManager.getScheduler();
         List<JobExecutionContext> list;
         String schedName;
@@ -114,26 +111,7 @@ public class QuartzSchedulerService {
             ajaxMessage.setFailMessage("获取正在运行的Job异常");
             return null;
         }
-        qrtzJobDetailsList = new ArrayList<>();
-        for (JobExecutionContext jobExecutionContext : list) {
-            JobDetail jobDetail = jobExecutionContext.getJobDetail();
-            QuartzJobDetails qrtzJobDetails = new QuartzJobDetails();
-            qrtzJobDetails.setSchedName(schedName);
-            qrtzJobDetails.setJobGroup(jobDetail.getKey().getGroup());
-            qrtzJobDetails.setJobName(jobDetail.getKey().getName());
-            qrtzJobDetails.setDurable(jobDetail.isDurable());
-            qrtzJobDetails.setDescription(jobDetail.getDescription());
-            qrtzJobDetails.setJobClassName(jobDetail.getJobClass().getName());
-            qrtzJobDetails.setJobData(jobDetail.getJobDataMap());
-            qrtzJobDetails.setRequestsRecovery(jobDetail.requestsRecovery());
-            // @DisallowConcurrentExecution 对应 isNonconcurrent
-            // @PersistJobDataAfterExecution 对应 isUpdateData
-            qrtzJobDetails.setNonconcurrent(jobDetail.isConcurrentExectionDisallowed());
-            qrtzJobDetails.setUpdateData(jobDetail.isPersistJobDataAfterExecution());
-            qrtzJobDetailsList.add(qrtzJobDetails);
-
-        }
-        return qrtzJobDetailsList;
+        return ConvertUtils.convert(schedName, list);
     }
 
     /**

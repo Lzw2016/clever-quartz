@@ -1,6 +1,5 @@
 package org.clever.quartz.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import javax.persistence.GeneratedValue;
@@ -61,6 +60,5 @@ public class QrtzSchedulerLog implements Serializable {
     /**
      * 记录时间
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", locale = "zh", timezone = "GMT+8")
     private Date logTime;
 }

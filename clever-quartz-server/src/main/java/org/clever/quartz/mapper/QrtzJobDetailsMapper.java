@@ -3,7 +3,6 @@ package org.clever.quartz.mapper;
 import org.apache.ibatis.annotations.Param;
 import org.clever.quartz.dto.response.JobKeyRes;
 import org.clever.quartz.entity.QrtzJobDetails;
-import org.quartz.JobKey;
 import tk.mybatis.mapper.common.Mapper;
 
 import java.util.List;

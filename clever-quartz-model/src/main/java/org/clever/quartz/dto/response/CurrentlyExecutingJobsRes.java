@@ -1,18 +1,19 @@
-package org.clever.quartz.model;
+package org.clever.quartz.dto.response;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import org.clever.common.model.response.BaseResponse;
 
-import java.io.Serializable;
-import java.util.List;
+import java.util.Date;
 import java.util.Map;
 
 /**
- * 作者：LiZW <br/>
- * 创建时间：2016-7-29 14:34 <br/>
+ * 作者： lzw<br/>
+ * 创建时间：2018-03-10 16:01 <br/>
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class QuartzJobDetails implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class CurrentlyExecutingJobsRes extends BaseResponse {
 
     /**
      * Scheduler名称
@@ -59,13 +60,22 @@ public class QuartzJobDetails implements Serializable {
      */
     private boolean requestsRecovery;
 
+    public boolean isRecovering;
+
+    public int refireCount;
+
+    public long jobRunTime;
+
+    public Date fireTime;
+
+    public Date nextFireTime;
+
     /**
      * 存储JobDataMap等
      */
     private Map<String, Object> jobData;
 
-    /**
-     * 任务包含的触发器
-     */
-    private List<QuartzTriggers> triggersList;
+    private Object trigger;
+
+    public Object calendar;
 }

@@ -10,7 +10,9 @@ import org.clever.quartz.dto.request.SaveJobDetailReq;
 import org.clever.quartz.dto.response.JobDetailsRes;
 import org.clever.quartz.dto.response.JobKeyRes;
 import org.clever.quartz.entity.QrtzJobDetails;
+import org.clever.quartz.entity.QrtzTriggers;
 import org.clever.quartz.mapper.QrtzJobDetailsMapper;
+import org.clever.quartz.mapper.QrtzTriggersMapper;
 import org.clever.quartz.utils.ConvertUtils;
 import org.clever.quartz.utils.QuartzManager;
 import org.quartz.*;
@@ -33,7 +35,7 @@ public class QuartzJobDetailService {
     @Autowired
     private QrtzJobDetailsMapper qrtzJobDetailsMapper;
     @Autowired
-    private QuartzTriggerService triggerService;
+    private QrtzTriggersMapper qrtzTriggersMapper;
 
     /**
      * 返回basePackage包下面所有的Job子类
@@ -147,17 +149,17 @@ public class QuartzJobDetailService {
                 return false;
             }
 
-            List<? extends Trigger> jobTriggers = QuartzManager.getTriggerByJob(jobDetailKeyReq.getJobName(), jobDetailKeyReq.getJobGroup());
+            List<QrtzTriggers> jobTriggers = qrtzTriggersMapper.getByJobKey(scheduler.getSchedulerName(), jobDetailKeyReq.getJobName(), jobDetailKeyReq.getJobGroup());
             if (jobTriggers == null) {
                 ajaxMessage.setSuccess(false);
                 ajaxMessage.setFailMessage("删除JobDetail失败-获取JobDetail的所有Trigger失败");
                 return false;
             }
-            for (Trigger trigger : jobTriggers) {
+            for (QrtzTriggers trigger : jobTriggers) {
                 // 暂停触发器
-                scheduler.pauseTrigger(trigger.getKey());
+                scheduler.pauseTrigger(new TriggerKey(trigger.getJobName(), trigger.getJobGroup()));
                 // 移除触发器
-                scheduler.unscheduleJob(trigger.getKey());
+                scheduler.unscheduleJob(new TriggerKey(trigger.getJobName(), trigger.getJobGroup()));
             }
             // 删除任务
             scheduler.deleteJob(JobKey.jobKey(jobDetailKeyReq.getJobName(), jobDetailKeyReq.getJobGroup()));

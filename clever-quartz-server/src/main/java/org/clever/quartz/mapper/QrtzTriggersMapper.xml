@@ -1,56 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-
 <!--suppress SqlDialectInspection, SqlNoDataSourceInspection -->
 <mapper namespace="org.clever.quartz.mapper.QrtzTriggersMapper">
-    <!-- 表qrtz_triggers(存储已配置的Trigger的信息)映射 -->
-    <resultMap id="BaseResultMap" type="org.clever.quartz.entity.QrtzTriggers">
-        <!-- Scheduler名称 -->
-        <id column="SCHED_NAME" property="schedName"/>
-        <!-- Trigger key -->
-        <id column="TRIGGER_NAME" property="triggerName"/>
-        <!-- Trigger group名称 -->
-        <id column="TRIGGER_GROUP" property="triggerGroup"/>
-        <!-- Job key -->
-        <result column="JOB_NAME" property="jobName"/>
-        <!-- Job group 名称 -->
-        <result column="JOB_GROUP" property="jobGroup"/>
-        <!-- Trigger 描述， .withDescription()方法传入的string -->
-        <result column="DESCRIPTION" property="description"/>
-        <!-- 下一次触发时间 -->
-        <result column="NEXT_FIRE_TIME" property="nextFireTime"/>
-        <!-- 上一次触发时间，默认-1 -->
-        <result column="PREV_FIRE_TIME" property="prevFireTime"/>
-        <!-- Trigger 优先级，默认5 -->
-        <result column="PRIORITY" property="priority"/>
-        <!-- Trigger状态，PAUSED_BLOCKED:停止_阻塞; PAUSED:停止; WAITING:等待执行; ACQUIRED:已获得; EXECUTING:执行中; COMPLETE:完成; BLOCKED:阻塞; ERROR:错误; DELETED:已删除 -->
-        <result column="TRIGGER_STATE" property="triggerState"/>
-        <!-- Cron 或 Simple -->
-        <result column="TRIGGER_TYPE" property="triggerType"/>
-        <!-- Trigger开始时间 -->
-        <result column="START_TIME" property="startTime"/>
-        <!-- Trigger结束时间 -->
-        <result column="END_TIME" property="endTime"/>
-        <!-- Trigger关联的Calendar name -->
-        <result column="CALENDAR_NAME" property="calendarName"/>
-        <!-- misfire规则id -->
-        <result column="MISFIRE_INSTR" property="misfireInstr"/>
-        <!-- 存储Trigger的JobDataMap等 -->
-        <result column="JOB_DATA" property="jobData"/>
-    </resultMap>
 
-    <select id="getQrtzTriggers" resultMap="BaseResultMap">
-        select * from QRTZ_TRIGGERS
-        where 1=1
-        <if test="schedName != null and schedName != ''">
-            AND SCHED_NAME=#{schedName}
-        </if>
-        <if test="triggerGroup != null and triggerGroup != ''">
-            AND TRIGGER_GROUP=#{triggerGroup}
-        </if>
-        <if test="triggerName != null and triggerName != ''">
-            AND TRIGGER_NAME=#{triggerName}
-        </if>
-        ORDER BY TRIGGER_GROUP,TRIGGER_NAME
+    <resultMap id="TriggersResMap" type="org.clever.quartz.dto.response.TriggersRes" autoMapping="true"/>
+
+    <select id="getSimpleTriggerByJobKey" resultMap="TriggersResMap">
+        SELECT
+          a.*,
+          b.REPEAT_COUNT,
+          b.REPEAT_INTERVAL,
+          b.TIMES_TRIGGERED
+        FROM QRTZ_TRIGGERS a
+          LEFT JOIN QRTZ_SIMPLE_TRIGGERS b ON (a.SCHED_NAME=b.SCHED_NAME AND a.TRIGGER_GROUP=b.TRIGGER_GROUP AND a.TRIGGER_NAME=b.TRIGGER_NAME)
+        WHERE b.SCHED_NAME IS NOT NULL
+              AND a.SCHED_NAME = #{schedName}
+              AND a.JOB_NAME = #{jobName}
+              AND a.JOB_GROUP = #{jobGroup}
+    </select>
+
+    <select id="getCronTriggerByJobKey" resultMap="TriggersResMap">
+        SELECT
+          a.*,
+          b.CRON_EXPRESSION,
+          b.TIME_ZONE_ID
+        FROM QRTZ_TRIGGERS a
+          LEFT JOIN QRTZ_CRON_TRIGGERS b ON (a.SCHED_NAME=b.SCHED_NAME AND a.TRIGGER_GROUP=b.TRIGGER_GROUP AND a.TRIGGER_NAME=b.TRIGGER_NAME)
+        WHERE b.SCHED_NAME IS NOT NULL
+              AND a.SCHED_NAME = #{schedName}
+              AND a.JOB_NAME = #{jobName}
+              AND a.JOB_GROUP = #{jobGroup}
+    </select>
+
+    <select id="getBlobTriggersByJobKey" resultMap="TriggersResMap">
+        SELECT
+          a.*,
+          b.BLOB_DATA
+        FROM QRTZ_TRIGGERS a
+          LEFT JOIN QRTZ_BLOB_TRIGGERS b ON (a.SCHED_NAME=b.SCHED_NAME AND a.TRIGGER_GROUP=b.TRIGGER_GROUP AND a.TRIGGER_NAME=b.TRIGGER_NAME)
+        WHERE b.SCHED_NAME IS NOT NULL
+              AND a.SCHED_NAME = #{schedName}
+              AND a.JOB_NAME = #{jobName}
+              AND a.JOB_GROUP = #{jobGroup}
+    </select>
+
+    <select id="getByJobKey" resultType="org.clever.quartz.entity.QrtzTriggers">
+        SELECT * FROM QRTZ_TRIGGERS WHERE SCHED_NAME = #{schedName} AND TRIGGER_NAME = #{jobName} AND TRIGGER_GROUP = #{jobGroup}
     </select>
 </mapper>

@@ -11,7 +11,7 @@ import org.quartz.JobExecutionContext;
 @Slf4j
 public class TestJob implements Job {
 
-    private int count = 0;
+    private static int count = 0;
 
     @Override
     public void execute(JobExecutionContext context) {

@@ -8,15 +8,11 @@ import org.clever.quartz.dto.request.AddCronTriggerForJobReq;
 import org.clever.quartz.dto.request.AddSimpleTriggerForJobReq;
 import org.clever.quartz.dto.request.JobDetailKeyReq;
 import org.clever.quartz.dto.request.TriggerKeyReq;
+import org.clever.quartz.dto.response.TriggersRes;
 import org.clever.quartz.entity.QrtzTriggers;
 import org.clever.quartz.mapper.QrtzTriggersMapper;
-import org.clever.quartz.model.QuartzTriggers;
 import org.clever.quartz.utils.QuartzManager;
 import org.quartz.*;
-import org.quartz.impl.triggers.CalendarIntervalTriggerImpl;
-import org.quartz.impl.triggers.CronTriggerImpl;
-import org.quartz.impl.triggers.DailyTimeIntervalTriggerImpl;
-import org.quartz.impl.triggers.SimpleTriggerImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -257,6 +253,9 @@ public class QuartzTriggerService {
      */
     @Transactional
     public boolean addCronTriggerForJob(AddCronTriggerForJobReq addCronTriggerForJobReq, AjaxMessage ajaxMessage) {
+        if (QuartzManager.validatorCron(addCronTriggerForJobReq.getCron(), 1) == null) {
+            throw new RuntimeException("cron 表达式错误");
+        }
         TriggerBuilder<Trigger> triggerBuilder = newTriggerBuilder(
                 addCronTriggerForJobReq.getJobName(),
                 addCronTriggerForJobReq.getJobGroup(),
@@ -283,111 +282,20 @@ public class QuartzTriggerService {
     }
 
     /**
-     * 获取一个Job的所有 Trigger
-     *
-     * @return 失败返回null
-     */
-    public List<QuartzTriggers> getTriggerByJob(JobDetailKeyReq jobDetailKeyReq, AjaxMessage ajaxMessage) {
-        List<QuartzTriggers> qrtzTriggersList = new ArrayList<>();
-        List<? extends Trigger> triggerList = QuartzManager.getTriggerByJob(jobDetailKeyReq.getJobName(), jobDetailKeyReq.getJobGroup());
-        if (triggerList == null) {
-            ajaxMessage.setSuccess(false);
-            ajaxMessage.setFailMessage("获取JobDetail的所有Trigger失败");
-            return null;
-        }
-        Scheduler scheduler = QuartzManager.getScheduler();
-        String schedName = null;
-        try {
-            schedName = scheduler.getSchedulerName();
-        } catch (Throwable e) {
-            log.error("获取SchedulerName失败", e);
-        }
-        for (Trigger trigger : triggerList) {
-            QuartzTriggers qrtzTriggers = new QuartzTriggers();
-            qrtzTriggers.setSchedName(schedName);
-            qrtzTriggers.setTriggerName(trigger.getKey().getName());
-            qrtzTriggers.setTriggerGroup(trigger.getKey().getGroup());
-            qrtzTriggers.setJobName(trigger.getJobKey().getName());
-            qrtzTriggers.setJobGroup(trigger.getJobKey().getGroup());
-            qrtzTriggers.setDescription(trigger.getDescription());
-            qrtzTriggers.setNextFireTime(trigger.getNextFireTime());
-            qrtzTriggers.setPrevFireTime(trigger.getPreviousFireTime());
-            qrtzTriggers.setPriority(trigger.getPriority());
-            try {
-                QrtzTriggers qrtzTriggersTmp = qrtzTriggersMapper.getQrtzTriggers(schedName, qrtzTriggers.getTriggerGroup(), qrtzTriggers.getTriggerName());
-                if (qrtzTriggersTmp == null) {
-                    qrtzTriggers.setTriggerState(scheduler.getTriggerState(trigger.getKey()).name());
-                } else {
-                    qrtzTriggers.setTriggerState(qrtzTriggersTmp.getTriggerState());
-                }
-            } catch (Throwable e) {
-                log.error("获取Trigger状态失败", e);
-            }
-            qrtzTriggers.setTriggerType(trigger.getClass().getName());
-            qrtzTriggers.setStartTime(trigger.getStartTime());
-            qrtzTriggers.setEndTime(trigger.getEndTime());
-            qrtzTriggers.setCalendarName(trigger.getCalendarName());
-            qrtzTriggers.setMisfireInstr(trigger.getMisfireInstruction());
-            qrtzTriggers.setJobData(trigger.getJobDataMap());
-            if (trigger instanceof SimpleTriggerImpl) {
-                SimpleTriggerImpl simpleTrigger = (SimpleTriggerImpl) trigger;
-                qrtzTriggers.setRepeatCount(simpleTrigger.getRepeatCount());
-                qrtzTriggers.setRepeatInterval(simpleTrigger.getRepeatInterval());
-                qrtzTriggers.setTimesTriggered(simpleTrigger.getTimesTriggered());
-            }
-            if (trigger instanceof CronTriggerImpl) {
-                CronTriggerImpl cronTrigger = (CronTriggerImpl) trigger;
-                qrtzTriggers.setCronEx(cronTrigger.getCronExpression());
-                qrtzTriggers.setTimeZoneId(cronTrigger.getTimeZone() == null ? null : cronTrigger.getTimeZone().getID());
-            }
-            //noinspection StatementWithEmptyBody
-            if (trigger instanceof CalendarIntervalTriggerImpl) {
-                // TODO CalendarIntervalTriggerImpl
-
-            }
-            //noinspection StatementWithEmptyBody
-            if (trigger instanceof DailyTimeIntervalTriggerImpl) {
-                // TODO CalendarIntervalTriggerImpl
-            }
-            qrtzTriggersList.add(qrtzTriggers);
-        }
-        return qrtzTriggersList;
-    }
-
-    /**
-     * 获取所有的TriggerGroupName
-     *
-     * @return 失败返回null
-     */
-    public List<String> getTriggerGroupNames(AjaxMessage ajaxMessage) {
-        List<String> triggerGroupNames = QuartzManager.getTriggerGroupNames();
-        if (triggerGroupNames == null) {
-            ajaxMessage.setSuccess(false);
-            ajaxMessage.setFailMessage("获取所有的TriggerGroupName失败");
-        }
-        return triggerGroupNames;
-    }
-
-    /**
      * 删除一个JobDetail的所有Trigger
      *
      * @return 成功返回true
      */
     @Transactional
-    public boolean deleteTriggerByJob(JobDetailKeyReq jobDetailKeyReq, AjaxMessage ajaxMessage) {
+    public boolean deleteTriggerByJob(JobDetailKeyReq jobDetailKeyReq) {
         Scheduler scheduler = QuartzManager.getScheduler();
-        List<? extends Trigger> jobTriggers = QuartzManager.getTriggerByJob(jobDetailKeyReq.getJobName(), jobDetailKeyReq.getJobGroup());
-        if (jobTriggers == null) {
-            ajaxMessage.setSuccess(false);
-            ajaxMessage.setFailMessage("删除一个JobDetail的所有Trigger失败-获取JobDetail的所有Trigger失败");
-            return false;
-        }
         try {
-            for (Trigger trigger : jobTriggers) {
+            List<QrtzTriggers> jobTriggers = qrtzTriggersMapper.getByJobKey(scheduler.getSchedulerName(), jobDetailKeyReq.getJobName(), jobDetailKeyReq.getJobGroup());
+            for (QrtzTriggers qrtzTriggers : jobTriggers) {
                 // 暂停触发器
-                scheduler.pauseTrigger(trigger.getKey());
+                scheduler.pauseTrigger(new TriggerKey(qrtzTriggers.getJobName(), qrtzTriggers.getJobGroup()));
                 // 移除触发器
-                scheduler.unscheduleJob(trigger.getKey());
+                scheduler.unscheduleJob(new TriggerKey(qrtzTriggers.getJobName(), qrtzTriggers.getJobGroup()));
             }
         } catch (Throwable e) {
             log.error("删除一个JobDetail的所有Trigger异常", e);
@@ -456,5 +364,61 @@ public class QuartzTriggerService {
             return false;
         }
         return true;
+    }
+
+    /**
+     * 获取一个Job的所有 Trigger
+     *
+     * @return 失败返回null
+     */
+    public List<TriggersRes> getTriggerByJob(JobDetailKeyReq jobDetailKeyReq, AjaxMessage ajaxMessage) {
+        List<TriggersRes> qrtzTriggersList = new ArrayList<>();
+        Scheduler scheduler = QuartzManager.getScheduler();
+        try {
+            qrtzTriggersList.addAll(qrtzTriggersMapper.getSimpleTriggerByJobKey(scheduler.getSchedulerName(), jobDetailKeyReq.getJobName(), jobDetailKeyReq.getJobGroup()));
+            qrtzTriggersList.addAll(qrtzTriggersMapper.getCronTriggerByJobKey(scheduler.getSchedulerName(), jobDetailKeyReq.getJobName(), jobDetailKeyReq.getJobGroup()));
+            qrtzTriggersList.addAll(qrtzTriggersMapper.getBlobTriggersByJobKey(scheduler.getSchedulerName(), jobDetailKeyReq.getJobName(), jobDetailKeyReq.getJobGroup()));
+        } catch (Throwable e) {
+            log.error("获取一个Job的所有Trigger异常", e);
+            ajaxMessage.setSuccess(false);
+            ajaxMessage.setFailMessage("获取一个Job的所有Trigger异常");
+        }
+        return qrtzTriggersList;
+    }
+
+    /**
+     * 获取所有的TriggerGroupName
+     *
+     * @return 失败返回null
+     */
+    public List<String> getTriggerGroupNames(AjaxMessage ajaxMessage) {
+        Scheduler scheduler = QuartzManager.getScheduler();
+        List<String> triggerGroupNames = null;
+        try {
+            triggerGroupNames = scheduler.getTriggerGroupNames();
+        } catch (Throwable e) {
+            log.error("### 获取所有的TriggerGroupName失败", e);
+            ajaxMessage.setSuccess(false);
+            ajaxMessage.setFailMessage("获取所有的TriggerGroupName失败");
+        }
+        return triggerGroupNames;
+    }
+
+    /**
+     * 获取所有的CalendarName
+     *
+     * @return 失败返回null
+     */
+    public List<String> getCalendarNames(AjaxMessage ajaxMessage) {
+        Scheduler scheduler = QuartzManager.getScheduler();
+        List<String> calendarName = null;
+        try {
+            calendarName = scheduler.getCalendarNames();
+        } catch (Throwable e) {
+            log.error("### 获取所有的CalendarName失败", e);
+            ajaxMessage.setSuccess(false);
+            ajaxMessage.setFailMessage("获取所有的CalendarName失败");
+        }
+        return calendarName;
     }
 }

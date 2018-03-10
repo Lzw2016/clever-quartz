@@ -1,6 +1,5 @@
 package org.clever.quartz.dto.request;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.clever.common.model.request.BaseRequest;
@@ -63,13 +62,11 @@ public class AddHttpServiceJobReq extends BaseRequest {
      * 开始触发时间
      */
     @NotNull(message = "开始触发时间不能为空")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", locale = "zh", timezone = "GMT+8")
     private Date startTime;
 
     /**
      * 结束触发时间
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", locale = "zh", timezone = "GMT+8")
     private Date endTime;
 
     /**

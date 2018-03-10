@@ -26,7 +26,7 @@ public class ValidatorCronReq extends BaseRequest {
     /**
      * 获取cron表达式表示时间数量
      */
-    @Range(min = 1, max = 20, message = "获取cron表达式表示时间数量取值范围:1~20")
+    @Range(min = 1, max = 100, message = "获取cron表达式表示时间数量取值范围:1~100")
     @NotNull(message = "获取cron表达式表示时间数量不能为空")
     private int num = 10;
 }

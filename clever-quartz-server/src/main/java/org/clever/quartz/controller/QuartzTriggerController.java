@@ -5,7 +5,7 @@ import io.swagger.annotations.ApiOperation;
 import org.clever.common.model.response.AjaxMessage;
 import org.clever.common.server.controller.BaseController;
 import org.clever.quartz.dto.request.*;
-import org.clever.quartz.model.QuartzTriggers;
+import org.clever.quartz.dto.response.TriggersRes;
 import org.clever.quartz.service.QuartzTriggerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -50,28 +50,11 @@ public class QuartzTriggerController extends BaseController {
         return ajaxMessage;
     }
 
-    @ApiOperation("获取JobDetail的所有Trigger")
-    @GetMapping("/trigger/job" + JSON_SUFFIX)
-    public AjaxMessage<List<QuartzTriggers>> getTriggerByJob(@Validated JobDetailKeyReq jobDetailKeyReq) {
-        AjaxMessage<List<QuartzTriggers>> ajaxMessage = new AjaxMessage<>(true, "获取JobDetail的所有Trigger成功", null);
-        List<QuartzTriggers> qrtzTriggersList = triggerService.getTriggerByJob(jobDetailKeyReq, ajaxMessage);
-        ajaxMessage.setResult(qrtzTriggersList);
-        return ajaxMessage;
-    }
-
-    @ApiOperation("获取所有的TriggerGroupName")
-    @GetMapping("/trigger/all_trigger_group_name" + JSON_SUFFIX)
-    AjaxMessage<List<String>> getTriggerGroupNames() {
-        AjaxMessage<List<String>> ajaxMessage = new AjaxMessage<>(true, "获取所有的TriggerGroupName成功", null);
-        ajaxMessage.setResult(triggerService.getTriggerGroupNames(ajaxMessage));
-        return ajaxMessage;
-    }
-
     @ApiOperation("删除一个JobDetail的所有Trigger")
     @DeleteMapping("/trigger/job" + JSON_SUFFIX)
     public AjaxMessage<String> deleteTriggerByJob(@Validated JobDetailKeyReq jobDetailKeyReq) {
         AjaxMessage<String> ajaxMessage = new AjaxMessage<>(true, "删除一个JobDetail的所有Trigger成功", null);
-        triggerService.deleteTriggerByJob(jobDetailKeyReq, ajaxMessage);
+        triggerService.deleteTriggerByJob(jobDetailKeyReq);
         return ajaxMessage;
     }
 
@@ -96,6 +79,31 @@ public class QuartzTriggerController extends BaseController {
     public AjaxMessage<String> resumeTrigger(@Validated @RequestBody TriggerKeyReq triggerKeyReq) {
         AjaxMessage<String> ajaxMessage = new AjaxMessage<>(true, "取消暂停Trigger成功", null);
         triggerService.resumeTrigger(triggerKeyReq, ajaxMessage);
+        return ajaxMessage;
+    }
+
+    @ApiOperation("获取JobDetail的所有Trigger")
+    @GetMapping("/trigger/job" + JSON_SUFFIX)
+    public AjaxMessage<List<TriggersRes>> getTriggerByJob(@Validated JobDetailKeyReq jobDetailKeyReq) {
+        AjaxMessage<List<TriggersRes>> ajaxMessage = new AjaxMessage<>(true, "获取JobDetail的所有Trigger成功", null);
+        List<TriggersRes> qrtzTriggersList = triggerService.getTriggerByJob(jobDetailKeyReq, ajaxMessage);
+        ajaxMessage.setResult(qrtzTriggersList);
+        return ajaxMessage;
+    }
+
+    @ApiOperation("获取所有的TriggerGroupName")
+    @GetMapping("/trigger/all_trigger_group_name" + JSON_SUFFIX)
+    public AjaxMessage<List<String>> getTriggerGroupNames() {
+        AjaxMessage<List<String>> ajaxMessage = new AjaxMessage<>(true, "获取所有的TriggerGroupName成功", null);
+        ajaxMessage.setResult(triggerService.getTriggerGroupNames(ajaxMessage));
+        return ajaxMessage;
+    }
+
+    @ApiOperation("获取所有的CalendarName")
+    @GetMapping("/trigger/all_calendar_names" + JSON_SUFFIX)
+    public AjaxMessage<List<String>> getCalendarNames() {
+        AjaxMessage<List<String>> ajaxMessage = new AjaxMessage<>(true, "获取所有的CalendarName成功", null);
+        ajaxMessage.setResult(triggerService.getCalendarNames(ajaxMessage));
         return ajaxMessage;
     }
 }
