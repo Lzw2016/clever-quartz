@@ -21,27 +21,24 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 public class Swagger2Config {
 
     @Bean
-    public Docket createRestApi() {
-        return new Docket(DocumentationType.SWAGGER_2)
-                .apiInfo(apiInfo())
-                .select()
-                .apis(RequestHandlerSelectors.basePackage("org.clever.quartz.controller"))
-                .paths(PathSelectors.any())
-                .build();
-    }
-
-    private ApiInfo apiInfo() {
-        // Contact contact = new Contact("name", "url", "email");
-        return new ApiInfoBuilder()
+    public Docket createActuatorApi() {
+        ApiInfo apiInfo = new ApiInfoBuilder()
                 .title("clever-quartz服务")
                 // .description("description")
                 // .termsOfServiceUrl("termsOfServiceUrl")
-                .version("1.0")
+                .version("0.0.1-SNAPSHOT")
                 // .license("license")
                 // .licenseUrl("licenseUrl")
                 // .termsOfServiceUrl("termsOfServiceUrl")
                 // .contact(contact)
                 // .extensions()
+                .build();
+        return new Docket(DocumentationType.SWAGGER_2)
+                .apiInfo(apiInfo)
+                .groupName("clever-quartz服务")
+                .select()
+                .apis(RequestHandlerSelectors.basePackage("org.clever.quartz.controller"))
+                .paths(PathSelectors.any())
                 .build();
     }
 }

@@ -16,7 +16,7 @@ import java.util.TimeZone;
 @Slf4j
 @EnableTransactionManagement
 @MapperScan(basePackages = "org.clever.quartz.mapper")
-@SpringBootApplication(scanBasePackages = {"org.clever", "de.chandre.quartz.spring"})
+@SpringBootApplication(scanBasePackages = {"org.clever"})
 public class StartApp {
     public static void main(String[] args) {
         TimeZone.setDefault(TimeZone.getTimeZone("GMT+8"));
