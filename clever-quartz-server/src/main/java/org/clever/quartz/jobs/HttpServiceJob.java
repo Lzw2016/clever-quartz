@@ -27,6 +27,7 @@ import java.util.Map;
 public class HttpServiceJob implements Job {
     private static final String HTTP_JOB_RESULT_KEY = "HttpJobResult";
 
+    // QuartzJobBean
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
         JobDetail jobDetail = context.getJobDetail();
