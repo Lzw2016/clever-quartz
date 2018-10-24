@@ -1,8 +1,8 @@
 package org.clever.quartz.model;
 
 import lombok.Data;
-import org.hibernate.validator.constraints.NotBlank;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.util.Map;

@@ -103,6 +103,13 @@
                     <exclude>prod/**</exclude>
                 </excludes>
             </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+                <includes>
+                    <include>database/*.sql</include>
+                </includes>
+            </resource>
         </resources>
         <testResources>
             <testResource>

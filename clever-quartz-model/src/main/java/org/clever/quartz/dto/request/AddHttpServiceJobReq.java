@@ -6,10 +6,10 @@ import org.clever.common.model.request.BaseRequest;
 import org.clever.quartz.model.HttpJobData;
 import org.clever.quartz.model.HttpJobNotice;
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.Range;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.Map;
