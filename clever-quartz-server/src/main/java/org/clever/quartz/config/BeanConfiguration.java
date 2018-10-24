@@ -5,6 +5,9 @@ import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.PerformanceInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.SqlExplainInterceptor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.boot.autoconfigure.quartz.QuartzProperties;
+import org.springframework.boot.autoconfigure.quartz.SchedulerFactoryBeanCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -16,6 +19,21 @@ import org.springframework.context.annotation.Profile;
 @Configuration
 @Slf4j
 public class BeanConfiguration {
+
+    /**
+     * 设置正确的 org.quartz.scheduler.instanceName 值
+     */
+    @Bean
+    public SchedulerFactoryBeanCustomizer schedulerFactoryBeanCustomizer(QuartzProperties properties) {
+        return (schedulerFactoryBean) -> {
+            if (properties.getProperties() != null) {
+                String quartzSchedulerName = properties.getProperties().get("org.quartz.scheduler.instanceName");
+                if (StringUtils.isNotBlank(quartzSchedulerName)) {
+                    schedulerFactoryBean.setSchedulerName(quartzSchedulerName);
+                }
+            }
+        };
+    }
 
     /**
      * 分页插件
