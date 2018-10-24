@@ -96,6 +96,7 @@
                 <includes>
                     <include>**/*.properties</include>
                     <include>**/*.xml</include>
+                    <include>**/*.yml</include>
                 </includes>
                 <excludes>
                     <exclude>dev/**</exclude>

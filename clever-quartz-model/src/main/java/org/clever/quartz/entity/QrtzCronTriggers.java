@@ -1,29 +1,28 @@
 package org.clever.quartz.entity;
 
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
 import javax.persistence.Id;
-import javax.persistence.Table;
 import java.io.Serializable;
 
 /**
  * 作者： lzw<br/>
  * 创建时间：2018-03-09 18:20 <br/>
  */
-@Table(name = "qrtz_cron_triggers")
 @Data
 public class QrtzCronTriggers implements Serializable {
 
     /**
      * Scheduler名称
      */
-    @Id
+    @TableId
     private String schedName;
 
     /**
      * Trigger key
      */
-    @Id
+    @TableId
     private String triggerName;
 
     /**

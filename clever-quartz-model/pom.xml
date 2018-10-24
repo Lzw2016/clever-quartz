@@ -18,5 +18,9 @@
             <groupId>org.clever</groupId>
             <artifactId>clever-common-model</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-annotation</artifactId>
+        </dependency>
     </dependencies>
 </project>

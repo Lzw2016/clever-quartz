@@ -1,9 +1,8 @@
 package org.clever.quartz.entity;
 
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
-import javax.persistence.Id;
-import javax.persistence.Table;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
@@ -11,26 +10,25 @@ import java.math.BigDecimal;
  * 作者： lzw<br/>
  * 创建时间：2018-03-09 18:33 <br/>
  */
-@Table(name = "qrtz_simprop_triggers")
 @Data
 public class QrtzSimpropTriggers implements Serializable {
 
     /**
      * Scheduler名称
      */
-    @Id
+    @TableId
     private String schedName;
 
     /**
      * Trigger key
      */
-    @Id
+    @TableId
     private String triggerName;
 
     /**
      * Trigger group 名称
      */
-    @Id
+    @TableId
     private String triggerGroup;
 
     /**

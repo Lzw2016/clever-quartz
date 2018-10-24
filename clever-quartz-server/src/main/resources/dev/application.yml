@@ -1,0 +1,193 @@
+###################################################################################
+### Web服务器配置
+###################################################################################
+server:
+  port: 28080
+  servlet:
+    context-path: /
+
+###################################################################################
+### logging(logback)
+###################################################################################
+logging:
+  config: classpath:logback.xml
+  level:
+    org.springframework: warn
+    org.clever: debug
+
+###################################################################################
+### Spring配置
+###################################################################################
+spring:
+  profiles.active: dev
+  application.name: clever-quartz-server
+  aop.proxy-target-class: true
+
+  servlet: #------------------------------------------------------------ 文件上传配置
+    multipart:
+      enabled: true
+      max-file-size: 1MB
+      max-request-size: 10MB
+
+  http: #------------------------------------------------------------------ http配置
+    converters:
+      preferred-json-mapper: jackson
+    encoding:
+      charset: UTF-8
+      force: true
+
+  jackson: #------------------------------------------------------------ jackson配置
+    date-format: yyyy-MM-dd HH:mm:ss
+    joda-date-time-format: yyyy-MM-dd HH:mm:ss
+    locale: zh_CN
+    time-zone: GMT+8
+
+  resources: #------------------------------------------------ html、js、css 静态资源
+    chain:
+      cache: true
+      gzipped: true
+    cache:
+      period: 31536000s
+    static-locations: ['classpath:/static/']
+
+  quartz: #---------------------------------------------------------------quartz配置
+    job-store-type: jdbc
+    jdbc:
+      initialize-schema: never
+      schema: 'classpath:database/'
+    properties:
+      org.quartz.scheduler.instanceName: QuartzSchedulerCluster
+      org.quartz.scheduler.instanceId: AUTO
+      org.quartz.scheduler.instanceIdGenerator.class: org.quartz.simpl.SimpleInstanceIdGenerator
+      org.quartz.scheduler.threadName: QuartzSchedulerThread
+      org.quartz.scheduler.makeSchedulerThreadDaemon: false
+      org.quartz.scheduler.threadsInheritContextClassLoaderOfInitializer: false
+      org.quartz.scheduler.idleWaitTime: 30000
+      org.quartz.scheduler.dbFailureRetryInterval: 15000
+      org.quartz.scheduler.classLoadHelper.class: org.quartz.simpl.CascadingClassLoadHelper
+      org.quartz.scheduler.jobFactory.class: org.quartz.simpl.PropertySettingJobFactory
+      org.quartz.scheduler.userTransactionURL: java:comp/UserTransaction
+      org.quartz.scheduler.wrapJobExecutionInUserTransaction: false
+      org.quartz.scheduler.skipUpdateCheck: false
+      org.quartz.scheduler.batchTriggerAcquisitionMaxCount: 1
+      org.quartz.scheduler.batchTriggerAcquisitionFireAheadTimeWindow: 0
+      org.quartz.threadPool.class: org.quartz.simpl.SimpleThreadPool
+      org.quartz.threadPool.threadCount: 25
+      org.quartz.threadPool.threadPriority: 5
+      org.quartz.plugin.ShutdownHookPlugin.class: org.quartz.plugins.management.ShutdownHookPlugin
+      org.quartz.plugin.JobLogPlugin.class: org.clever.quartz.plugins.JobLogPlugin
+      org.quartz.plugin.TriggerLogPlugin.class: org.clever.quartz.plugins.TriggerLogPlugin
+      org.quartz.plugin.SchedulerLogPlugin.class: org.clever.quartz.plugins.SchedulerLogPlugin
+      org.quartz.scheduler.rmi.export: false
+      org.quartz.jobStore.class: org.quartz.impl.jdbcjobstore.JobStoreTX
+      org.quartz.jobStore.driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+      org.quartz.jobStore.tablePrefix: QRTZ_
+      org.quartz.jobStore.useProperties: false
+      org.quartz.jobStore.misfireThreshold: 60000
+      org.quartz.jobStore.isClustered: true
+      org.quartz.jobStore.clusterCheckinInterval: 15000
+      org.quartz.jobStore.maxMisfiresToHandleAtATime: 20
+      org.quartz.jobStore.dontSetAutoCommitFalse: false
+      org.quartz.jobStore.selectWithLockSQL: 'SELECT * FROM {0}LOCKS WHERE SCHED_NAME = {1} AND LOCK_NAME = ? FOR UPDATE'
+      org.quartz.jobStore.txIsolationLevelSerializable: false
+      org.quartz.jobStore.acquireTriggersWithinLock: false
+
+  datasource: #----------------------------------------------------------- 数据库配置
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/clever-quartz
+    username: root
+    password: lizhiwei
+    hikari:
+      data-source-properties:
+        serverTimezone: GMT+8
+        useUnicode: true
+        characterEncoding: utf-8
+        zeroDateTimeBehavior: convert_to_null
+        useSSL: false
+      auto-commit: false
+      maximum-pool-size: 100
+      minimum-idle: 5
+      max-lifetime: 1800000
+      connection-test-query: SELECT 1
+      # 设置事务隔离级别 -> SERIALIZABLE(串行化)
+      transaction-isolation: TRANSACTION_SERIALIZABLE
+
+  cloud: #------------------------------------------------------------ Spring Cloud
+    consul:
+      enabled: false
+      host: '127.0.0.1'
+      port: 8500
+      discovery:
+        enabled: true
+        instanceId: ${spring.application.name}:${vcap.application.instance_id:${spring.application.instance_id:${random.value}}}
+        instance-zone: wuhan
+        instance-group: svc
+        tags:
+        - serviceName=${spring.application.name}
+        health-check-path: '/actuator/health'
+        health-check-interval: 1s
+
+###################################################################################
+### management配置
+###################################################################################
+management:
+  endpoints:
+    enabled-by-default: true
+    web:
+      exposure:
+        include:
+        - health
+        - info
+        - env
+        - metrics
+        - prometheus
+  endpoint:
+    prometheus:
+      enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+        descriptions: true
+        step: 30s
+
+###################################################################################
+### mybatis-plus配置
+###################################################################################
+mybatis-plus:
+  configuration:
+    auto-mapping-behavior: partial
+    auto-mapping-unknown-column-behavior: none
+    map-underscore-to-camel-case: true
+  mapper-locations: 'classpath*: **/*.xml'
+  check-config-location: true
+  executor-type: reuse
+  global-config:
+    banner: true
+    refresh: true
+    sql-parser-cache: true
+    db-config:
+      id-type: auto
+      field-strategy: not_null
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

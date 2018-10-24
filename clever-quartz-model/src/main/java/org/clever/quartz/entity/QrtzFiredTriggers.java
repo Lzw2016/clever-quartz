@@ -1,29 +1,27 @@
 package org.clever.quartz.entity;
 
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
-import javax.persistence.Id;
-import javax.persistence.Table;
 import java.io.Serializable;
 
 /**
  * 作者： lzw<br/>
  * 创建时间：2018-03-09 18:25 <br/>
  */
-@Table(name = "qrtz_fired_triggers")
 @Data
 public class QrtzFiredTriggers implements Serializable {
 
     /**
      * Scheduler名称
      */
-    @Id
+    @TableId
     private String schedName;
 
     /**
      * 条目号
      */
-    @Id
+    @TableId
     private String entryId;
 
     /**

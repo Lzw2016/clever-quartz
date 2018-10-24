@@ -1,11 +1,8 @@
 package org.clever.quartz.entity;
 
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -15,7 +12,6 @@ import java.util.Date;
  * 作者：lizw <br/>
  * 创建时间：2017/6/1 9:38 <br/>
  */
-@Table(name = "qrtz_trigger_log")
 @Data
 public class QrtzTriggerLog implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -23,8 +19,7 @@ public class QrtzTriggerLog implements Serializable {
     /**
      * 数据ID
      */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @TableId
     private Long id;
 
     /**
