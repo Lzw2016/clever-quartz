@@ -1,8 +1,10 @@
 package org.clever.quartz.mapper;
 
+import org.apache.ibatis.annotations.Param;
 import org.clever.quartz.dto.request.TriggerLogQueryReq;
 import org.clever.quartz.entity.QrtzTriggerLog;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -17,4 +19,9 @@ public interface QrtzTriggerLogMapper extends tk.mybatis.mapper.common.Mapper<Qr
      * @return 触发器日志分页数据
      */
     List<QrtzTriggerLog> findByPage(TriggerLogQueryReq triggerLogQueryReq);
+
+    /**
+     * 删除 date 之前创建的日志数据
+     */
+    int deleteByTime(@Param("date") Date date);
 }

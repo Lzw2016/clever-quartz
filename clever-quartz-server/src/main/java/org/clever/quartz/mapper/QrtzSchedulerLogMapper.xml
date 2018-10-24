@@ -22,6 +22,10 @@
         <result column="log_time" property="logTime"/>
     </resultMap>
 
+    <delete id="deleteByTime">
+        DELETE FROM qrtz_scheduler_log WHERE <![CDATA[ log_time<=#{date} ]]>
+    </delete>
+
     <select id="findByPage" resultMap="BaseResultMap">
         select * from qrtz_scheduler_log
         where 1=1

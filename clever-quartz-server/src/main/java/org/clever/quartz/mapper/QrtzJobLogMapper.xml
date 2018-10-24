@@ -48,6 +48,10 @@
         <result column="after_job_data" property="afterJobData"/>
     </resultMap>
 
+    <delete id="deleteByTime">
+        DELETE FROM qrtz_job_log WHERE <![CDATA[ end_time<=#{date} ]]>
+    </delete>
+
     <select id="findByPage" resultMap="BaseResultMap">
         select * from qrtz_job_log
         where 1=1

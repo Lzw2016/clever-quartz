@@ -48,6 +48,10 @@
         <result column="instr_code" property="instrCode"/>
     </resultMap>
 
+    <delete id="deleteByTime">
+        DELETE FROM qrtz_trigger_log WHERE <![CDATA[ end_time<=#{date} ]]>
+    </delete>
+
     <select id="findByPage" resultMap="BaseResultMap">
         select * from qrtz_trigger_log
         where 1=1
