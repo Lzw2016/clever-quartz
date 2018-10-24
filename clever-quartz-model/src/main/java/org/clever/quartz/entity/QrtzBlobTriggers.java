@@ -13,7 +13,7 @@ import java.io.Serializable;
 public class QrtzBlobTriggers implements Serializable {
 
     /**
-     * Scheduler名称
+     * Scheduler名称  // TODO scheduler_name -> SCHED_NAME
      */
     @TableId
     private String schedulerName;
