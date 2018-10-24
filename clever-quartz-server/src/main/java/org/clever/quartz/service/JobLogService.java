@@ -1,7 +1,7 @@
 package org.clever.quartz.service;
 
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.clever.quartz.dto.request.JobLogQueryReq;
 import org.clever.quartz.entity.QrtzJobLog;
 import org.clever.quartz.mapper.QrtzJobLogMapper;
@@ -22,13 +22,13 @@ public class JobLogService {
 
     @Transactional
     public QrtzJobLog addQrtzJobLog(QrtzJobLog qrtzJobLog) {
-        qrtzJobLogMapper.insertSelective(qrtzJobLog);
+        qrtzJobLogMapper.insert(qrtzJobLog);
         return qrtzJobLog;
     }
 
     @Transactional
     public boolean updateQrtzJobLog(QrtzJobLog qrtzJobLog) {
-        int count = qrtzJobLogMapper.updateByPrimaryKeySelective(qrtzJobLog);
+        int count = qrtzJobLogMapper.updateById(qrtzJobLog);
         return count > 0;
     }
 
@@ -37,7 +37,9 @@ public class JobLogService {
      *
      * @return 触发器日志分页数据
      */
-    public PageInfo<QrtzJobLog> findByPage(JobLogQueryReq jobLogQueryReq) {
-        return PageHelper.startPage(jobLogQueryReq.getPageNo(), jobLogQueryReq.getPageSize()).doSelectPageInfo(() -> qrtzJobLogMapper.findByPage(jobLogQueryReq));
+    public IPage<QrtzJobLog> findByPage(JobLogQueryReq jobLogQueryReq) {
+        Page<QrtzJobLog> page = new Page<>(jobLogQueryReq.getPageNo(), jobLogQueryReq.getPageSize());
+        page.setRecords(qrtzJobLogMapper.findByPage(jobLogQueryReq, page));
+        return page;
     }
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<!--suppress SqlDialectInspection, SqlNoDataSourceInspection -->
+<!--suppress SqlDialectInspection, SqlNoDataSourceInspection, SqlResolve -->
 <mapper namespace="org.clever.quartz.mapper.QrtzTriggerLogMapper">
     <!-- 表qrtz_trigger_log(Trigger触发日志表)映射 -->
     <resultMap id="BaseResultMap" type="org.clever.quartz.entity.QrtzTriggerLog">
@@ -55,38 +55,38 @@
     <select id="findByPage" resultMap="BaseResultMap">
         select * from qrtz_trigger_log
         where 1=1
-        <if test="schedulerName != null and schedulerName != ''">
-            AND sched_name=#{schedulerName}
+        <if test="query.schedulerName != null and query.schedulerName != ''">
+            AND sched_name=#{query.schedulerName}
         </if>
-        <if test="instanceName != null and instanceName != ''">
-            AND instance_name=#{instanceName}
+        <if test="query.instanceName != null and query.instanceName != ''">
+            AND instance_name=#{query.instanceName}
         </if>
-        <if test="triggerGroup != null and triggerGroup != ''">
-            AND trigger_group=#{triggerGroup}
+        <if test="query.triggerGroup != null and query.triggerGroup != ''">
+            AND trigger_group=#{query.triggerGroup}
         </if>
-        <if test="triggerName != null and triggerName != ''">
-            AND trigger_name=#{triggerName}
+        <if test="query.triggerName != null and query.triggerName != ''">
+            AND trigger_name=#{query.triggerName}
         </if>
-        <if test="jobGroup != null and jobGroup != ''">
-            AND job_group=#{jobGroup}
+        <if test="query.jobGroup != null and query.jobGroup != ''">
+            AND job_group=#{query.jobGroup}
         </if>
-        <if test="jobName != null and jobName != ''">
-            AND job_name=#{jobName}
+        <if test="query.jobName != null and query.jobName != ''">
+            AND job_name=#{query.jobName}
         </if>
-        <if test="jobClassName != null and jobClassName != ''">
-            AND job_class_name=#{jobClassName}
+        <if test="query.jobClassName != null and query.jobClassName != ''">
+            AND job_class_name=#{query.jobClassName}
         </if>
-        <if test="startTimeByStart != null">
-            <![CDATA[ AND start_time>=#{startTimeByStart} ]]>
+        <if test="query.startTimeByStart != null">
+            <![CDATA[ AND start_time>=#{query.startTimeByStart} ]]>
         </if>
-        <if test="startTimeByEnd != null">
-            <![CDATA[ AND start_time<=#{startTimeByEnd} ]]>
+        <if test="query.startTimeByEnd != null">
+            <![CDATA[ AND start_time<=#{query.startTimeByEnd} ]]>
         </if>
-        <if test="processTimeByMin != null">
-            <![CDATA[ AND (#{processTimeByMin}=-1 OR process_time>=#{processTimeByMin}) ]]>
+        <if test="query.processTimeByMin != null">
+            <![CDATA[ AND (#{query.processTimeByMin}=-1 OR process_time>=#{query.processTimeByMin}) ]]>
         </if>
-        <if test="processTimeByMax != null">
-            <![CDATA[ AND (#{processTimeByMax}=-1 OR process_time<=#{processTimeByMax}) ]]>
+        <if test="query.processTimeByMax != null">
+            <![CDATA[ AND (#{query.processTimeByMax}=-1 OR process_time<=#{query.processTimeByMax}) ]]>
         </if>
         order by start_time desc
     </select>

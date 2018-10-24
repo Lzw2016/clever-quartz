@@ -1,7 +1,7 @@
 package org.clever.quartz.service;
 
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.clever.quartz.dto.request.TriggerLogQueryReq;
 import org.clever.quartz.entity.QrtzTriggerLog;
 import org.clever.quartz.mapper.QrtzTriggerLogMapper;
@@ -22,14 +22,14 @@ public class TriggerLogService {
 
     @Transactional
     public QrtzTriggerLog addQrtzTriggerLog(QrtzTriggerLog qrtzTriggerLog) {
-        qrtzTriggerLogMapper.insertSelective(qrtzTriggerLog);
+        qrtzTriggerLogMapper.insert(qrtzTriggerLog);
         return qrtzTriggerLog;
     }
 
     @Transactional
     public QrtzTriggerLog updateQrtzTriggerLog(QrtzTriggerLog qrtzTriggerLog) {
-        qrtzTriggerLogMapper.updateByPrimaryKeySelective(qrtzTriggerLog);
-        qrtzTriggerLog = qrtzTriggerLogMapper.selectByPrimaryKey(qrtzTriggerLog.getId());
+        qrtzTriggerLogMapper.updateById(qrtzTriggerLog);
+        qrtzTriggerLog = qrtzTriggerLogMapper.selectById(qrtzTriggerLog.getId());
         return qrtzTriggerLog;
     }
 
@@ -38,10 +38,10 @@ public class TriggerLogService {
      *
      * @return 触发器日志分页数据
      */
-    public PageInfo<QrtzTriggerLog> findByPage(TriggerLogQueryReq triggerLogQueryReq) {
-        return PageHelper
-                .startPage(triggerLogQueryReq.getPageNo(), triggerLogQueryReq.getPageSize())
-                .doSelectPageInfo(() -> qrtzTriggerLogMapper.findByPage(triggerLogQueryReq));
+    public IPage<QrtzTriggerLog> findByPage(TriggerLogQueryReq triggerLogQueryReq) {
+        Page<QrtzTriggerLog> page = new Page<>(triggerLogQueryReq.getPageNo(), triggerLogQueryReq.getPageSize());
+        page.setRecords(qrtzTriggerLogMapper.findByPage(triggerLogQueryReq, page));
+        return page;
     }
 }
 

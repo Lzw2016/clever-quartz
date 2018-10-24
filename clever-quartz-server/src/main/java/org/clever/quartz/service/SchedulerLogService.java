@@ -1,7 +1,7 @@
 package org.clever.quartz.service;
 
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.clever.quartz.dto.request.QrtzSchedulerLogQueryReq;
 import org.clever.quartz.entity.QrtzSchedulerLog;
 import org.clever.quartz.mapper.QrtzSchedulerLogMapper;
@@ -22,7 +22,7 @@ public class SchedulerLogService {
 
     @Transactional
     public QrtzSchedulerLog saveQrtzSchedulerLog(QrtzSchedulerLog qrtzSchedulerLog) {
-        qrtzSchedulerLogMapper.insertSelective(qrtzSchedulerLog);
+        qrtzSchedulerLogMapper.insert(qrtzSchedulerLog);
         return qrtzSchedulerLog;
     }
 
@@ -31,9 +31,9 @@ public class SchedulerLogService {
      *
      * @return 触发器日志分页数据
      */
-    public PageInfo<QrtzSchedulerLog> findByPage(QrtzSchedulerLogQueryReq qrtzSchedulerLogQueryReq) {
-        return PageHelper
-                .startPage(qrtzSchedulerLogQueryReq.getPageNo(), qrtzSchedulerLogQueryReq.getPageSize())
-                .doSelectPageInfo(() -> qrtzSchedulerLogMapper.findByPage(qrtzSchedulerLogQueryReq));
+    public IPage<QrtzSchedulerLog> findByPage(QrtzSchedulerLogQueryReq qrtzSchedulerLogQueryReq) {
+        Page<QrtzSchedulerLog> page = new Page<>(qrtzSchedulerLogQueryReq.getPageNo(), qrtzSchedulerLogQueryReq.getPageSize());
+        page.setRecords(qrtzSchedulerLogMapper.findByPage(qrtzSchedulerLogQueryReq, page));
+        return page;
     }
 }

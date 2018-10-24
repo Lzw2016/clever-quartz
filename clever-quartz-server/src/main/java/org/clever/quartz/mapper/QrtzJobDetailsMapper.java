@@ -1,10 +1,11 @@
 package org.clever.quartz.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.apache.ibatis.annotations.Param;
 import org.clever.quartz.dto.response.JobDetailsRes;
 import org.clever.quartz.dto.response.JobKeyRes;
 import org.clever.quartz.entity.QrtzJobDetails;
-import tk.mybatis.mapper.common.Mapper;
 
 import java.util.List;
 
@@ -12,13 +13,14 @@ import java.util.List;
  * 作者： lzw<br/>
  * 创建时间：2018-03-09 18:41 <br/>
  */
-public interface QrtzJobDetailsMapper extends Mapper<QrtzJobDetails> {
+public interface QrtzJobDetailsMapper extends BaseMapper<QrtzJobDetails> {
 
     List<JobDetailsRes> find(
             @Param("schedName") String schedName,
             @Param("jobName") String jobName,
             @Param("jobGroup") String jobGroup,
-            @Param("jobClassName") String jobClassName);
+            @Param("jobClassName") String jobClassName,
+            IPage page);
 
     List<JobKeyRes> getJobKeyByGroup(@Param("schedName") String schedName, @Param("jobGroup") String jobGroup);
 }

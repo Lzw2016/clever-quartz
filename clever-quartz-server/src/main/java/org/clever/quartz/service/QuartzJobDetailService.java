@@ -1,6 +1,6 @@
 package org.clever.quartz.service;
 
-import com.github.pagehelper.PageHelper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import org.clever.common.model.response.AjaxMessage;
 import org.clever.common.utils.exception.ExceptionUtils;
@@ -85,8 +85,8 @@ public class QuartzJobDetailService {
         Scheduler scheduler = QuartzManager.getScheduler();
         List<JobDetailsRes> list = null;
         try {
-            PageHelper.startPage(req.getPageNo(), req.getPageSize());
-            list = qrtzJobDetailsMapper.find(scheduler.getSchedulerName(), req.getJobName(), req.getJobGroup(), req.getJobClassName());
+            Page<JobDetailsRes> page = new Page<>(req.getPageNo(), req.getPageSize());
+            list = qrtzJobDetailsMapper.find(scheduler.getSchedulerName(), req.getJobName(), req.getJobGroup(), req.getJobClassName(), page);
         } catch (Throwable e) {
             log.error("### 查询JobDetail失败", e);
             ajaxMessage.setSuccess(false);

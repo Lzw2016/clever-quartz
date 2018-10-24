@@ -1,6 +1,6 @@
 package org.clever.quartz.controller;
 
-import com.github.pagehelper.PageInfo;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.clever.common.server.controller.BaseController;
@@ -37,19 +37,19 @@ public class LogController extends BaseController {
 
     @ApiOperation("查询Job执行日志")
     @GetMapping("/log/job_log" + JSON_SUFFIX)
-    public PageInfo<QrtzJobLog> findJobLogByPage(@Validated JobLogQueryReq jobLogQueryReq) {
+    public IPage<QrtzJobLog> findJobLogByPage(@Validated JobLogQueryReq jobLogQueryReq) {
         return qrtzJobLogService.findByPage(jobLogQueryReq);
     }
 
     @ApiOperation("查询trigger触发日志")
     @GetMapping("/log/trigger_log" + JSON_SUFFIX)
-    public PageInfo<QrtzTriggerLog> findTriggerLogByPage(@Validated TriggerLogQueryReq triggerLogQueryReq) {
+    public IPage<QrtzTriggerLog> findTriggerLogByPage(@Validated TriggerLogQueryReq triggerLogQueryReq) {
         return qrtzTriggerLogService.findByPage(triggerLogQueryReq);
     }
 
     @ApiOperation("查询scheduler日志")
     @GetMapping("/log/scheduler_log" + JSON_SUFFIX)
-    public PageInfo<QrtzSchedulerLog> findSchedulerLogByPage(@Validated QrtzSchedulerLogQueryReq qrtzSchedulerLogQueryReq) {
+    public IPage<QrtzSchedulerLog> findSchedulerLogByPage(@Validated QrtzSchedulerLogQueryReq qrtzSchedulerLogQueryReq) {
         return schedulerLogService.findByPage(qrtzSchedulerLogQueryReq);
     }
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<!--suppress SqlDialectInspection, SqlNoDataSourceInspection -->
+<!--suppress SqlDialectInspection, SqlNoDataSourceInspection, SqlResolve -->
 <mapper namespace="org.clever.quartz.mapper.QrtzSchedulerLogMapper">
     <!-- 表qrtz_scheduler_log(Scheduler调度日志表)映射 -->
     <resultMap id="BaseResultMap" type="org.clever.quartz.entity.QrtzSchedulerLog">
@@ -29,20 +29,20 @@
     <select id="findByPage" resultMap="BaseResultMap">
         select * from qrtz_scheduler_log
         where 1=1
-        <if test="schedulerName != null and schedulerName != ''">
-            AND sched_name=#{schedulerName}
+        <if test="query.schedulerName != null and query.schedulerName != ''">
+            AND sched_name=#{query.schedulerName}
         </if>
-        <if test="instanceName != null and instanceName != ''">
-            AND instance_name=#{instanceName}
+        <if test="query.instanceName != null and query.instanceName != ''">
+            AND instance_name=#{query.instanceName}
         </if>
-        <if test="methodName != null and methodName != ''">
-            AND method_name=#{methodName}
+        <if test="query.methodName != null and query.methodName != ''">
+            AND method_name=#{query.methodName}
         </if>
-        <if test="logTimeStart != null">
-            <![CDATA[ AND log_time>=#{logTimeStart} ]]>
+        <if test="query.logTimeStart != null">
+            <![CDATA[ AND log_time>=#{query.logTimeStart} ]]>
         </if>
-        <if test="logTimeEnd != null">
-            <![CDATA[ AND log_time<=#{logTimeEnd} ]]>
+        <if test="query.logTimeEnd != null">
+            <![CDATA[ AND log_time<=#{query.logTimeEnd} ]]>
         </if>
         order by log_time desc
     </select>
