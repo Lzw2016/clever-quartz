@@ -33,7 +33,7 @@ public class ConvertUtils {
 
     public static JobDetailsRes convert(QrtzJobDetails qrtzJobDetails) {
         JobDetailsRes jobDetailsRes = new JobDetailsRes();
-        jobDetailsRes.setSchedName(qrtzJobDetails.getSchedName());
+        jobDetailsRes.setSchedulerName(qrtzJobDetails.getSchedulerName());
         jobDetailsRes.setJobName(qrtzJobDetails.getJobName());
         jobDetailsRes.setJobGroup(qrtzJobDetails.getJobGroup());
         jobDetailsRes.setDescription(qrtzJobDetails.getDescription());
@@ -56,10 +56,10 @@ public class ConvertUtils {
         return jobDetailsResList;
     }
 
-    public static CurrentlyExecutingJobsRes convert(String schedName, JobExecutionContext jobExecutionContext) {
+    public static CurrentlyExecutingJobsRes convert(String schedulerName, JobExecutionContext jobExecutionContext) {
         JobDetail jobDetail = jobExecutionContext.getJobDetail();
         CurrentlyExecutingJobsRes currentlyExecutingJobsRes = new CurrentlyExecutingJobsRes();
-        currentlyExecutingJobsRes.setSchedName(schedName);
+        currentlyExecutingJobsRes.setSchedulerName(schedulerName);
         currentlyExecutingJobsRes.setJobGroup(jobDetail.getKey().getGroup());
         currentlyExecutingJobsRes.setJobName(jobDetail.getKey().getName());
         currentlyExecutingJobsRes.setDurable(jobDetail.isDurable());
@@ -81,20 +81,20 @@ public class ConvertUtils {
         return currentlyExecutingJobsRes;
     }
 
-    public static List<CurrentlyExecutingJobsRes> convert(String schedName, List<JobExecutionContext> jobExecutionContextList) {
+    public static List<CurrentlyExecutingJobsRes> convert(String schedulerName, List<JobExecutionContext> jobExecutionContextList) {
         if (jobExecutionContextList == null) {
             return null;
         }
         List<CurrentlyExecutingJobsRes> currentlyExecutingJobsResList = new ArrayList<>();
         for (JobExecutionContext jobExecutionContext : jobExecutionContextList) {
-            currentlyExecutingJobsResList.add(convert(schedName, jobExecutionContext));
+            currentlyExecutingJobsResList.add(convert(schedulerName, jobExecutionContext));
         }
         return currentlyExecutingJobsResList;
     }
 
-    public static TriggerInfoRes convert(String schedName, Trigger trigger, Trigger.TriggerState state) {
+    public static TriggerInfoRes convert(String schedulerName, Trigger trigger, Trigger.TriggerState state) {
         TriggerInfoRes triggerInfoRes = new TriggerInfoRes();
-        triggerInfoRes.setSchedName(schedName);
+        triggerInfoRes.setSchedulerName(schedulerName);
         triggerInfoRes.setTriggerName(trigger.getKey().getName());
         triggerInfoRes.setTriggerGroup(trigger.getKey().getGroup());
         triggerInfoRes.setJobName(trigger.getJobKey().getName());
@@ -124,7 +124,6 @@ public class ConvertUtils {
         //noinspection StatementWithEmptyBody
         if (trigger instanceof CalendarIntervalTriggerImpl) {
             // TODO CalendarIntervalTriggerImpl
-
         }
         //noinspection StatementWithEmptyBody
         if (trigger instanceof DailyTimeIntervalTriggerImpl) {
@@ -133,9 +132,9 @@ public class ConvertUtils {
         return triggerInfoRes;
     }
 
-    public static JobDetailInfoRes convert(String schedName, JobDetail jobDetail) {
+    public static JobDetailInfoRes convert(String schedulerName, JobDetail jobDetail) {
         JobDetailInfoRes jobDetailInfoRes = new JobDetailInfoRes();
-        jobDetailInfoRes.setSchedName(schedName);
+        jobDetailInfoRes.setSchedulerName(schedulerName);
         jobDetailInfoRes.setJobGroup(jobDetail.getKey().getGroup());
         jobDetailInfoRes.setJobName(jobDetail.getKey().getName());
         jobDetailInfoRes.setDurable(jobDetail.isDurable());

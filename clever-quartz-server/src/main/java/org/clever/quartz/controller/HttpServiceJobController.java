@@ -2,7 +2,6 @@ package org.clever.quartz.controller;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.clever.common.model.response.AjaxMessage;
 import org.clever.common.server.controller.BaseController;
 import org.clever.quartz.dto.request.AddHttpServiceJobReq;
 import org.clever.quartz.service.HttpServiceJobService;
@@ -34,13 +33,10 @@ public class HttpServiceJobController extends BaseController {
 
     @ApiOperation("增加HTTP任务")
     @PostMapping("/http_job" + JSON_SUFFIX)
-    public AjaxMessage<String> addHttpServiceJob(@Validated @RequestBody AddHttpServiceJobReq addHttpServiceJobReq) {
-        AjaxMessage<String> ajaxMessage = new AjaxMessage<>(true, "新增任务成功", null);
-        if (triggerService.validatorCron(addHttpServiceJobReq.getCron(), 1, ajaxMessage) == null) {
-            return ajaxMessage;
-        }
-        httpServiceJobService.addHttpServiceJob(addHttpServiceJobReq, ajaxMessage);
-        return ajaxMessage;
+    public AddHttpServiceJobReq addHttpServiceJob(@Validated @RequestBody AddHttpServiceJobReq addHttpServiceJobReq) {
+        triggerService.validatorCron(addHttpServiceJobReq.getCron(), 1);
+        httpServiceJobService.addHttpServiceJob(addHttpServiceJobReq);
+        return addHttpServiceJobReq;
     }
 
 //    @ApiOperation("查询HTTP任务")

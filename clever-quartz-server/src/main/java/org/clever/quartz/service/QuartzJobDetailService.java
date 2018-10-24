@@ -2,7 +2,7 @@ package org.clever.quartz.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
-import org.clever.common.model.response.AjaxMessage;
+import org.clever.common.exception.BusinessException;
 import org.clever.common.utils.exception.ExceptionUtils;
 import org.clever.quartz.dto.request.FindJobDetailReq;
 import org.clever.quartz.dto.request.JobDetailKeyReq;
@@ -47,15 +47,13 @@ public class QuartzJobDetailService {
     /**
      * 获取所有的JobGroupName
      */
-    public List<String> getJobGroupNames(AjaxMessage<List<String>> ajaxMessage) {
+    public List<String> getJobGroupNames() {
         Scheduler scheduler = QuartzManager.getScheduler();
-        List<String> jobGroupNames = null;
+        List<String> jobGroupNames;
         try {
             jobGroupNames = scheduler.getJobGroupNames();
         } catch (Throwable e) {
-            log.error("### 获取所有的JobGroupName失败", e);
-            ajaxMessage.setSuccess(false);
-            ajaxMessage.setFailMessage("获取所有的JobGroupName失败");
+            throw new BusinessException("获取所有的JobGroupName失败", e);
         }
         return jobGroupNames;
     }
@@ -63,15 +61,13 @@ public class QuartzJobDetailService {
     /**
      * 根据JobGroup查询JobKey
      */
-    public List<JobKeyRes> getJobKeyByGroup(String jobGroup, AjaxMessage ajaxMessage) {
+    public List<JobKeyRes> getJobKeyByGroup(String jobGroup) {
         Scheduler scheduler = QuartzManager.getScheduler();
-        List<JobKeyRes> jobKeyResList = null;
+        List<JobKeyRes> jobKeyResList;
         try {
             jobKeyResList = qrtzJobDetailsMapper.getJobKeyByGroup(scheduler.getSchedulerName(), jobGroup);
         } catch (Throwable e) {
-            log.error("### 根据JobGroup查询JobKey失败", e);
-            ajaxMessage.setSuccess(false);
-            ajaxMessage.setFailMessage("根据JobGroup查询JobKey失败");
+            throw new BusinessException("根据JobGroup查询JobKey失败", e);
         }
         return jobKeyResList;
     }
@@ -81,30 +77,26 @@ public class QuartzJobDetailService {
      *
      * @return JobDetail集合
      */
-    public List<JobDetailsRes> findJobDetail(FindJobDetailReq req, AjaxMessage ajaxMessage) {
+    public List<JobDetailsRes> findJobDetail(FindJobDetailReq req) {
         Scheduler scheduler = QuartzManager.getScheduler();
         List<JobDetailsRes> list = null;
         try {
             Page<JobDetailsRes> page = new Page<>(req.getPageNo(), req.getPageSize());
             list = qrtzJobDetailsMapper.find(scheduler.getSchedulerName(), req.getJobName(), req.getJobGroup(), req.getJobClassName(), page);
         } catch (Throwable e) {
-            log.error("### 查询JobDetail失败", e);
-            ajaxMessage.setSuccess(false);
-            ajaxMessage.setFailMessage("查询JobDetail失败");
+            throw new BusinessException("查询JobDetail失败", e);
         }
         return list;
     }
 
-    public JobDetailInfoRes getJobDetails(String jobGroup, String jobName, AjaxMessage ajaxMessage) {
+    public JobDetailInfoRes getJobDetails(String jobGroup, String jobName) {
         Scheduler scheduler = QuartzManager.getScheduler();
         JobDetailInfoRes jobDetailInfoRes = null;
         try {
             JobDetail jobDetail = scheduler.getJobDetail(new JobKey(jobName, jobGroup));
             jobDetailInfoRes = ConvertUtils.convert(scheduler.getSchedulerName(), jobDetail);
         } catch (Throwable e) {
-            log.error("### 获取Job信息失败", e);
-            ajaxMessage.setSuccess(false);
-            ajaxMessage.setFailMessage("获取Job信息失败");
+            throw new BusinessException("获取Job信息失败", e);
         }
         return jobDetailInfoRes;
     }
@@ -116,13 +108,11 @@ public class QuartzJobDetailService {
      */
     @SuppressWarnings("unchecked")
     @Transactional
-    public boolean saveJobDetail(SaveJobDetailReq saveJobDetailReq, AjaxMessage ajaxMessage) {
+    public boolean saveJobDetail(SaveJobDetailReq saveJobDetailReq) {
         Scheduler scheduler = QuartzManager.getScheduler();
         Class aClass = QuartzManager.getJobClass(saveJobDetailReq.getJobClassName());
         if (aClass == null) {
-            ajaxMessage.setSuccess(false);
-            ajaxMessage.setFailMessage("JobClassName错误[" + saveJobDetailReq.getJobClassName() + "]");
-            return false;
+            throw new BusinessException("JobClassName错误[" + saveJobDetailReq.getJobClassName() + "]");
         }
         JobBuilder jobBuilder = JobBuilder.newJob(aClass);
         jobBuilder.withIdentity(saveJobDetailReq.getJobName(), saveJobDetailReq.getJobGroup());
@@ -153,21 +143,18 @@ public class QuartzJobDetailService {
      * @return 成功返回true
      */
     @Transactional
-    public boolean deleteJobDetail(JobDetailKeyReq jobDetailKeyReq, AjaxMessage ajaxMessage) {
+    public JobDetail deleteJobDetail(JobDetailKeyReq jobDetailKeyReq) {
         Scheduler scheduler = QuartzManager.getScheduler();
+        JobDetail jobDetail;
         try {
-            JobDetail jobDetail = scheduler.getJobDetail(JobKey.jobKey(jobDetailKeyReq.getJobName(), jobDetailKeyReq.getJobGroup()));
+            jobDetail = scheduler.getJobDetail(JobKey.jobKey(jobDetailKeyReq.getJobName(), jobDetailKeyReq.getJobGroup()));
             if (jobDetail == null) {
-                ajaxMessage.setSuccess(false);
-                ajaxMessage.setFailMessage("删除任务失败,任务不存在");
-                return false;
+                throw new BusinessException("删除任务失败,任务不存在");
             }
 
             List<QrtzTriggers> jobTriggers = qrtzTriggersMapper.getByJobKey(scheduler.getSchedulerName(), jobDetailKeyReq.getJobName(), jobDetailKeyReq.getJobGroup());
             if (jobTriggers == null) {
-                ajaxMessage.setSuccess(false);
-                ajaxMessage.setFailMessage("删除JobDetail失败-获取JobDetail的所有Trigger失败");
-                return false;
+                throw new BusinessException("删除JobDetail失败-获取JobDetail的所有Trigger失败");
             }
             for (QrtzTriggers trigger : jobTriggers) {
                 // 暂停触发器
@@ -181,7 +168,7 @@ public class QuartzJobDetailService {
             log.error("删除JobDetail发生异常", e);
             throw ExceptionUtils.unchecked(e);
         }
-        return true;
+        return jobDetail;
     }
 
     /**
@@ -190,23 +177,19 @@ public class QuartzJobDetailService {
      * @return 成功返回true
      */
     @Transactional
-    public boolean pauseJob(JobDetailKeyReq jobDetailKeyReq, AjaxMessage ajaxMessage) {
+    public JobDetail pauseJob(JobDetailKeyReq jobDetailKeyReq) {
         Scheduler scheduler = QuartzManager.getScheduler();
+        JobDetail jobDetail;
         try {
-            JobDetail jobDetail = scheduler.getJobDetail(JobKey.jobKey(jobDetailKeyReq.getJobName(), jobDetailKeyReq.getJobGroup()));
+            jobDetail = scheduler.getJobDetail(JobKey.jobKey(jobDetailKeyReq.getJobName(), jobDetailKeyReq.getJobGroup()));
             if (jobDetail == null) {
-                ajaxMessage.setSuccess(false);
-                ajaxMessage.setFailMessage("暂停任务失败,任务不存在");
-                return false;
+                throw new BusinessException("暂停任务失败,任务不存在");
             }
             scheduler.pauseJob(JobKey.jobKey(jobDetailKeyReq.getJobName(), jobDetailKeyReq.getJobGroup()));
         } catch (Throwable e) {
-            log.error("暂停JobDetail异常", e);
-            ajaxMessage.setSuccess(false);
-            ajaxMessage.setFailMessage("暂停JobDetail失败");
-            return false;
+            throw new BusinessException("暂停JobDetail异常", e);
         }
-        return true;
+        return jobDetail;
     }
 
     /**
@@ -215,23 +198,20 @@ public class QuartzJobDetailService {
      * @return 成功返回true
      */
     @Transactional
-    public boolean resumeJob(JobDetailKeyReq jobDetailKeyReq, AjaxMessage ajaxMessage) {
+    public JobDetail resumeJob(JobDetailKeyReq jobDetailKeyReq) {
         Scheduler scheduler = QuartzManager.getScheduler();
+        JobDetail jobDetail;
         try {
-            JobDetail jobDetail = scheduler.getJobDetail(JobKey.jobKey(jobDetailKeyReq.getJobName(), jobDetailKeyReq.getJobGroup()));
+            jobDetail = scheduler.getJobDetail(JobKey.jobKey(jobDetailKeyReq.getJobName(), jobDetailKeyReq.getJobGroup()));
             if (jobDetail == null) {
-                ajaxMessage.setSuccess(false);
-                ajaxMessage.setFailMessage("继续运行任务失败,任务不存在");
-                return false;
+                throw new BusinessException("继续运行任务失败,任务不存在");
             }
             scheduler.resumeJob(JobKey.jobKey(jobDetailKeyReq.getJobName(), jobDetailKeyReq.getJobGroup()));
         } catch (Throwable e) {
             log.error("取消暂停JobDetail异常", e);
-            ajaxMessage.setSuccess(false);
-            ajaxMessage.setFailMessage("取消暂停JobDetail失败");
-            return false;
+            throw new BusinessException("取消暂停JobDetail异常", e);
         }
-        return true;
+        return jobDetail;
     }
 
     /**
@@ -240,23 +220,20 @@ public class QuartzJobDetailService {
      * @return 成功返回true
      */
     @Transactional
-    public boolean triggerJob(JobDetailKeyReq jobDetailKeyReq, AjaxMessage ajaxMessage) {
+    public JobDetail triggerJob(JobDetailKeyReq jobDetailKeyReq) {
         Scheduler scheduler = QuartzManager.getScheduler();
+        JobDetail jobDetail;
         try {
-            JobDetail jobDetail = scheduler.getJobDetail(JobKey.jobKey(jobDetailKeyReq.getJobName(), jobDetailKeyReq.getJobGroup()));
+            jobDetail = scheduler.getJobDetail(JobKey.jobKey(jobDetailKeyReq.getJobName(), jobDetailKeyReq.getJobGroup()));
             if (jobDetail == null) {
-                ajaxMessage.setSuccess(false);
-                ajaxMessage.setFailMessage("立即执行任务失败,任务不存在");
-                return false;
+                throw new BusinessException("立即执行任务失败,任务不存在");
             }
             scheduler.triggerJob(JobKey.jobKey(jobDetailKeyReq.getJobName(), jobDetailKeyReq.getJobGroup()));
         } catch (Throwable e) {
             log.error("立即运行JobDetail异常", e);
-            ajaxMessage.setSuccess(false);
-            ajaxMessage.setFailMessage("立即运行JobDetail失败");
-            return false;
+            throw new BusinessException("立即运行JobDetail异常", e);
         }
-        return true;
+        return jobDetail;
     }
 
 }

@@ -16,7 +16,7 @@ public class QrtzLocks implements Serializable {
      * Scheduler名称，同一集群下的Scheduler实例名称相同，Instance_Id不同
      */
     @TableId
-    private String schedName;
+    private String schedulerName;
 
     /**
      * 锁名称，TRIGGER_ACCESS，STATE_ACCESS，JOB_ACCESS，CALENDAR_ACCESS，MISFIRE_ACCESS

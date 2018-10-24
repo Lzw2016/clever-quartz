@@ -9,7 +9,7 @@
         <!-- 监听器名称 -->
         <result column="listener_name" property="listenerName"/>
         <!-- Scheduler名称 -->
-        <result column="sched_name" property="schedName"/>
+        <result column="sched_name" property="schedulerName"/>
         <!-- Scheduler实例的唯一标识，配置文件中的Instance Id -->
         <result column="instance_name" property="instanceName"/>
         <!-- 触发事件调用的方法 -->

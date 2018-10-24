@@ -17,7 +17,7 @@ public class QrtzCronTriggers implements Serializable {
      * Scheduler名称
      */
     @TableId
-    private String schedName;
+    private String schedulerName;
 
     /**
      * Trigger key

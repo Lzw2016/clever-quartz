@@ -1,7 +1,7 @@
 package org.clever.quartz.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.clever.common.model.response.AjaxMessage;
+import org.clever.common.exception.BusinessException;
 import org.clever.common.utils.exception.ExceptionUtils;
 import org.clever.quartz.dto.request.AddHttpServiceJobReq;
 import org.clever.quartz.jobs.HttpServiceJob;
@@ -25,7 +25,7 @@ public class HttpServiceJobService {
      * 保存 Http任务
      */
     @Transactional
-    public boolean addHttpServiceJob(AddHttpServiceJobReq addHttpServiceJobReq, AjaxMessage ajaxMessage) {
+    public boolean addHttpServiceJob(AddHttpServiceJobReq addHttpServiceJobReq) {
         Scheduler scheduler = QuartzManager.getScheduler();
         JobDetail jobDetail;
         try {
@@ -35,11 +35,8 @@ public class HttpServiceJobService {
             throw ExceptionUtils.unchecked(e);
         }
         if (jobDetail != null) {
-            ajaxMessage.setSuccess(false);
-            ajaxMessage.setFailMessage("新增任务失败,任务已经存在");
-            return false;
+            throw new BusinessException("新增任务失败,任务已经存在");
         }
-
         // ----------------------------------------------------新增JobDetail
         JobBuilder jobBuilder = JobBuilder.newJob(HttpServiceJob.class);
         jobBuilder.withIdentity(addHttpServiceJobReq.getName(), addHttpServiceJobReq.getGroup());
@@ -56,10 +53,8 @@ public class HttpServiceJobService {
         try {
             scheduler.addJob(jobDetail, false);
         } catch (Throwable e) {
-            log.error("新增HttpServiceJob失败", e);
             throw ExceptionUtils.unchecked(e);
         }
-
         // ----------------------------------------------------新增Trigger
         TriggerBuilder<Trigger> triggerBuilder = QuartzTriggerService.newTriggerBuilder(
                 addHttpServiceJobReq.getName(),
@@ -79,7 +74,6 @@ public class HttpServiceJobService {
         try {
             scheduler.scheduleJob(trigger);
         } catch (Throwable e) {
-            log.error("新增HttpServiceJob失败", e);
             throw ExceptionUtils.unchecked(e);
         }
         return true;

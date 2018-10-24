@@ -72,10 +72,10 @@ public class JobLogPlugin implements SchedulerPlugin, JobListener {
         JobDetail jobDetail = context.getJobDetail();
         Job job = context.getJobInstance();
         Trigger trigger = context.getTrigger();
-        String schedName = "未知";
+        String schedulerName = "未知";
         String instanceName = "未知";
         try {
-            schedName = context.getScheduler().getSchedulerName();
+            schedulerName = context.getScheduler().getSchedulerName();
             instanceName = context.getScheduler().getSchedulerInstanceId();
         } catch (Throwable e) {
             log.error("获取Scheduler标识失败", e);
@@ -83,7 +83,7 @@ public class JobLogPlugin implements SchedulerPlugin, JobListener {
 
         QrtzJobLog qrtzJobLog = new QrtzJobLog();
         qrtzJobLog.setListenerName(name);
-        qrtzJobLog.setSchedName(schedName);
+        qrtzJobLog.setSchedulerName(schedulerName);
         qrtzJobLog.setInstanceName(instanceName);
         qrtzJobLog.setJobName(jobDetail.getKey().getName());
         qrtzJobLog.setJobGroup(jobDetail.getKey().getGroup());

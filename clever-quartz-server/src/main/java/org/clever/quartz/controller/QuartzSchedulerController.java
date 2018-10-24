@@ -30,66 +30,52 @@ public class QuartzSchedulerController extends BaseController {
 
     @ApiOperation("暂停调度器")
     @PostMapping("/scheduler/standby" + JSON_SUFFIX)
-    public AjaxMessage<String> standby() {
-        AjaxMessage<String> ajaxMessage = new AjaxMessage<>(true, "暂停调度器成功", null);
-        schedulerService.standby(ajaxMessage);
-        return ajaxMessage;
+    public SchedulerMetaData standby() {
+        return schedulerService.standby();
     }
 
     @ApiOperation("继续运行调度器")
     @PostMapping("/scheduler/start" + JSON_SUFFIX)
-    public AjaxMessage<String> start() {
-        AjaxMessage<String> ajaxMessage = new AjaxMessage<>(true, "继续运行调度器成功", null);
-        schedulerService.start(ajaxMessage);
-        return ajaxMessage;
+    public SchedulerMetaData start() {
+        return schedulerService.start();
     }
 
     @ApiOperation("暂停所有的触发器")
     @PostMapping("/scheduler/pause_all" + JSON_SUFFIX)
-    public AjaxMessage<String> pauseAll() {
-        AjaxMessage<String> ajaxMessage = new AjaxMessage<>(true, "暂停所有的触发器成功", null);
-        schedulerService.pauseAll(ajaxMessage);
-        return ajaxMessage;
+    public SchedulerMetaData pauseAll() {
+        return schedulerService.pauseAll();
     }
 
     @ApiOperation("取消暂停所有的触发器")
     @PostMapping("/scheduler/resume_all" + JSON_SUFFIX)
-    public AjaxMessage<String> resumeAll() {
-        AjaxMessage<String> ajaxMessage = new AjaxMessage<>(true, "取消暂停所有的触发器成功", null);
-        schedulerService.resumeAll(ajaxMessage);
-        return ajaxMessage;
+    public SchedulerMetaData resumeAll() {
+        return schedulerService.resumeAll();
     }
 
     @ApiOperation("获取正在运行的Job成功")
     @GetMapping("/scheduler/running_job" + JSON_SUFFIX)
     @ResponseBody
-    public AjaxMessage<List<CurrentlyExecutingJobsRes>> getRunningJobs() {
-        AjaxMessage<List<CurrentlyExecutingJobsRes>> ajaxMessage = new AjaxMessage<>(true, "获取正在运行的Job成功", null);
-        ajaxMessage.setResult(schedulerService.getRunningJobs(ajaxMessage));
-        return ajaxMessage;
+    public List<CurrentlyExecutingJobsRes> getRunningJobs() {
+        return schedulerService.getRunningJobs();
     }
 
     @ApiOperation("中断Job")
     @PostMapping("/scheduler/interrupt" + JSON_SUFFIX)
     public AjaxMessage<String> interrupt(@Validated @RequestBody JobDetailKeyReq jobDetailKeyReq) {
         AjaxMessage<String> ajaxMessage = new AjaxMessage<>(true, "中断Job成功", null);
-        schedulerService.interrupt(JobKey.jobKey(jobDetailKeyReq.getJobName(), jobDetailKeyReq.getJobGroup()), ajaxMessage);
+        schedulerService.interrupt(JobKey.jobKey(jobDetailKeyReq.getJobName(), jobDetailKeyReq.getJobGroup()));
         return ajaxMessage;
     }
 
     @ApiOperation("获取Scheduler信息")
     @GetMapping("/scheduler/meta_data" + JSON_SUFFIX)
-    public AjaxMessage<SchedulerMetaData> getMetaData() {
-        AjaxMessage<SchedulerMetaData> ajaxMessage = new AjaxMessage<>(true, "获取Scheduler信息成功", null);
-        ajaxMessage.setResult(schedulerService.getMetaData(ajaxMessage));
-        return ajaxMessage;
+    public SchedulerMetaData getMetaData() {
+        return schedulerService.getMetaData();
     }
 
     @ApiOperation("获取SchedulerContext")
     @GetMapping("/scheduler/context" + JSON_SUFFIX)
-    public AjaxMessage<Map<String, Object>> getContext() {
-        AjaxMessage<Map<String, Object>> ajaxMessage = new AjaxMessage<>(true, "获取SchedulerContext成功", null);
-        ajaxMessage.setResult(schedulerService.getContext(ajaxMessage));
-        return ajaxMessage;
+    public Map<String, Object> getContext() {
+        return schedulerService.getContext();
     }
 }

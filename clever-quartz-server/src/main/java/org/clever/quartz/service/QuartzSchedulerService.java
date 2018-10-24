@@ -2,6 +2,7 @@ package org.clever.quartz.service;
 
 
 import lombok.extern.slf4j.Slf4j;
+import org.clever.common.exception.BusinessException;
 import org.clever.common.model.response.AjaxMessage;
 import org.clever.quartz.dto.response.CurrentlyExecutingJobsRes;
 import org.clever.quartz.utils.ConvertUtils;
@@ -30,13 +31,12 @@ public class QuartzSchedulerService {
      * @return 失败返回false
      */
     @Transactional
-    public boolean standby(AjaxMessage ajaxMessage) {
+    public SchedulerMetaData standby() {
         boolean result = QuartzManager.standby();
         if (!result) {
-            ajaxMessage.setSuccess(false);
-            ajaxMessage.setFailMessage("暂停调度器失败");
+            throw new BusinessException("暂停调度器失败");
         }
-        return result;
+        return getMetaData();
     }
 
     /**
@@ -45,13 +45,12 @@ public class QuartzSchedulerService {
      * @return 失败返回false
      */
     @Transactional
-    public boolean start(AjaxMessage ajaxMessage) {
+    public SchedulerMetaData start() {
         boolean result = QuartzManager.start();
         if (!result) {
-            ajaxMessage.setSuccess(false);
-            ajaxMessage.setFailMessage("继续运行调度器失败");
+            throw new BusinessException("继续运行调度器失败");
         }
-        return result;
+        return getMetaData();
     }
 
     /**
@@ -60,17 +59,15 @@ public class QuartzSchedulerService {
      * @return 失败返回false
      */
     @Transactional
-    public boolean pauseAll(AjaxMessage ajaxMessage) {
+    public SchedulerMetaData pauseAll() {
         Scheduler scheduler = QuartzManager.getScheduler();
         try {
             scheduler.pauseAll();
         } catch (Throwable e) {
             log.error("暂停所有的触发器异常", e);
-            ajaxMessage.setSuccess(false);
-            ajaxMessage.setFailMessage("暂停所有的触发器异常");
-            return false;
+            throw new BusinessException("继续运行调度器失败", e);
         }
-        return true;
+        return getMetaData();
     }
 
     /**
@@ -79,17 +76,14 @@ public class QuartzSchedulerService {
      * @return 失败返回false
      */
     @Transactional
-    public boolean resumeAll(AjaxMessage ajaxMessage) {
+    public SchedulerMetaData resumeAll() {
         Scheduler scheduler = QuartzManager.getScheduler();
         try {
             scheduler.resumeAll();
         } catch (Throwable e) {
-            log.error("取消暂停所有的触发器异常", e);
-            ajaxMessage.setSuccess(false);
-            ajaxMessage.setFailMessage("取消暂停所有的触发器异常");
-            return false;
+            throw new BusinessException("取消暂停所有的触发器异常", e);
         }
-        return true;
+        return getMetaData();
     }
 
     /**
@@ -98,20 +92,18 @@ public class QuartzSchedulerService {
      *
      * @return 失败返回null
      */
-    public List<CurrentlyExecutingJobsRes> getRunningJobs(AjaxMessage ajaxMessage) {
+    public List<CurrentlyExecutingJobsRes> getRunningJobs() {
         Scheduler scheduler = QuartzManager.getScheduler();
         List<JobExecutionContext> list;
-        String schedName;
+        String schedulerName;
         try {
-            schedName = QuartzManager.getScheduler().getSchedulerName();
+            schedulerName = QuartzManager.getScheduler().getSchedulerName();
             list = scheduler.getCurrentlyExecutingJobs();
         } catch (Throwable e) {
             log.error("获取当前所有执行的JobExecutionContext异常", e);
-            ajaxMessage.setSuccess(false);
-            ajaxMessage.setFailMessage("获取正在运行的Job异常");
-            return null;
+            throw new BusinessException("获取当前所有执行的JobExecutionContext异常", e);
         }
-        return ConvertUtils.convert(schedName, list);
+        return ConvertUtils.convert(schedulerName, list);
     }
 
     /**
@@ -121,15 +113,13 @@ public class QuartzSchedulerService {
      * @return 失败返回false
      */
     @Transactional
-    public boolean interrupt(JobKey jobKey, AjaxMessage ajaxMessage) {
+    public boolean interrupt(JobKey jobKey) {
         Scheduler scheduler = QuartzManager.getScheduler();
         try {
             scheduler.interrupt(jobKey);
         } catch (Throwable e) {
             log.error("中断Job异常", e);
-            ajaxMessage.setSuccess(false);
-            ajaxMessage.setFailMessage("中断Job异常");
-            return false;
+            throw new BusinessException("中断Job异常", e);
         }
         return true;
     }
@@ -139,15 +129,14 @@ public class QuartzSchedulerService {
      *
      * @return 失败返回null
      */
-    public SchedulerMetaData getMetaData(AjaxMessage ajaxMessage) {
+    public SchedulerMetaData getMetaData() {
         Scheduler scheduler = QuartzManager.getScheduler();
-        SchedulerMetaData schedulerMetaData = null;
+        SchedulerMetaData schedulerMetaData;
         try {
             schedulerMetaData = scheduler.getMetaData();
         } catch (Throwable e) {
             log.error("获取Scheduler信息异常", e);
-            ajaxMessage.setSuccess(false);
-            ajaxMessage.setFailMessage("获取Scheduler信息异常");
+            throw new BusinessException("获取Scheduler信息异常", e);
         }
         return schedulerMetaData;
     }
@@ -157,15 +146,14 @@ public class QuartzSchedulerService {
      *
      * @return 失败返回null
      */
-    public Map<String, Object> getContext(AjaxMessage ajaxMessage) {
+    public Map<String, Object> getContext() {
         Scheduler scheduler = QuartzManager.getScheduler();
         SchedulerContext schedulerContext = null;
         try {
             schedulerContext = scheduler.getContext();
         } catch (Throwable e) {
             log.error("获取SchedulerContext异常", e);
-            ajaxMessage.setSuccess(false);
-            ajaxMessage.setFailMessage("获取SchedulerContext异常");
+            throw new BusinessException("获取SchedulerContext异常", e);
         }
         Map<String, Object> result = null;
         if (schedulerContext != null) {

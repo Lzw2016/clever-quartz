@@ -17,7 +17,7 @@ public class JobDetailsRes extends BaseResponse {
     /**
      * Scheduler名称
      */
-    private String schedName;
+    private String schedulerName;
 
     /**
      * Job key

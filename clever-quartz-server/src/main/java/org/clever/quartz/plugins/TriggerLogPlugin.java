@@ -76,17 +76,17 @@ public class TriggerLogPlugin implements SchedulerPlugin, TriggerListener {
     public void triggerFired(Trigger trigger, JobExecutionContext context) {
         JobDetail jobDetail = context.getJobDetail();
         Job job = context.getJobInstance();
-        String schedName = "未知";
+        String schedulerName = "未知";
         String instanceName = "未知";
         try {
-            schedName = context.getScheduler().getSchedulerName();
+            schedulerName = context.getScheduler().getSchedulerName();
             instanceName = context.getScheduler().getSchedulerInstanceId();
         } catch (Throwable e) {
             log.error("获取Scheduler标识失败", e);
         }
         QrtzTriggerLog qrtzTriggerLog = new QrtzTriggerLog();
         qrtzTriggerLog.setListenerName(name);
-        qrtzTriggerLog.setSchedName(schedName);
+        qrtzTriggerLog.setSchedulerName(schedulerName);
         qrtzTriggerLog.setInstanceName(instanceName);
         qrtzTriggerLog.setJobName(jobDetail.getKey().getName());
         qrtzTriggerLog.setJobGroup(jobDetail.getKey().getGroup());
@@ -134,17 +134,17 @@ public class TriggerLogPlugin implements SchedulerPlugin, TriggerListener {
             log.error("获取JobDetail失败-triggerMisfired", e);
             return;
         }
-        String schedName = "未知";
+        String schedulerName = "未知";
         String instanceName = "未知";
         try {
-            schedName = this.scheduler.getSchedulerName();
+            schedulerName = this.scheduler.getSchedulerName();
             instanceName = this.scheduler.getSchedulerInstanceId();
         } catch (Throwable e) {
             log.error("获取Scheduler标识失败", e);
         }
         QrtzTriggerLog qrtzTriggerLog = new QrtzTriggerLog();
         qrtzTriggerLog.setListenerName(name);
-        qrtzTriggerLog.setSchedName(schedName);
+        qrtzTriggerLog.setSchedulerName(schedulerName);
         qrtzTriggerLog.setInstanceName(instanceName);
         qrtzTriggerLog.setJobName(jobDetail.getKey().getName());
         qrtzTriggerLog.setJobGroup(jobDetail.getKey().getGroup());

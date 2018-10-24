@@ -16,11 +16,11 @@ import java.util.List;
 public interface QrtzJobDetailsMapper extends BaseMapper<QrtzJobDetails> {
 
     List<JobDetailsRes> find(
-            @Param("schedName") String schedName,
+            @Param("schedulerName") String schedulerName,
             @Param("jobName") String jobName,
             @Param("jobGroup") String jobGroup,
             @Param("jobClassName") String jobClassName,
             IPage page);
 
-    List<JobKeyRes> getJobKeyByGroup(@Param("schedName") String schedName, @Param("jobGroup") String jobGroup);
+    List<JobKeyRes> getJobKeyByGroup(@Param("schedulerName") String schedulerName, @Param("jobGroup") String jobGroup);
 }

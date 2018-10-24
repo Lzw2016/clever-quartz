@@ -48,17 +48,17 @@ public class SchedulerLogPlugin implements SchedulerPlugin, SchedulerListener {
      * @param logData    触发事件记录的日志数据
      */
     private void saveLog(String methodName, Map<String, Object> logData) {
-        String schedName = "未知";
+        String schedulerName = "未知";
         String instanceName = "未知";
         try {
-            schedName = this.scheduler.getSchedulerName();
+            schedulerName = this.scheduler.getSchedulerName();
             instanceName = this.scheduler.getSchedulerInstanceId();
         } catch (Throwable e) {
             log.error("获取Scheduler标识失败", e);
         }
         QrtzSchedulerLog qrtzSchedulerLog = new QrtzSchedulerLog();
         qrtzSchedulerLog.setListenerName(name);
-        qrtzSchedulerLog.setSchedName(schedName);
+        qrtzSchedulerLog.setSchedulerName(schedulerName);
         qrtzSchedulerLog.setInstanceName(instanceName);
         qrtzSchedulerLog.setMethodName(methodName);
         qrtzSchedulerLog.setLogData(JacksonMapper.nonEmptyMapper().toJson(logData));

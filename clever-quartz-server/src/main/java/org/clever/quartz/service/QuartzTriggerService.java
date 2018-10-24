@@ -1,7 +1,7 @@
 package org.clever.quartz.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.clever.common.model.response.AjaxMessage;
+import org.clever.common.exception.BusinessException;
 import org.clever.common.utils.DateTimeUtils;
 import org.clever.common.utils.exception.ExceptionUtils;
 import org.clever.quartz.dto.request.AddCronTriggerForJobReq;
@@ -117,12 +117,11 @@ public class QuartzTriggerService {
      * @param num  获取cron表达式表示时间数量
      * @return 失败返回null
      */
-    public List<String> validatorCron(String cron, int num, AjaxMessage ajaxMessage) {
+    public List<String> validatorCron(String cron, int num) {
         List<Date> dateList = QuartzManager.validatorCron(cron, num);
         List<String> daStrList = new ArrayList<>();
         if (dateList == null) {
-            ajaxMessage.setSuccess(false);
-            ajaxMessage.setFailMessage("cron表达式验证失败");
+            throw new BusinessException("cron表达式验证失败");
         } else {
             for (Date date : dateList) {
                 daStrList.add(DateTimeUtils.formatToString(date, "yyyy-MM-dd HH:mm:ss"));
@@ -208,7 +207,7 @@ public class QuartzTriggerService {
      * @return 成功返回true
      */
     @Transactional
-    public boolean addSimpleTriggerForJob(AddSimpleTriggerForJobReq addSimpleTriggerForJobReq, AjaxMessage ajaxMessage) {
+    public boolean addSimpleTriggerForJob(AddSimpleTriggerForJobReq addSimpleTriggerForJobReq) {
         TriggerBuilder<Trigger> triggerBuilder = newTriggerBuilder(
                 addSimpleTriggerForJobReq.getJobName(),
                 addSimpleTriggerForJobReq.getJobGroup(),
@@ -230,9 +229,7 @@ public class QuartzTriggerService {
             scheduler.scheduleJob(trigger);
         } catch (Throwable e) {
             log.error("给JobDetail增加一个SimpleTrigger异常", e);
-            ajaxMessage.setSuccess(false);
-            ajaxMessage.setFailMessage("给JobDetail增加一个SimpleTrigger失败");
-            return false;
+            throw new BusinessException("给JobDetail增加一个SimpleTrigger异常", e);
         }
         return true;
     }
@@ -255,7 +252,7 @@ public class QuartzTriggerService {
      * @return 成功返回true
      */
     @Transactional
-    public boolean addCronTriggerForJob(AddCronTriggerForJobReq addCronTriggerForJobReq, AjaxMessage ajaxMessage) {
+    public boolean addCronTriggerForJob(AddCronTriggerForJobReq addCronTriggerForJobReq) {
         if (QuartzManager.validatorCron(addCronTriggerForJobReq.getCron(), 1) == null) {
             throw new RuntimeException("cron 表达式错误");
         }
@@ -277,9 +274,7 @@ public class QuartzTriggerService {
             scheduler.scheduleJob(trigger);
         } catch (Throwable e) {
             log.error("给JobDetail增加一个CronTrigger异常", e);
-            ajaxMessage.setSuccess(false);
-            ajaxMessage.setFailMessage("给JobDetail增加一个CronTrigger失败");
-            return false;
+            throw new BusinessException("给JobDetail增加一个CronTrigger异常", e);
         }
         return true;
     }
@@ -290,10 +285,11 @@ public class QuartzTriggerService {
      * @return 成功返回true
      */
     @Transactional
-    public boolean deleteTriggerByJob(JobDetailKeyReq jobDetailKeyReq) {
+    public List<QrtzTriggers> deleteTriggerByJob(JobDetailKeyReq jobDetailKeyReq) {
         Scheduler scheduler = QuartzManager.getScheduler();
+        List<QrtzTriggers> jobTriggers;
         try {
-            List<QrtzTriggers> jobTriggers = qrtzTriggersMapper.getByJobKey(scheduler.getSchedulerName(), jobDetailKeyReq.getJobName(), jobDetailKeyReq.getJobGroup());
+            jobTriggers = qrtzTriggersMapper.getByJobKey(scheduler.getSchedulerName(), jobDetailKeyReq.getJobName(), jobDetailKeyReq.getJobGroup());
             for (QrtzTriggers qrtzTriggers : jobTriggers) {
                 // 暂停触发器
                 scheduler.pauseTrigger(new TriggerKey(qrtzTriggers.getJobName(), qrtzTriggers.getJobGroup()));
@@ -304,7 +300,7 @@ public class QuartzTriggerService {
             log.error("删除一个JobDetail的所有Trigger异常", e);
             throw ExceptionUtils.unchecked(e);
         }
-        return true;
+        return jobTriggers;
     }
 
     /**
@@ -313,20 +309,24 @@ public class QuartzTriggerService {
      * @return 成功返回true
      */
     @Transactional
-    public boolean deleteTrigger(TriggerKeyReq triggerKeyReq, AjaxMessage ajaxMessage) {
+    public Trigger deleteTrigger(TriggerKeyReq triggerKeyReq) {
         Scheduler scheduler = QuartzManager.getScheduler();
+        TriggerKey triggerKey = TriggerKey.triggerKey(triggerKeyReq.getTriggerName(), triggerKeyReq.getTriggerGroup());
+        Trigger trigger;
         try {
+            trigger = scheduler.getTrigger(triggerKey);
+            if (trigger == null) {
+                throw new BusinessException("触发器不存在");
+            }
             // 暂停触发器
-            scheduler.pauseTrigger(TriggerKey.triggerKey(triggerKeyReq.getTriggerName(), triggerKeyReq.getTriggerGroup()));
+            scheduler.pauseTrigger(triggerKey);
             // 移除触发器
-            scheduler.unscheduleJob(TriggerKey.triggerKey(triggerKeyReq.getTriggerName(), triggerKeyReq.getTriggerGroup()));
+            scheduler.unscheduleJob(triggerKey);
         } catch (Throwable e) {
             log.error("删除一个Trigger异常", e);
-            ajaxMessage.setSuccess(false);
-            ajaxMessage.setFailMessage("删除一个Trigger失败");
-            return false;
+            throw new BusinessException("删除一个Trigger异常", e);
         }
-        return true;
+        return trigger;
     }
 
     /**
@@ -335,18 +335,22 @@ public class QuartzTriggerService {
      * @return 成功返回true
      */
     @Transactional
-    public boolean pauseTrigger(TriggerKeyReq triggerKeyReq, AjaxMessage ajaxMessage) {
+    public Trigger pauseTrigger(TriggerKeyReq triggerKeyReq) {
         Scheduler scheduler = QuartzManager.getScheduler();
+        TriggerKey triggerKey = TriggerKey.triggerKey(triggerKeyReq.getTriggerName(), triggerKeyReq.getTriggerGroup());
+        Trigger trigger;
         try {
+            trigger = scheduler.getTrigger(triggerKey);
+            if (trigger == null) {
+                throw new BusinessException("触发器不存在");
+            }
             // 暂停触发器
-            scheduler.pauseTrigger(TriggerKey.triggerKey(triggerKeyReq.getTriggerName(), triggerKeyReq.getTriggerGroup()));
+            scheduler.pauseTrigger(triggerKey);
         } catch (Throwable e) {
             log.error("暂停一个Trigger异常", e);
-            ajaxMessage.setSuccess(false);
-            ajaxMessage.setFailMessage("暂停一个Trigger失败");
-            return false;
+            throw new BusinessException("暂停一个Trigger异常", e);
         }
-        return true;
+        return trigger;
     }
 
     /**
@@ -355,18 +359,22 @@ public class QuartzTriggerService {
      * @return 成功返回true
      */
     @Transactional
-    public boolean resumeTrigger(TriggerKeyReq triggerKeyReq, AjaxMessage ajaxMessage) {
+    public Trigger resumeTrigger(TriggerKeyReq triggerKeyReq) {
         Scheduler scheduler = QuartzManager.getScheduler();
+        TriggerKey triggerKey = TriggerKey.triggerKey(triggerKeyReq.getTriggerName(), triggerKeyReq.getTriggerGroup());
+        Trigger trigger;
         try {
+            trigger = scheduler.getTrigger(triggerKey);
+            if (trigger == null) {
+                throw new BusinessException("触发器不存在");
+            }
             // 取消暂停触发器
-            scheduler.resumeTrigger(TriggerKey.triggerKey(triggerKeyReq.getTriggerName(), triggerKeyReq.getTriggerGroup()));
+            scheduler.resumeTrigger(triggerKey);
         } catch (Throwable e) {
             log.error("取消暂停一个Trigger异常", e);
-            ajaxMessage.setSuccess(false);
-            ajaxMessage.setFailMessage("取消暂停一个Trigger失败");
-            return false;
+            throw new BusinessException("取消暂停一个Trigger异常", e);
         }
-        return true;
+        return trigger;
     }
 
     /**
@@ -374,7 +382,7 @@ public class QuartzTriggerService {
      *
      * @return 失败返回null
      */
-    public List<TriggersRes> getTriggerByJob(JobDetailKeyReq jobDetailKeyReq, AjaxMessage ajaxMessage) {
+    public List<TriggersRes> getTriggerByJob(JobDetailKeyReq jobDetailKeyReq) {
         List<TriggersRes> qrtzTriggersList = new ArrayList<>();
         Scheduler scheduler = QuartzManager.getScheduler();
         try {
@@ -383,24 +391,22 @@ public class QuartzTriggerService {
             qrtzTriggersList.addAll(qrtzTriggersMapper.getBlobTriggersByJobKey(scheduler.getSchedulerName(), jobDetailKeyReq.getJobName(), jobDetailKeyReq.getJobGroup()));
         } catch (Throwable e) {
             log.error("获取一个Job的所有Trigger异常", e);
-            ajaxMessage.setSuccess(false);
-            ajaxMessage.setFailMessage("获取一个Job的所有Trigger异常");
+            throw new BusinessException("获取一个Job的所有Trigger异常", e);
         }
         return qrtzTriggersList;
     }
 
-    public TriggerInfoRes getTrigger(String triggerGroup, String triggerName, AjaxMessage ajaxMessage) {
+    public TriggerInfoRes getTrigger(String triggerGroup, String triggerName) {
         Scheduler scheduler = QuartzManager.getScheduler();
-        TriggerInfoRes triggerInfoRes = null;
+        TriggerInfoRes triggerInfoRes;
         try {
-            String schedName = scheduler.getSchedulerName();
+            String schedulerName = scheduler.getSchedulerName();
             Trigger trigger = scheduler.getTrigger(new TriggerKey(triggerName, triggerGroup));
             Trigger.TriggerState state = scheduler.getTriggerState(trigger.getKey());
-            triggerInfoRes = ConvertUtils.convert(schedName, trigger, state);
+            triggerInfoRes = ConvertUtils.convert(schedulerName, trigger, state);
         } catch (Throwable e) {
             log.error("获取Trigger异常", e);
-            ajaxMessage.setSuccess(false);
-            ajaxMessage.setFailMessage("获取Trigger异常");
+            throw new BusinessException("获取Trigger异常", e);
         }
         return triggerInfoRes;
     }
@@ -410,15 +416,14 @@ public class QuartzTriggerService {
      *
      * @return 失败返回null
      */
-    public List<String> getTriggerGroupNames(AjaxMessage ajaxMessage) {
+    public List<String> getTriggerGroupNames() {
         Scheduler scheduler = QuartzManager.getScheduler();
-        List<String> triggerGroupNames = null;
+        List<String> triggerGroupNames;
         try {
             triggerGroupNames = scheduler.getTriggerGroupNames();
         } catch (Throwable e) {
             log.error("### 获取所有的TriggerGroupName失败", e);
-            ajaxMessage.setSuccess(false);
-            ajaxMessage.setFailMessage("获取所有的TriggerGroupName失败");
+            throw new BusinessException("获取所有的TriggerGroupName失败", e);
         }
         return triggerGroupNames;
     }
@@ -428,15 +433,14 @@ public class QuartzTriggerService {
      *
      * @return 失败返回null
      */
-    public List<TriggerKeyRes> getTriggerKeyByGroup(String triggerGroup, AjaxMessage ajaxMessage) {
-        List<TriggerKeyRes> triggerKeyResList = null;
+    public List<TriggerKeyRes> getTriggerKeyByGroup(String triggerGroup) {
+        List<TriggerKeyRes> triggerKeyResList;
         Scheduler scheduler = QuartzManager.getScheduler();
         try {
             triggerKeyResList = qrtzTriggersMapper.getTriggerKeyByGroup(scheduler.getSchedulerName(), triggerGroup);
         } catch (Throwable e) {
             log.error("### 获取所有的TriggerKey失败", e);
-            ajaxMessage.setSuccess(false);
-            ajaxMessage.setFailMessage("获取所有的TriggerKey失败");
+            throw new BusinessException("获取所有的TriggerKey失败", e);
         }
         return triggerKeyResList;
     }
@@ -446,15 +450,14 @@ public class QuartzTriggerService {
      *
      * @return 失败返回null
      */
-    public List<String> getCalendarNames(AjaxMessage ajaxMessage) {
+    public List<String> getCalendarNames() {
         Scheduler scheduler = QuartzManager.getScheduler();
-        List<String> calendarName = null;
+        List<String> calendarName;
         try {
             calendarName = scheduler.getCalendarNames();
         } catch (Throwable e) {
             log.error("### 获取所有的CalendarName失败", e);
-            ajaxMessage.setSuccess(false);
-            ajaxMessage.setFailMessage("获取所有的CalendarName失败");
+            throw new BusinessException("获取所有的CalendarName失败", e);
         }
         return calendarName;
     }
