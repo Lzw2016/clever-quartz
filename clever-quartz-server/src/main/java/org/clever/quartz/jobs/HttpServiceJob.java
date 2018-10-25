@@ -55,74 +55,74 @@ public class HttpServiceJob implements Job {
             notice = (HttpJobNotice) object;
         }
 
-        HttpJobResult httpJobResult;
-        try {
-            httpJobResult = sendRequest(httpJobData, jobDetail);
-        } catch (IOException e) {
-            log.error(e.getMessage(), e);
-            throw ExceptionUtils.unchecked(e);
-        }
-        if (httpJobResult == null) {
-            // 服务调用失败
-        }
-        if (notice != null) {
-            // 发送通知
-        }
+//        HttpJobResult httpJobResult;
+//        try {
+//            httpJobResult = sendRequest(httpJobData, jobDetail);
+//        } catch (IOException e) {
+//            log.error(e.getMessage(), e);
+//            throw ExceptionUtils.unchecked(e);
+//        }
+//        if (httpJobResult == null) {
+//            // 服务调用失败
+//        }
+//        if (notice != null) {
+//            // 发送通知
+//        }
 //        httpJobResult.
     }
 
-    /**
-     * 发送Http请求
-     */
-    private HttpJobResult sendRequest(HttpJobData httpJobData, JobDetail jobDetail) throws IOException {
-        HttpJobResult httpJobResult = null;
-        OkHttpClient okHttpClient = HttpClientUtils.getOkHttpClient();
-        Request.Builder requestBuilder = new Request.Builder();
-        requestBuilder.url(httpJobData.getUrl());
-        if (httpJobData.getHeaders() != null) {
-            for (Map.Entry<String, String> entry : httpJobData.getHeaders().entrySet()) {
-                requestBuilder.addHeader(entry.getKey(), entry.getValue());
-            }
-        }
-
-        RequestBody requestBody = null;
-        if (httpJobData.getFormBody() != null) {
-            FormBody.Builder formBodyBuilder = new FormBody.Builder();
-            for (Map.Entry<String, String> entry : httpJobData.getFormBody().entrySet()) {
-                formBodyBuilder.add(entry.getKey(), entry.getValue());
-            }
-            requestBody = formBodyBuilder.build();
-        }
-        if (StringUtils.isNotBlank(httpJobData.getJsonBody())) {
-            requestBody = RequestBody.create(HttpClientUtils.JSON, httpJobData.getJsonBody());
-        }
-        // TODO httpJobData.getMethod() ?
-        if (requestBody != null) {
-            requestBuilder.method(httpJobData.getMethod().toUpperCase(), requestBody);
-        }
-
-        Request request = requestBuilder.build();
-        Response response = okHttpClient.newCall(request).execute();
-        ResponseBody responseBody = response.body();
-        jobDetail.getJobDataMap().put("httpStatus", response.code());
-        String json = null;
-        if (responseBody != null) {
-            json = responseBody.string();
-        }
-        if (StringUtils.isNotBlank(json)) {
-            jobDetail.getJobDataMap().put(HTTP_JOB_RESULT_KEY, json);
-            httpJobResult = JacksonMapper.nonEmptyMapper().fromJson(json, HttpJobResult.class);
-        }
-        if (log.isInfoEnabled()) {
-            String tmp = "\r\n" +
-                    "#=======================================================================================================================#\r\n" +
-                    "# 任务组名：[" + jobDetail.getKey().getGroup() + "] | 任务名称：[" + jobDetail.getKey().getName() + "]\r\n" +
-                    "# 请求地址：[" + httpJobData.getUrl() + "]\r\n" +
-                    "# HTTP响应状态码：[" + response.code() + "] | 响应消息：[" + response.message() + "]\r\n" +
-                    "# 响应数据：[" + json + "]\r\n" +
-                    "#=======================================================================================================================#\r\n";
-            log.info(tmp);
-        }
-        return httpJobResult;
-    }
+//    /**
+//     * 发送Http请求
+//     */
+//    private HttpJobResult sendRequest(HttpJobData httpJobData, JobDetail jobDetail) throws IOException {
+//        HttpJobResult httpJobResult = null;
+//        OkHttpClient okHttpClient = HttpClientUtils.getOkHttpClient();
+//        Request.Builder requestBuilder = new Request.Builder();
+//        requestBuilder.url(httpJobData.getUrl());
+//        if (httpJobData.getHeaders() != null) {
+//            for (Map.Entry<String, String> entry : httpJobData.getHeaders().entrySet()) {
+//                requestBuilder.addHeader(entry.getKey(), entry.getValue());
+//            }
+//        }
+//
+//        RequestBody requestBody = null;
+//        if (httpJobData.getFormBody() != null) {
+//            FormBody.Builder formBodyBuilder = new FormBody.Builder();
+//            for (Map.Entry<String, String> entry : httpJobData.getFormBody().entrySet()) {
+//                formBodyBuilder.add(entry.getKey(), entry.getValue());
+//            }
+//            requestBody = formBodyBuilder.build();
+//        }
+//        if (StringUtils.isNotBlank(httpJobData.getJsonBody())) {
+//            requestBody = RequestBody.create(HttpClientUtils.JSON, httpJobData.getJsonBody());
+//        }
+//        // TODO httpJobData.getMethod() ?
+//        if (requestBody != null) {
+//            requestBuilder.method(httpJobData.getMethod().toUpperCase(), requestBody);
+//        }
+//
+//        Request request = requestBuilder.build();
+//        Response response = okHttpClient.newCall(request).execute();
+//        ResponseBody responseBody = response.body();
+//        jobDetail.getJobDataMap().put("httpStatus", response.code());
+//        String json = null;
+//        if (responseBody != null) {
+//            json = responseBody.string();
+//        }
+//        if (StringUtils.isNotBlank(json)) {
+//            jobDetail.getJobDataMap().put(HTTP_JOB_RESULT_KEY, json);
+//            httpJobResult = JacksonMapper.nonEmptyMapper().fromJson(json, HttpJobResult.class);
+//        }
+//        if (log.isInfoEnabled()) {
+//            String tmp = "\r\n" +
+//                    "#=======================================================================================================================#\r\n" +
+//                    "# 任务组名：[" + jobDetail.getKey().getGroup() + "] | 任务名称：[" + jobDetail.getKey().getName() + "]\r\n" +
+//                    "# 请求地址：[" + httpJobData.getUrl() + "]\r\n" +
+//                    "# HTTP响应状态码：[" + response.code() + "] | 响应消息：[" + response.message() + "]\r\n" +
+//                    "# 响应数据：[" + json + "]\r\n" +
+//                    "#=======================================================================================================================#\r\n";
+//            log.info(tmp);
+//        }
+//        return httpJobResult;
+//    }
 }

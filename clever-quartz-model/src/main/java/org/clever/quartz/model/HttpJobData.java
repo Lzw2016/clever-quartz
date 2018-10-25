@@ -35,9 +35,9 @@ public class HttpJobData implements Serializable {
     private Map<String, String> headers;
 
     /**
-     * 表单数据
+     * Url查询参数
      */
-    private Map<String, String> formBody;
+    private Map<String, String> params;
 
     /**
      * 请求正文 - application/json 类型
