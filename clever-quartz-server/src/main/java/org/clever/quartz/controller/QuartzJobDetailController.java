@@ -1,5 +1,6 @@
 package org.clever.quartz.controller;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.clever.common.server.controller.BaseController;
@@ -49,7 +50,7 @@ public class QuartzJobDetailController extends BaseController {
 
     @ApiOperation("查询Job信息")
     @GetMapping("/job_detail" + JSON_SUFFIX)
-    public List<JobDetailsRes> findJobDetail(FindJobDetailReq findJobDetailReq) {
+    public IPage<JobDetailsRes> findJobDetail(FindJobDetailReq findJobDetailReq) {
         return jobDetailService.findJobDetail(findJobDetailReq);
     }
 
