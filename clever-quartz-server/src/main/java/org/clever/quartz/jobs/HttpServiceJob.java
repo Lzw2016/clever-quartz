@@ -1,21 +1,13 @@
 package org.clever.quartz.jobs;
 
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.*;
-import org.apache.commons.lang3.StringUtils;
-import org.clever.common.utils.exception.ExceptionUtils;
-import org.clever.common.utils.mapper.JacksonMapper;
-import org.clever.quartz.model.HttpJobData;
+import org.clever.quartz.model.HttpJobConfig;
+import org.clever.quartz.model.HttpJobDataKeyConstant;
 import org.clever.quartz.model.HttpJobNotice;
-import org.clever.quartz.model.HttpJobResult;
-import org.clever.quartz.utils.HttpClientUtils;
 import org.quartz.Job;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-
-import java.io.IOException;
-import java.util.Map;
 
 /**
  * 使用Http请求调用服务接口
@@ -31,21 +23,21 @@ public class HttpServiceJob implements Job {
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
         JobDetail jobDetail = context.getJobDetail();
-        Object object = jobDetail.getJobDataMap().get(HttpJobData.HTTP_JOB_DATA_KEY);
+        Object object = jobDetail.getJobDataMap().get(HttpJobDataKeyConstant.HttpJobConfig);
         if (object == null) {
             RuntimeException exception = new RuntimeException("[HttpServiceJob]任务数据不存在");
             log.error(exception.getMessage(), exception);
             throw exception;
         }
-        if (!(object instanceof HttpJobData)) {
+        if (!(object instanceof HttpJobConfig)) {
             RuntimeException exception = new RuntimeException("[HttpServiceJob]任务数据类型不正确,类型[" + object.getClass() + "]");
             log.error(exception.getMessage(), exception);
             throw exception;
         }
-        HttpJobData httpJobData = (HttpJobData) object;
+        HttpJobConfig httpJobConfig = (HttpJobConfig) object;
 
         HttpJobNotice notice = null;
-        object = jobDetail.getJobDataMap().get(HttpJobNotice.HTTP_JOB_NOTICE_KEY);
+        object = jobDetail.getJobDataMap().get(HttpJobDataKeyConstant.HttpJobNotice);
         if (object != null) {
             if (!(object instanceof HttpJobNotice)) {
                 RuntimeException exception = new RuntimeException("[HttpServiceJob]通知数据类型不正确,类型[" + object.getClass() + "]");
@@ -57,7 +49,7 @@ public class HttpServiceJob implements Job {
 
 //        HttpJobResult httpJobResult;
 //        try {
-//            httpJobResult = sendRequest(httpJobData, jobDetail);
+//            httpJobResult = sendRequest(httpJobConfig, jobDetail);
 //        } catch (IOException e) {
 //            log.error(e.getMessage(), e);
 //            throw ExceptionUtils.unchecked(e);
@@ -74,31 +66,31 @@ public class HttpServiceJob implements Job {
 //    /**
 //     * 发送Http请求
 //     */
-//    private HttpJobResult sendRequest(HttpJobData httpJobData, JobDetail jobDetail) throws IOException {
+//    private HttpJobResult sendRequest(HttpJobConfig httpJobConfig, JobDetail jobDetail) throws IOException {
 //        HttpJobResult httpJobResult = null;
 //        OkHttpClient okHttpClient = HttpClientUtils.getOkHttpClient();
 //        Request.Builder requestBuilder = new Request.Builder();
-//        requestBuilder.url(httpJobData.getUrl());
-//        if (httpJobData.getHeaders() != null) {
-//            for (Map.Entry<String, String> entry : httpJobData.getHeaders().entrySet()) {
+//        requestBuilder.url(httpJobConfig.getUrl());
+//        if (httpJobConfig.getHeaders() != null) {
+//            for (Map.Entry<String, String> entry : httpJobConfig.getHeaders().entrySet()) {
 //                requestBuilder.addHeader(entry.getKey(), entry.getValue());
 //            }
 //        }
 //
 //        RequestBody requestBody = null;
-//        if (httpJobData.getFormBody() != null) {
+//        if (httpJobConfig.getFormBody() != null) {
 //            FormBody.Builder formBodyBuilder = new FormBody.Builder();
-//            for (Map.Entry<String, String> entry : httpJobData.getFormBody().entrySet()) {
+//            for (Map.Entry<String, String> entry : httpJobConfig.getFormBody().entrySet()) {
 //                formBodyBuilder.add(entry.getKey(), entry.getValue());
 //            }
 //            requestBody = formBodyBuilder.build();
 //        }
-//        if (StringUtils.isNotBlank(httpJobData.getJsonBody())) {
-//            requestBody = RequestBody.create(HttpClientUtils.JSON, httpJobData.getJsonBody());
+//        if (StringUtils.isNotBlank(httpJobConfig.getJsonBody())) {
+//            requestBody = RequestBody.create(HttpClientUtils.JSON, httpJobConfig.getJsonBody());
 //        }
-//        // TODO httpJobData.getMethod() ?
+//        // TODO httpJobConfig.getMethod() ?
 //        if (requestBody != null) {
-//            requestBuilder.method(httpJobData.getMethod().toUpperCase(), requestBody);
+//            requestBuilder.method(httpJobConfig.getMethod().toUpperCase(), requestBody);
 //        }
 //
 //        Request request = requestBuilder.build();
@@ -117,7 +109,7 @@ public class HttpServiceJob implements Job {
 //            String tmp = "\r\n" +
 //                    "#=======================================================================================================================#\r\n" +
 //                    "# 任务组名：[" + jobDetail.getKey().getGroup() + "] | 任务名称：[" + jobDetail.getKey().getName() + "]\r\n" +
-//                    "# 请求地址：[" + httpJobData.getUrl() + "]\r\n" +
+//                    "# 请求地址：[" + httpJobConfig.getUrl() + "]\r\n" +
 //                    "# HTTP响应状态码：[" + response.code() + "] | 响应消息：[" + response.message() + "]\r\n" +
 //                    "# 响应数据：[" + json + "]\r\n" +
 //                    "#=======================================================================================================================#\r\n";

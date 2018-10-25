@@ -14,20 +14,20 @@ import java.util.Map;
  * 创建时间：2017/6/5 9:14 <br/>
  */
 @Data
-public class HttpJobData implements Serializable {
-    public static final String HTTP_JOB_DATA_KEY = "HttpJobData";
+public class HttpJobConfig implements Serializable {
     private static final long serialVersionUID = 1L;
-    /**
-     * 请求地址
-     */
-    @NotBlank(message = "请求地址不能为空")
-    private String url;
 
     /**
      * 请求方式包括 OPTIONS、GET、HEAD、POST、PUT、DELETE、TRACE，常用的是GET和POST
      */
     @Pattern(regexp = "OPTIONS|GET|HEAD|POST|PUT|DELETE|TRACE", message = "请求方式只能是:OPTIONS、GET、HEAD、POST、PUT、DELETE、TRACE")
     private String method = "POST";
+
+    /**
+     * 请求地址
+     */
+    @NotBlank(message = "请求地址不能为空")
+    private String url;
 
     /**
      * 请求头信息

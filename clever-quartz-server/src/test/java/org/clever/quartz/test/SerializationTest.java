@@ -2,7 +2,7 @@ package org.clever.quartz.test;
 
 import lombok.extern.slf4j.Slf4j;
 import org.clever.common.utils.mapper.JacksonMapper;
-import org.clever.quartz.model.HttpJobData;
+import org.clever.quartz.model.HttpJobConfig;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -26,17 +26,17 @@ public class SerializationTest {
     @SuppressWarnings("unchecked")
     @Test
     public void test() {
-        HttpJobData httpJobData = new HttpJobData();
-        httpJobData.setUrl("/path");
-        httpJobData.setMethod("GET");
-        httpJobData.setJsonBody("{}");
+        HttpJobConfig httpJobConfig = new HttpJobConfig();
+        httpJobConfig.setUrl("/path");
+        httpJobConfig.setMethod("GET");
+        httpJobConfig.setJsonBody("{}");
         Map<String, Object> map = new HashMap<>();
-        map.put("httpJobData", httpJobData);
+        map.put("httpJobData", httpJobConfig);
         map.put("int", 1);
         map.put("String", "abc");
         String json = JacksonMapper.nonEmptyMapper().toJson(map);
         log.info("### {}", json);
         map = JacksonMapper.nonEmptyMapper().fromJson(json, Map.class);
-        log.info("### {}", map.get("httpJobData").getClass().getName());
+        log.info("### {}", map.get("httpJobConfig").getClass().getName());
     }
 }

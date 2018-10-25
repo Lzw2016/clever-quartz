@@ -5,7 +5,8 @@ import org.clever.common.exception.BusinessException;
 import org.clever.common.utils.exception.ExceptionUtils;
 import org.clever.quartz.dto.request.AddHttpServiceJobReq;
 import org.clever.quartz.jobs.HttpServiceJob;
-import org.clever.quartz.model.HttpJobData;
+import org.clever.quartz.model.HttpJobConfig;
+import org.clever.quartz.model.HttpJobDataKeyConstant;
 import org.clever.quartz.model.HttpJobNotice;
 import org.clever.quartz.utils.QuartzManager;
 import org.quartz.*;
@@ -47,8 +48,8 @@ public class HttpServiceJobService {
         // @DisallowConcurrentExecution 对应 isNonconcurrent
         // @PersistJobDataAfterExecution 对应 isUpdateData
         jobDetail = jobBuilder.build();
-        jobDetail.getJobDataMap().put(HttpJobData.HTTP_JOB_DATA_KEY, addHttpServiceJobReq.getHttpJobData());
-        jobDetail.getJobDataMap().put(HttpJobNotice.HTTP_JOB_NOTICE_KEY, addHttpServiceJobReq.getNotice());
+        jobDetail.getJobDataMap().put(HttpJobDataKeyConstant.HttpJobConfig, addHttpServiceJobReq.getHttpJobConfig());
+        jobDetail.getJobDataMap().put(HttpJobDataKeyConstant.HttpJobNotice, addHttpServiceJobReq.getNotice());
         jobDetail.getJobDataMap().put("jobExtendData", addHttpServiceJobReq.getJobExtendData());
         try {
             scheduler.addJob(jobDetail, false);

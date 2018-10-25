@@ -1,9 +1,10 @@
 package org.clever.quartz.dto.request;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.clever.common.model.request.BaseRequest;
-import org.clever.quartz.model.HttpJobData;
+import org.clever.quartz.model.HttpJobConfig;
 import org.clever.quartz.model.HttpJobNotice;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
@@ -29,79 +30,59 @@ public class AddHttpServiceJobReq extends BaseRequest {
     //     Job配置
     // -------------------------------------------------------------------------------------------------------------------------------------
 
-    /**
-     * Job、Trigger 名称
-     */
+    @ApiModelProperty("Job、Trigger 名称")
     @NotBlank(message = "JobName不能为空")
     @Length(max = 200, message = "JobName长度不能超过200")
     private String name;
 
-    /**
-     * Job、Trigger group名称
-     */
+    @ApiModelProperty("Job、Trigger group名称")
     @NotBlank(message = "JobGroup不能为空")
     @Length(max = 200, message = "JobGroup长度不能超过200")
     private String group;
 
-    /**
-     * Job描述， .withDescription()方法传入的string
-     */
+    @ApiModelProperty("Job描述， .withDescription()方法传入的string")
     @Length(max = 250, message = "Job描述长度不能超过250")
     private String description;
 
-    /**
-     * Scheduler实例发生故障时，故障恢复节点会检测故障的Scheduler正在调度的任务是否需要recovery(复苏)，如果需要会添加一个只执行一次的simple trigger重新触发
-     */
+    @ApiModelProperty("Scheduler实例发生故障时，故障恢复节点会检测故障的Scheduler正在调度的任务是否需要recovery(复苏)，如果需要会添加一个只执行一次的simple trigger重新触发")
     private boolean requestsRecovery = true;
 
     //--------------------------------------------------------------------------------------------------------------------------------------
     //     触发器配置
     // -------------------------------------------------------------------------------------------------------------------------------------
 
-    /**
-     * 开始触发时间
-     */
+    @ApiModelProperty("开始触发时间")
     @NotNull(message = "开始触发时间不能为空")
     private Date startTime;
 
-    /**
-     * 结束触发时间
-     */
+    @ApiModelProperty("结束触发时间")
     private Date endTime;
 
-    /**
-     * 优先级
-     */
+    @ApiModelProperty("优先级")
     @Range(min = 1, max = 10, message = "Trigger优先级取值范围:1~10")
     private Integer priority;
 
-    /**
-     * cron表达式
-     */
+    @ApiModelProperty("cron表达式")
     @NotBlank(message = "Cron表达式不能为空")
     private String cron;
 
-    /**
-     * Quartz的Misfire处理规则取值
-     */
+    @ApiModelProperty("Quartz的Misfire处理规则取值")
     private Integer misfireInstruction;
 
     //--------------------------------------------------------------------------------------------------------------------------------------
     //     Http请求配置(本质都是JobData)
     // -------------------------------------------------------------------------------------------------------------------------------------
 
-    @Valid
+    @ApiModelProperty("Http请求配置")
     @NotNull(message = "Http请求配置不能为空")
-    private HttpJobData httpJobData;
+    @Valid
+    private HttpJobConfig httpJobConfig;
 
-    /**
-     * 消息通知配置
-     */
+    @ApiModelProperty("Http任务通知配置")
+    @NotNull
     @Valid
     private HttpJobNotice notice;
 
-    /**
-     * 任务扩展的数据
-     */
+    @ApiModelProperty("任务扩展的数据")
     private Map<String, String> jobExtendData;
 }
