@@ -15,7 +15,7 @@ public class TriggersRes extends BaseResponse {
     /**
      * Scheduler名称
      */
-    private String schedulerName;
+    private String schedName;
 
     /**
      * Trigger key

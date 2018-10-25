@@ -14,7 +14,7 @@
         FROM QRTZ_TRIGGERS a
           LEFT JOIN QRTZ_SIMPLE_TRIGGERS b ON (a.SCHED_NAME=b.SCHED_NAME AND a.TRIGGER_GROUP=b.TRIGGER_GROUP AND a.TRIGGER_NAME=b.TRIGGER_NAME)
         WHERE b.SCHED_NAME IS NOT NULL
-              AND a.SCHED_NAME = #{schedulerName}
+              AND a.SCHED_NAME = #{schedName}
               AND a.JOB_NAME = #{jobName}
               AND a.JOB_GROUP = #{jobGroup}
     </select>
@@ -27,7 +27,7 @@
         FROM QRTZ_TRIGGERS a
           LEFT JOIN QRTZ_CRON_TRIGGERS b ON (a.SCHED_NAME=b.SCHED_NAME AND a.TRIGGER_GROUP=b.TRIGGER_GROUP AND a.TRIGGER_NAME=b.TRIGGER_NAME)
         WHERE b.SCHED_NAME IS NOT NULL
-              AND a.SCHED_NAME = #{schedulerName}
+              AND a.SCHED_NAME = #{schedName}
               AND a.JOB_NAME = #{jobName}
               AND a.JOB_GROUP = #{jobGroup}
     </select>
@@ -39,16 +39,16 @@
         FROM QRTZ_TRIGGERS a
           LEFT JOIN QRTZ_BLOB_TRIGGERS b ON (a.SCHED_NAME=b.SCHED_NAME AND a.TRIGGER_GROUP=b.TRIGGER_GROUP AND a.TRIGGER_NAME=b.TRIGGER_NAME)
         WHERE b.SCHED_NAME IS NOT NULL
-              AND a.SCHED_NAME = #{schedulerName}
+              AND a.SCHED_NAME = #{schedName}
               AND a.JOB_NAME = #{jobName}
               AND a.JOB_GROUP = #{jobGroup}
     </select>
 
     <select id="getByJobKey" resultType="org.clever.quartz.entity.QrtzTriggers">
-        SELECT * FROM QRTZ_TRIGGERS WHERE SCHED_NAME = #{schedulerName} AND TRIGGER_NAME = #{jobName} AND TRIGGER_GROUP = #{jobGroup}
+        SELECT * FROM QRTZ_TRIGGERS WHERE SCHED_NAME = #{schedName} AND TRIGGER_NAME = #{jobName} AND TRIGGER_GROUP = #{jobGroup}
     </select>
 
     <select id="getTriggerKeyByGroup" resultType="org.clever.quartz.dto.response.TriggerKeyRes">
-        SELECT TRIGGER_NAME, TRIGGER_GROUP FROM QRTZ_TRIGGERS WHERE SCHED_NAME = #{schedulerName} AND TRIGGER_GROUP = #{triggerGroup}
+        SELECT TRIGGER_NAME, TRIGGER_GROUP FROM QRTZ_TRIGGERS WHERE SCHED_NAME = #{schedName} AND TRIGGER_GROUP = #{triggerGroup}
     </select>
 </mapper>

@@ -24,7 +24,7 @@ public class CurrentlyExecutingJobsRes extends BaseResponse {
     /**
      * Scheduler名称
      */
-    private String schedulerName;
+    private String schedName;
     /**
      * Job key
      */

@@ -16,7 +16,7 @@ public class QrtzCalendars implements Serializable {
      * Scheduler名称
      */
     @TableId
-    private String schedulerName;
+    private String schedName;
 
     /**
      * Calendar 名称
