@@ -95,15 +95,15 @@ public class QuartzSchedulerService {
     public List<CurrentlyExecutingJobsRes> getRunningJobs() {
         Scheduler scheduler = QuartzManager.getScheduler();
         List<JobExecutionContext> list;
-        String schedulerName;
+        String schedName;
         try {
-            schedulerName = QuartzManager.getScheduler().getSchedulerName();
+            schedName = QuartzManager.getScheduler().getSchedulerName();
             list = scheduler.getCurrentlyExecutingJobs();
         } catch (Throwable e) {
             log.error("获取当前所有执行的JobExecutionContext异常", e);
             throw new BusinessException("获取当前所有执行的JobExecutionContext异常", e);
         }
-        return ConvertUtils.convert(schedulerName, list);
+        return ConvertUtils.convert(schedName, list);
     }
 
     /**

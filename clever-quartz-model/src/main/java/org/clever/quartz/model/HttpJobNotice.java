@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.util.Map;
 
 /**
- * 任务消息通知信息
+ * 任务消息通知信息 TODO 应该定义任务执行出了哪一种问题(2xx,4xx,5xx,timeout)才发送告警(内置统一告警模版)
  * <p>
  * 作者：lizw <br/>
  * 创建时间：2017/6/5 10:36 <br/>

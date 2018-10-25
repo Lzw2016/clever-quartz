@@ -78,7 +78,7 @@ public class AddHttpServiceJobReq extends BaseRequest {
     /**
      * cron表达式
      */
-    @NotBlank(message = "触发的时间间隔不能为空")
+    @NotBlank(message = "Cron表达式不能为空")
     private String cron;
 
     /**
@@ -87,7 +87,7 @@ public class AddHttpServiceJobReq extends BaseRequest {
     private Integer misfireInstruction;
 
     //--------------------------------------------------------------------------------------------------------------------------------------
-    //     Http请求配置
+    //     Http请求配置(本质都是JobData)
     // -------------------------------------------------------------------------------------------------------------------------------------
 
     @Valid
@@ -95,7 +95,7 @@ public class AddHttpServiceJobReq extends BaseRequest {
     private HttpJobData httpJobData;
 
     /**
-     * 消息通知
+     * 消息通知配置
      */
     @Valid
     private HttpJobNotice notice;

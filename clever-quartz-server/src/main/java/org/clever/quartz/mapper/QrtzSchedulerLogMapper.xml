@@ -9,7 +9,7 @@
         <!-- 监听器名称 -->
         <result column="listener_name" property="listenerName"/>
         <!-- Scheduler名称 -->
-        <result column="sched_name" property="schedulerName"/>
+        <result column="sched_name" property="schedName"/>
         <!-- Scheduler实例的唯一标识，配置文件中的Instance Id -->
         <result column="instance_name" property="instanceName"/>
         <!-- 触发事件调用的方法 -->
@@ -29,8 +29,8 @@
     <select id="findByPage" resultMap="BaseResultMap">
         select * from qrtz_scheduler_log
         where 1=1
-        <if test="query.schedulerName != null and query.schedulerName != ''">
-            AND sched_name=#{query.schedulerName}
+        <if test="query.schedName != null and query.schedName != ''">
+            AND sched_name=#{query.schedName}
         </if>
         <if test="query.instanceName != null and query.instanceName != ''">
             AND instance_name=#{query.instanceName}

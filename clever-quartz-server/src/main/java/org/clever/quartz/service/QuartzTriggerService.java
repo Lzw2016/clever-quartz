@@ -400,10 +400,10 @@ public class QuartzTriggerService {
         Scheduler scheduler = QuartzManager.getScheduler();
         TriggerInfoRes triggerInfoRes;
         try {
-            String schedulerName = scheduler.getSchedulerName();
+            String schedName = scheduler.getSchedulerName();
             Trigger trigger = scheduler.getTrigger(new TriggerKey(triggerName, triggerGroup));
             Trigger.TriggerState state = scheduler.getTriggerState(trigger.getKey());
-            triggerInfoRes = ConvertUtils.convert(schedulerName, trigger, state);
+            triggerInfoRes = ConvertUtils.convert(schedName, trigger, state);
         } catch (Throwable e) {
             log.error("获取Trigger异常", e);
             throw new BusinessException("获取Trigger异常", e);

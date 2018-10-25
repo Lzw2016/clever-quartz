@@ -16,7 +16,7 @@ public class QrtzJobDetails implements Serializable {
      * Scheduler名称
      */
     @TableId
-    private String schedulerName;
+    private String schedName;
 
     /**
      * Job key

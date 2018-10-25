@@ -16,7 +16,7 @@ public class QrtzSchedulerState implements Serializable {
      * Scheduler名称
      */
     @TableId
-    private String schedulerName;
+    private String schedName;
 
     /**
      * Scheduler实例的唯一标识，配置文件中的Instance Id

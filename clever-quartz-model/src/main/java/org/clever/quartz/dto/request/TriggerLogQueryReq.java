@@ -18,7 +18,7 @@ public class TriggerLogQueryReq extends QueryByPage {
     /**
      * 调度器名称
      */
-    private String schedulerName;
+    private String schedName;
 
     /**
      * 调度器ID

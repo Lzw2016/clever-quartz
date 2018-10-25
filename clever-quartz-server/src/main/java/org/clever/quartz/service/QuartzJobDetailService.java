@@ -1,5 +1,6 @@
 package org.clever.quartz.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import org.clever.common.exception.BusinessException;
@@ -77,16 +78,15 @@ public class QuartzJobDetailService {
      *
      * @return JobDetail集合
      */
-    public List<JobDetailsRes> findJobDetail(FindJobDetailReq req) {
+    public IPage<JobDetailsRes> findJobDetail(FindJobDetailReq req) {
         Scheduler scheduler = QuartzManager.getScheduler();
-        List<JobDetailsRes> list = null;
+        Page<JobDetailsRes> page = new Page<>(req.getPageNo(), req.getPageSize());
         try {
-            Page<JobDetailsRes> page = new Page<>(req.getPageNo(), req.getPageSize());
-            list = qrtzJobDetailsMapper.find(scheduler.getSchedulerName(), req.getJobName(), req.getJobGroup(), req.getJobClassName(), page);
+            page.setRecords(qrtzJobDetailsMapper.find(scheduler.getSchedulerName(), req.getJobName(), req.getJobGroup(), req.getJobClassName(), page));
         } catch (Throwable e) {
             throw new BusinessException("查询JobDetail失败", e);
         }
-        return list;
+        return page;
     }
 
     public JobDetailInfoRes getJobDetails(String jobGroup, String jobName) {

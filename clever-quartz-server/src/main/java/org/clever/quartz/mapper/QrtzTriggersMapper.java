@@ -14,13 +14,13 @@ import java.util.List;
  */
 public interface QrtzTriggersMapper extends BaseMapper<QrtzTriggers> {
 
-    List<TriggersRes> getSimpleTriggerByJobKey(@Param("schedulerName") String schedulerName, @Param("jobName") String jobName, @Param("jobGroup") String jobGroup);
+    List<TriggersRes> getSimpleTriggerByJobKey(@Param("schedName") String schedName, @Param("jobName") String jobName, @Param("jobGroup") String jobGroup);
 
-    List<TriggersRes> getCronTriggerByJobKey(@Param("schedulerName") String schedulerName, @Param("jobName") String jobName, @Param("jobGroup") String jobGroup);
+    List<TriggersRes> getCronTriggerByJobKey(@Param("schedName") String schedName, @Param("jobName") String jobName, @Param("jobGroup") String jobGroup);
 
-    List<TriggersRes> getBlobTriggersByJobKey(@Param("schedulerName") String schedulerName, @Param("jobName") String jobName, @Param("jobGroup") String jobGroup);
+    List<TriggersRes> getBlobTriggersByJobKey(@Param("schedName") String schedName, @Param("jobName") String jobName, @Param("jobGroup") String jobGroup);
 
-    List<QrtzTriggers> getByJobKey(@Param("schedulerName") String schedulerName, @Param("jobName") String jobName, @Param("jobGroup") String jobGroup);
+    List<QrtzTriggers> getByJobKey(@Param("schedName") String schedName, @Param("jobName") String jobName, @Param("jobGroup") String jobGroup);
 
-    List<TriggerKeyRes> getTriggerKeyByGroup(@Param("schedulerName") String schedulerName, @Param("triggerGroup") String triggerGroup);
+    List<TriggerKeyRes> getTriggerKeyByGroup(@Param("schedName") String schedName, @Param("triggerGroup") String triggerGroup);
 }

@@ -21,7 +21,7 @@
             AND b.JOB_GROUP=JOB_GROUP
             AND b.JOB_NAME=JOB_NAME
         )
-            AND a.SCHED_NAME = #{schedulerName}
+            AND a.SCHED_NAME = #{schedName}
         <if test="jobName!=null and jobName!=''">
             AND a.JOB_NAME = #{jobName}
         </if>
@@ -33,6 +33,6 @@
         </if>
     </select>
     <select id="getJobKeyByGroup" resultType="org.clever.quartz.dto.response.JobKeyRes">
-        SELECT JOB_NAME, JOB_GROUP FROM QRTZ_JOB_DETAILS WHERE SCHED_NAME = #{schedulerName} AND JOB_GROUP = #{jobGroup}
+        SELECT JOB_NAME, JOB_GROUP FROM QRTZ_JOB_DETAILS WHERE SCHED_NAME = #{schedName} AND JOB_GROUP = #{jobGroup}
     </select>
 </mapper>
