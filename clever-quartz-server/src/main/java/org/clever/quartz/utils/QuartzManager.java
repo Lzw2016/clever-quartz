@@ -81,6 +81,7 @@ public class QuartzManager {
      * @see #start()
      */
     public static boolean standby() {
+        // TODO 发送告警通知管理员 - 通知管理员
         try {
             if (!SCHEDULER.isInStandbyMode()) {
                 SCHEDULER.standby();

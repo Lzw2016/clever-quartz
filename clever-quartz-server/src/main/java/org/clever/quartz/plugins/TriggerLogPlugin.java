@@ -12,7 +12,7 @@ import org.quartz.spi.SchedulerPlugin;
 
 import java.util.Date;
 
-/**
+/** TODO 增加配置 是否记录数据库日志
  * 记录Trigger触发的日志的插件,日志数据存到数据库<br/>
  * 参考{@link org.quartz.plugins.history.LoggingTriggerHistoryPlugin}
  * <p/>
@@ -82,6 +82,7 @@ public class TriggerLogPlugin implements SchedulerPlugin, TriggerListener {
             schedName = context.getScheduler().getSchedulerName();
             instanceName = context.getScheduler().getSchedulerInstanceId();
         } catch (Throwable e) {
+            // TODO 发送告警通知管理员 出现了异常
             log.error("获取Scheduler标识失败", e);
         }
         QrtzTriggerLog qrtzTriggerLog = new QrtzTriggerLog();
@@ -127,10 +128,12 @@ public class TriggerLogPlugin implements SchedulerPlugin, TriggerListener {
      */
     @Override
     public void triggerMisfired(Trigger trigger) {
+        // TODO 发送告警通知管理员 错过了触发
         JobDetail jobDetail;
         try {
             jobDetail = this.scheduler.getJobDetail(trigger.getJobKey());
         } catch (Throwable e) {
+            // TODO 发送告警通知管理员 出现了异常
             log.error("获取JobDetail失败-triggerMisfired", e);
             return;
         }
@@ -140,6 +143,7 @@ public class TriggerLogPlugin implements SchedulerPlugin, TriggerListener {
             schedName = this.scheduler.getSchedulerName();
             instanceName = this.scheduler.getSchedulerInstanceId();
         } catch (Throwable e) {
+            // TODO 发送告警通知管理员 出现了异常
             log.error("获取Scheduler标识失败", e);
         }
         QrtzTriggerLog qrtzTriggerLog = new QrtzTriggerLog();
@@ -209,7 +213,6 @@ public class TriggerLogPlugin implements SchedulerPlugin, TriggerListener {
      */
     @Override
     public void start() {
-
     }
 
     /**
@@ -218,6 +221,5 @@ public class TriggerLogPlugin implements SchedulerPlugin, TriggerListener {
      */
     @Override
     public void shutdown() {
-
     }
 }

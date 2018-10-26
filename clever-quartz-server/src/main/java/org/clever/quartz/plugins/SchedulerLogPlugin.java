@@ -15,7 +15,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
+/** TODO 增加配置 是否记录数据库日志
  * 记录Scheduler日志的插件,日志数据存到数据库<br/>
  * <p/>
  * 作者：LiZW <br/>
@@ -48,6 +48,7 @@ public class SchedulerLogPlugin implements SchedulerPlugin, SchedulerListener {
      * @param logData    触发事件记录的日志数据
      */
     private void saveLog(String methodName, Map<String, Object> logData) {
+        // TODO 发送告警通知管理员 - 通知管理员
         String schedName = "未知";
         String instanceName = "未知";
         try {
@@ -72,6 +73,7 @@ public class SchedulerLogPlugin implements SchedulerPlugin, SchedulerListener {
      */
     @Override
     public void jobScheduled(Trigger trigger) {
+        // TODO 发送告警通知管理员 - 通知管理员 (下面的方法发送各种通知)
         Map<String, Object> logData = new HashMap<>();
         logData.put("dataType", "json");
         logData.put("data", trigger);
@@ -312,6 +314,7 @@ public class SchedulerLogPlugin implements SchedulerPlugin, SchedulerListener {
      */
     @Override
     public void start() {
+        // TODO 发送告警通知管理员 - 通知管理员
         Map<String, Object> logData = new HashMap<>();
         logData.put("dataType", "null");
         logData.put("data", null);
@@ -324,6 +327,7 @@ public class SchedulerLogPlugin implements SchedulerPlugin, SchedulerListener {
      */
     @Override
     public void shutdown() {
+        // TODO 发送告警通知管理员 - 通知管理员
         Map<String, Object> logData = new HashMap<>();
         logData.put("dataType", "null");
         logData.put("data", null);

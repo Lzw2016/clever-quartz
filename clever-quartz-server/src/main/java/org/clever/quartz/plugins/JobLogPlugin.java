@@ -13,7 +13,7 @@ import org.quartz.spi.SchedulerPlugin;
 
 import java.util.Date;
 
-/**
+/** TODO 增加配置 是否记录数据库日志
  * 记录Job执行日志的插件,日志数据存到数据库<br/>
  * 参考{@link org.quartz.plugins.history.LoggingJobHistoryPlugin}
  * <p/>
@@ -146,7 +146,7 @@ public class JobLogPlugin implements SchedulerPlugin, JobListener {
         qrtzJobLog.setEndTime(new Date());
         qrtzJobLog.setProcessTime(context.getJobRunTime());
         if (jobException != null) {
-            // TODO 发送告警通知管理员
+            // TODO 发送告警通知管理员 出现了异常
             log.error("任务执行出现异常", jobDetail);
             qrtzJobLog.setStatus(QrtzJobLog.STATUS_FAIL);
             qrtzJobLog.setExceptionInfo(ExceptionUtils.getStackTraceAsString(jobException));
@@ -162,7 +162,6 @@ public class JobLogPlugin implements SchedulerPlugin, JobListener {
      */
     @Override
     public void start() {
-        // TODO 发送告警通知管理员
     }
 
     /**
@@ -171,6 +170,5 @@ public class JobLogPlugin implements SchedulerPlugin, JobListener {
      */
     @Override
     public void shutdown() {
-        // TODO 发送告警通知管理员
     }
 }
