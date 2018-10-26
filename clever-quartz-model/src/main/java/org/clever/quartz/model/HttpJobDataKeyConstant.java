@@ -7,12 +7,12 @@ package org.clever.quartz.model;
 public class HttpJobDataKeyConstant {
 
     /**
-     * Http任务配置Key
+     * Http任务配置Key (JobData key)
      */
     public static final String HttpJobConfig = "HttpJobConfig";
 
     /**
-     * Http任务通知配置key
+     * Http任务通知配置key (JobData key)
      */
     public static final String HttpJobNotice = "HttpJobNotice";
 

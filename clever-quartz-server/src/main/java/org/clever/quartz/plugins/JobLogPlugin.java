@@ -146,6 +146,7 @@ public class JobLogPlugin implements SchedulerPlugin, JobListener {
         qrtzJobLog.setEndTime(new Date());
         qrtzJobLog.setProcessTime(context.getJobRunTime());
         if (jobException != null) {
+            // TODO 发送告警通知管理员
             log.error("任务执行出现异常", jobDetail);
             qrtzJobLog.setStatus(QrtzJobLog.STATUS_FAIL);
             qrtzJobLog.setExceptionInfo(ExceptionUtils.getStackTraceAsString(jobException));
@@ -161,6 +162,7 @@ public class JobLogPlugin implements SchedulerPlugin, JobListener {
      */
     @Override
     public void start() {
+        // TODO 发送告警通知管理员
     }
 
     /**
@@ -169,5 +171,6 @@ public class JobLogPlugin implements SchedulerPlugin, JobListener {
      */
     @Override
     public void shutdown() {
+        // TODO 发送告警通知管理员
     }
 }

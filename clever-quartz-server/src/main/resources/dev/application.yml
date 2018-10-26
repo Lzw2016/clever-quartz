@@ -56,7 +56,7 @@ spring:
       initialize-schema: never
       schema: 'classpath:database/'
     properties:
-      org.quartz.scheduler.instanceName: QuartzSchedulerCluster
+      org.quartz.scheduler.instanceName: QuartzSchedulerClusterTest
       org.quartz.scheduler.instanceId: AUTO
       org.quartz.scheduler.instanceIdGenerator.class: org.quartz.simpl.SimpleInstanceIdGenerator
       org.quartz.scheduler.threadName: QuartzSchedulerThread

@@ -1,0 +1,40 @@
+{
+  "group": "测试任务组",
+  "name": "访问百度",
+  "description": "测试访问百度",
+  "requestsRecovery": true,
+  "startTime": "2018-10-26 00:00:00",
+  "endTime": null,
+  "priority": 5,
+  "cron": "0/5 * * * * ?",
+  "misfireInstruction": null,
+  "httpJobConfig": {
+    "method": "GET",
+    "url": "https://www.baidu.com/",
+    "headers": {
+      "header1": "v1",
+      "header2": "v2"
+    },
+    "params": {
+      "param1": "v1",
+      "param2": "v2"
+    },
+    "jsonBody": "{}"
+  },
+  "jobExtendData": {
+    "key1": "value1",
+    "key2": "value2"
+  },
+  "notice": {
+    "enable": true,
+    "taskExecuteTimeMax": null,
+    "taskExecuteTimeMin": null,
+    "httpStatusCodeRegex": null,
+    "bodyRegex": null,
+    "messageContent": null,
+    "noticeType": "email",
+    "sendTo": [
+      "1183409807@qq.com"
+    ]
+  }
+}

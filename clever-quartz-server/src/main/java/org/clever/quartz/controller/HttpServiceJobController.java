@@ -34,6 +34,8 @@ public class HttpServiceJobController extends BaseController {
     @ApiOperation("增加HTTP任务")
     @PostMapping("/http_job" + JSON_SUFFIX)
     public AddHttpServiceJobReq addHttpServiceJob(@Validated @RequestBody AddHttpServiceJobReq addHttpServiceJobReq) {
+        addHttpServiceJobReq.getHttpJobConfig().valid();
+        addHttpServiceJobReq.getNotice().valid();
         triggerService.validatorCron(addHttpServiceJobReq.getCron(), 1);
         httpServiceJobService.addHttpServiceJob(addHttpServiceJobReq);
         return addHttpServiceJobReq;
