@@ -2,7 +2,7 @@
 ### Web服务器配置
 ###################################################################################
 server:
-  port: 28080
+  port: 28081
   servlet:
     context-path: /
 
@@ -146,11 +146,20 @@ management:
     prometheus:
       enabled: true
   metrics:
+    enable:
+      root: true
     export:
       prometheus:
         enabled: true
         descriptions: true
-        step: 30s
+        step: 5s
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+      percentiles:
+        http.server.requests: 0.5, 0.75, 0.9, 0.95, 0.99
+      sla:
+        http.server.requests: 10ms, 50ms, 100ms, 200ms, 500ms, 1s, 2s, 3s, 4s, 5s, 10s, 15s, 20s, 30s, 50s
 
 ###################################################################################
 ### mybatis-plus配置
@@ -171,8 +180,78 @@ mybatis-plus:
       id-type: auto
       field-strategy: not_null
 
-
-
+###################################################################################
+### clever security配置
+###################################################################################
+clever:
+  security:
+    enable-debug: false
+    sys-name: ${spring.application.name}
+    wait-spring-context-init-count: 2
+    default-need-authorization: true
+    ignore-urls:
+    - '/swagger-ui*/**'
+    - '/webjars/springfox*/**'
+    - '/swagger-resources*/**'
+    - '/v2/api-docs'
+    - '/favicon.ico'
+    - '/csrf'
+    - '/error'
+    - '/login/captcha.png'
+    - '/dist/**'
+    - '/static/**'
+    - '/'
+    - '/*.png'
+    - '/*.js'
+    - '/*.css'
+    - '/*.html'
+    - '/actuator/**'
+    - '/api/**'
+    ignore-authorization-urls:
+    - '/login/user_info.json'
+    - '/api/**'
+    hide-user-not-found-exceptions: true
+    not-login-need-forward: false
+    forbidden-need-forward: false
+    forbidden-forward-page: '/403.html'
+    session-expired-redirect-url:
+    login:
+      login-page: '/login.html'
+      login-url: '/login.json'
+      username-parameter: 'username'
+      password-parameter: 'password'
+      captcha-parameter: 'captcha'
+      post-only: true
+      json-data-submit: true
+      login-success-need-redirect: false
+      login-success-redirect-page: '/index.html'
+      login-failure-need-redirect: false
+      login-failure-need-forward: false
+      login-failure-redirect-page: '/login.html'
+      need-captcha: false
+      need-captcha-by-login-fail-count: 3
+      captcha-effective-time: 60000
+      concurrent-login-count: 1
+      not-allow-after-login: false
+    remember-me:
+      enable: true
+      always-remember: false
+      validity-seconds: 2592000
+      remember-me-parameter-name: 'remember-me'
+    login-req-aes-key:
+      req-password-aes-key: '636c657665722d736563757288888888'
+      req-password-aes-iv: '636c657665722d736563757266666666'
+    logout:
+      logout-url: '/logout.json'
+      logout-success-need-redirect: false
+      logout-success-redirect-page: '/login.html'
+###################################################################################
+### Feign配置
+###################################################################################
+# CommonClientConfigKey 实现
+clever-security-server:
+  ribbon:
+    listOfServers: '127.0.0.1:28080'
 
 
 

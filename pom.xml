@@ -32,11 +32,11 @@
         </repository>
         <repository>
             <id>my-maven-snapshots</id>
-            <url>http://39.108.68.132:8081/repository/maven-snapshots/</url>
+            <url>http://47.98.40.187:8081/repository/maven-snapshots/</url>
         </repository>
         <repository>
             <id>my-maven-releases</id>
-            <url>http://39.108.68.132:8081/repository/maven-releases/</url>
+            <url>http://47.98.40.187:8081/repository/maven-releases/</url>
         </repository>
     </repositories>
 
@@ -44,11 +44,11 @@
         <snapshotRepository>
             <id>my-maven-snapshots</id>
             <uniqueVersion>true</uniqueVersion>
-            <url>http://39.108.68.132:8081/repository/maven-snapshots/</url>
+            <url>http://47.98.40.187:8081/repository/maven-snapshots/</url>
         </snapshotRepository>
         <repository>
             <id>my-maven-releases</id>
-            <url>http://39.108.68.132:8081/repository/maven-releases/</url>
+            <url>http://47.98.40.187:8081/repository/maven-releases/</url>
         </repository>
     </distributionManagement>
 
@@ -68,6 +68,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <spring-cloud.version>Finchley.RELEASE</spring-cloud.version>
         <common.version>0.0.1-SNAPSHOT</common.version>
+        <security.version>0.0.1-SNAPSHOT</security.version>
     </properties>
 
     <dependencyManagement>
@@ -103,6 +104,12 @@
                 <groupId>org.clever</groupId>
                 <artifactId>clever-common-client</artifactId>
                 <version>${common.version}</version>
+            </dependency>
+            <!--clever security-->
+            <dependency>
+                <groupId>org.clever</groupId>
+                <artifactId>clever-security-embed</artifactId>
+                <version>${security.version}</version>
             </dependency>
             <!--spring-cloud-->
             <dependency>
@@ -152,7 +159,7 @@
             <dependency>
                 <groupId>com.baomidou</groupId>
                 <artifactId>mybatis-plus-annotation</artifactId>
-                <version>3.0.5</version>
+                <version>3.0.6</version>
             </dependency>
             <dependency>
                 <groupId>commons-io</groupId>

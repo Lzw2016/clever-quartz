@@ -1,3 +1,6 @@
+create database if not exists `clever-quartz` default character set = utf8mb4;
+use `clever-quartz`;
+
 /*
 
 In your Quartz properties file, you'll need to set

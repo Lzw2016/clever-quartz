@@ -44,6 +44,10 @@
         </dependency>
         <dependency>
             <groupId>org.clever</groupId>
+            <artifactId>clever-security-embed</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.clever</groupId>
             <artifactId>clever-quartz-model</artifactId>
         </dependency>
         <!--orm-->
