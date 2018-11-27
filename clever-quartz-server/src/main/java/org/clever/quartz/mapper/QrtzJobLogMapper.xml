@@ -79,7 +79,7 @@
         <if test="query.processTimeByMin != null">
             <![CDATA[ AND (#{query.processTimeByMin}=-1 OR process_time>=#{query.processTimeByMin}) ]]>
         </if>
-        <if test="processTimeByMax != null">
+        <if test="query.processTimeByMax != null">
             <![CDATA[ AND (#{query.processTimeByMax}=-1 OR process_time<=#{query.processTimeByMax}) ]]>
         </if>
         order by start_time desc

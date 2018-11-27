@@ -52,7 +52,7 @@ public class QuartzSchedulerController extends BaseController {
         return schedulerService.resumeAll();
     }
 
-    @ApiOperation("获取正在运行的Job成功")
+    @ApiOperation("获取正在运行的Job")
     @GetMapping("/scheduler/running_job" + JSON_SUFFIX)
     @ResponseBody
     public List<CurrentlyExecutingJobsRes> getRunningJobs() {
