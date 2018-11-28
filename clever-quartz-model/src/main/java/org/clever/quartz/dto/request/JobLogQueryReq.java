@@ -51,12 +51,12 @@ public class JobLogQueryReq extends QueryByPage {
     private Date startTimeByEnd;
 
     /**
-     * 处理时间-最小值
+     * 处理时间-最小值(ms)
      */
     private Long processTimeByMin;
 
     /**
-     * 处理时间-最大值
+     * 处理时间-最大值(ms)
      */
     private Long processTimeByMax;
 }

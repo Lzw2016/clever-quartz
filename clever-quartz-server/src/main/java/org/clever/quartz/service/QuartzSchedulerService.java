@@ -3,11 +3,13 @@ package org.clever.quartz.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.clever.common.exception.BusinessException;
-import org.clever.common.model.response.AjaxMessage;
 import org.clever.quartz.dto.response.CurrentlyExecutingJobsRes;
+import org.clever.quartz.entity.QrtzSchedulerState;
+import org.clever.quartz.mapper.QrtzSchedulerStateMapper;
 import org.clever.quartz.utils.ConvertUtils;
 import org.clever.quartz.utils.QuartzManager;
 import org.quartz.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +26,13 @@ import java.util.Map;
 @Transactional(readOnly = true)
 @Slf4j
 public class QuartzSchedulerService {
+
+    @Autowired
+    private QrtzSchedulerStateMapper qrtzSchedulerStateMapper;
+
+    public List<QrtzSchedulerState> allScheduler() {
+        return qrtzSchedulerStateMapper.selectList(null);
+    }
 
     /**
      * 暂停调度器

@@ -6,6 +6,7 @@ import org.clever.common.model.response.AjaxMessage;
 import org.clever.common.server.controller.BaseController;
 import org.clever.quartz.dto.request.JobDetailKeyReq;
 import org.clever.quartz.dto.response.CurrentlyExecutingJobsRes;
+import org.clever.quartz.entity.QrtzSchedulerState;
 import org.clever.quartz.service.QuartzSchedulerService;
 import org.quartz.JobKey;
 import org.quartz.SchedulerMetaData;
@@ -27,6 +28,12 @@ public class QuartzSchedulerController extends BaseController {
 
     @Autowired
     private QuartzSchedulerService schedulerService;
+
+    @ApiOperation("获取所有调度器")
+    @GetMapping("/scheduler" + JSON_SUFFIX)
+    public List<QrtzSchedulerState> allScheduler() {
+        return schedulerService.allScheduler();
+    }
 
     @ApiOperation("暂停调度器")
     @PostMapping("/scheduler/standby" + JSON_SUFFIX)
