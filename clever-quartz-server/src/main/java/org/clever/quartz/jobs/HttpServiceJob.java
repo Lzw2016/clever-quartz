@@ -218,9 +218,22 @@ public class HttpServiceJob extends QuartzJobBean {
                     "# 任务组名：[" + jobDetail.getKey().getGroup() + "] | 任务名称：[" + jobDetail.getKey().getName() + "]\r\n" +
                     "# 请求地址：[" + httpJobConfig.getUrl() + "]\r\n" +
                     "# HTTP响应状态码：[" + code + "] | 响应消息：[" + message + "] | 执行时间：[" + executeTime + "ms]\r\n" +
-                    "# 响应数据：[" + body + "]\r\n" +
+                    "# 响应数据：[" + bodyOverflow(body) + "]\r\n" +
                     "#=======================================================================================================================#\r\n";
             log.info(tmp);
         }
+    }
+
+    private static String bodyOverflow(String body) {
+        if (StringUtils.isBlank(body)) {
+            return body;
+        }
+        int maxLength = 1000;
+        int length = body.length();
+        if (length <= maxLength) {
+            return body.replace('\n', ' ').replace('\r', ' ');
+        }
+        body = body.substring(0, maxLength).replace('\n', ' ').replace('\r', ' ');
+        return String.format("(%s char) %s......", length, body);
     }
 }
