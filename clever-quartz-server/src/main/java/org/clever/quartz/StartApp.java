@@ -1,7 +1,6 @@
 package org.clever.quartz;
 
 import lombok.extern.slf4j.Slf4j;
-import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
@@ -23,8 +22,8 @@ import java.util.TimeZone;
 //        redisNamespace = "spring:session:clever-quartz",
 //        redisFlushMode = RedisFlushMode.ON_SAVE
 //)
+//@MapperScan("org.clever.quartz.mapper")
 @EnableTransactionManagement
-@MapperScan("org.clever.quartz.mapper")
 @SpringBootApplication(scanBasePackages = {"org.clever"})
 public class StartApp {
     public static void main(String[] args) {
