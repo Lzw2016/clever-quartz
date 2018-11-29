@@ -40,16 +40,7 @@ public class HttpServiceJobController extends BaseController {
         httpServiceJobService.addHttpServiceJob(addHttpServiceJobReq);
         return addHttpServiceJobReq;
     }
-
-//    @ApiOperation("查询HTTP任务")
-//    @GetMapping("/http_job" + JSON_SUFFIX)
-//    public AjaxMessage<List<QuartzJobDetails>> findJobDetail(FindJobDetailReq findJobDetailVo) {
-//        AjaxMessage<List<QuartzJobDetails>> ajaxMessage = new AjaxMessage<>(true, "查询任务成功", null);
-//        List<QuartzJobDetails> jobDetailList = jobDetailService.findJobDetail(findJobDetailVo);
-//        ajaxMessage.setResult(jobDetailList);
-//        return ajaxMessage;
-//    }
-
+    
 //    @ApiOperation("暂停、继续运行HTTP任务")
 //    @PutMapping("/http_job" + JSON_SUFFIX)
 //    public AjaxMessage<String> pauseOrResumeJob(@Validated @RequestBody PauseOrResumeJobVo pauseOrResumeJobVo) {

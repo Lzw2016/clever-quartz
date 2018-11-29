@@ -67,7 +67,7 @@ public class QuartzJobDetailController extends BaseController {
         return saveJobDetailReq;
     }
 
-    @ApiOperation("删除Job")
+    @ApiOperation("删除Job(同时也会删除对应触发器)")
     @DeleteMapping("/job_detail" + JSON_SUFFIX)
     public JobDetail deleteJobDetail(@Validated JobDetailKeyReq jobDetailKeyReq) {
         return jobDetailService.deleteJobDetail(jobDetailKeyReq);
