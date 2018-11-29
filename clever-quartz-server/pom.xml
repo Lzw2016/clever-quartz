@@ -119,6 +119,13 @@
                     <include>database/*.sql</include>
                 </includes>
             </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+                <includes>
+                    <include>static/**</include>
+                </includes>
+            </resource>
         </resources>
         <testResources>
             <testResource>
