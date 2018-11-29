@@ -31,7 +31,12 @@ public class QuartzSchedulerService {
     private QrtzSchedulerStateMapper qrtzSchedulerStateMapper;
 
     public List<QrtzSchedulerState> allScheduler() {
-        return qrtzSchedulerStateMapper.selectList(null);
+        try {
+            return qrtzSchedulerStateMapper.findBySchedName(QuartzManager.getScheduler().getSchedulerName());
+        } catch (SchedulerException e) {
+            log.error("查询调度器异常", e);
+            throw new BusinessException("查询调度器异常", e);
+        }
     }
 
     /**

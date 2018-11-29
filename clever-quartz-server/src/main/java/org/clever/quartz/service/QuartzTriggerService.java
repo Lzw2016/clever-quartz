@@ -1,13 +1,12 @@
 package org.clever.quartz.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import org.clever.common.exception.BusinessException;
 import org.clever.common.utils.DateTimeUtils;
 import org.clever.common.utils.exception.ExceptionUtils;
-import org.clever.quartz.dto.request.AddCronTriggerForJobReq;
-import org.clever.quartz.dto.request.AddSimpleTriggerForJobReq;
-import org.clever.quartz.dto.request.JobDetailKeyReq;
-import org.clever.quartz.dto.request.TriggerKeyReq;
+import org.clever.quartz.dto.request.*;
 import org.clever.quartz.dto.response.TriggerInfoRes;
 import org.clever.quartz.dto.response.TriggerKeyRes;
 import org.clever.quartz.dto.response.TriggersRes;
@@ -128,6 +127,25 @@ public class QuartzTriggerService {
             }
         }
         return daStrList;
+    }
+
+    public IPage<TriggersRes> findTriggers(FindTriggersReq findTriggersReq) {
+        Page<TriggersRes> page = new Page<>(findTriggersReq.getPageNo(), findTriggersReq.getPageSize());
+        Scheduler scheduler = QuartzManager.getScheduler();
+        try {
+            page.setRecords(qrtzTriggersMapper.findTriggers(
+                    scheduler.getSchedulerName(),
+                    findTriggersReq.getTriggerGroup(),
+                    findTriggersReq.getTriggerName(),
+                    findTriggersReq.getJobGroup(),
+                    findTriggersReq.getJobName(),
+                    page
+            ));
+        } catch (Throwable e) {
+            log.error("查询Trigger异常", e);
+            throw new BusinessException("查询Trigger异常", e);
+        }
+        return page;
     }
 
     /**

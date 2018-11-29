@@ -5,6 +5,38 @@
 
     <resultMap id="TriggersResMap" type="org.clever.quartz.dto.response.TriggersRes" autoMapping="true"/>
 
+    <select id="findTriggers" resultMap="TriggersResMap">
+        SELECT
+               a.*,
+               b.REPEAT_COUNT,
+               b.REPEAT_INTERVAL,
+               b.TIMES_TRIGGERED,
+               c.CRON_EXPRESSION,
+               c.TIME_ZONE_ID,
+               d.BLOB_DATA
+        FROM QRTZ_TRIGGERS a
+                 LEFT JOIN QRTZ_SIMPLE_TRIGGERS b ON (a.SCHED_NAME=b.SCHED_NAME AND a.TRIGGER_GROUP=b.TRIGGER_GROUP AND a.TRIGGER_NAME=b.TRIGGER_NAME)
+                 LEFT JOIN QRTZ_CRON_TRIGGERS c ON (a.SCHED_NAME=c.SCHED_NAME AND a.TRIGGER_GROUP=c.TRIGGER_GROUP AND a.TRIGGER_NAME=c.TRIGGER_NAME)
+                 LEFT JOIN QRTZ_BLOB_TRIGGERS d ON (a.SCHED_NAME=d.SCHED_NAME AND a.TRIGGER_GROUP=d.TRIGGER_GROUP AND a.TRIGGER_NAME=d.TRIGGER_NAME)
+        WHERE a.SCHED_NAME IS NOT NULL
+            AND (a.SCHED_NAME = #{schedName} OR a.SCHED_NAME IS NULL)
+            AND (b.SCHED_NAME = #{schedName} OR b.SCHED_NAME IS NULL)
+            AND (c.SCHED_NAME = #{schedName} OR c.SCHED_NAME IS NULL)
+            <if test="triggerGroup!=null and triggerGroup!=''">
+              AND a.TRIGGER_GROUP = #{triggerGroup}
+            </if>
+            <if test="triggerName!=null and triggerName!=''">
+                AND a.TRIGGER_NAME = #{triggerName}
+            </if>
+            <if test="jobGroup!=null and jobGroup!=''">
+                AND a.JOB_GROUP = #{jobGroup}
+            </if>
+            <if test="jobName!=null and jobName!=''">
+                AND a.JOB_NAME = #{jobName}
+            </if>
+        ORDER BY a.TRIGGER_GROUP, a.TRIGGER_NAME, a.JOB_GROUP, a.JOB_NAME
+    </select>
+
     <select id="getSimpleTriggerByJobKey" resultMap="TriggersResMap">
         SELECT
           a.*,
@@ -12,7 +44,7 @@
           b.REPEAT_INTERVAL,
           b.TIMES_TRIGGERED
         FROM QRTZ_TRIGGERS a
-          LEFT JOIN QRTZ_SIMPLE_TRIGGERS b ON (a.SCHED_NAME=b.SCHED_NAME AND a.TRIGGER_GROUP=b.TRIGGER_GROUP AND a.TRIGGER_NAME=b.TRIGGER_NAME)
+          RIGHT JOIN QRTZ_SIMPLE_TRIGGERS b ON (a.SCHED_NAME=b.SCHED_NAME AND a.TRIGGER_GROUP=b.TRIGGER_GROUP AND a.TRIGGER_NAME=b.TRIGGER_NAME)
         WHERE b.SCHED_NAME IS NOT NULL
               AND a.SCHED_NAME = #{schedName}
               AND a.JOB_NAME = #{jobName}
@@ -25,7 +57,7 @@
           b.CRON_EXPRESSION,
           b.TIME_ZONE_ID
         FROM QRTZ_TRIGGERS a
-          LEFT JOIN QRTZ_CRON_TRIGGERS b ON (a.SCHED_NAME=b.SCHED_NAME AND a.TRIGGER_GROUP=b.TRIGGER_GROUP AND a.TRIGGER_NAME=b.TRIGGER_NAME)
+          RIGHT JOIN QRTZ_CRON_TRIGGERS b ON (a.SCHED_NAME=b.SCHED_NAME AND a.TRIGGER_GROUP=b.TRIGGER_GROUP AND a.TRIGGER_NAME=b.TRIGGER_NAME)
         WHERE b.SCHED_NAME IS NOT NULL
               AND a.SCHED_NAME = #{schedName}
               AND a.JOB_NAME = #{jobName}
@@ -37,7 +69,7 @@
           a.*,
           b.BLOB_DATA
         FROM QRTZ_TRIGGERS a
-          LEFT JOIN QRTZ_BLOB_TRIGGERS b ON (a.SCHED_NAME=b.SCHED_NAME AND a.TRIGGER_GROUP=b.TRIGGER_GROUP AND a.TRIGGER_NAME=b.TRIGGER_NAME)
+          RIGHT JOIN QRTZ_BLOB_TRIGGERS b ON (a.SCHED_NAME=b.SCHED_NAME AND a.TRIGGER_GROUP=b.TRIGGER_GROUP AND a.TRIGGER_NAME=b.TRIGGER_NAME)
         WHERE b.SCHED_NAME IS NOT NULL
               AND a.SCHED_NAME = #{schedName}
               AND a.JOB_NAME = #{jobName}

@@ -1,8 +1,8 @@
 package org.clever.quartz.controller;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.clever.common.model.response.AjaxMessage;
 import org.clever.common.server.controller.BaseController;
 import org.clever.quartz.dto.request.*;
 import org.clever.quartz.dto.response.TriggerInfoRes;
@@ -33,6 +33,12 @@ public class QuartzTriggerController extends BaseController {
     @GetMapping("/trigger/validator_cron" + JSON_SUFFIX)
     public List<String> validatorCron(@Validated ValidatorCronReq validatorCronReq) {
         return triggerService.validatorCron(validatorCronReq.getCron(), validatorCronReq.getNum());
+    }
+
+    @ApiOperation("查询Triggers信息")
+    @GetMapping("/trigger" + JSON_SUFFIX)
+    public IPage<TriggersRes> findTriggers(FindTriggersReq findTriggersReq) {
+        return triggerService.findTriggers(findTriggersReq);
     }
 
     @ApiOperation("给JobDetail增加一个SimpleTrigger")
