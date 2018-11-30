@@ -50,7 +50,7 @@ public class HttpServiceJobService {
         jobDetail = jobBuilder.build();
         jobDetail.getJobDataMap().put(HttpJobDataKeyConstant.HttpJobConfig, addHttpServiceJobReq.getHttpJobConfig());
         jobDetail.getJobDataMap().put(HttpJobDataKeyConstant.HttpJobNotice, addHttpServiceJobReq.getNotice());
-        jobDetail.getJobDataMap().put("jobExtendData", addHttpServiceJobReq.getJobExtendData());
+        jobDetail.getJobDataMap().put(HttpJobDataKeyConstant.HttpJobExtendData, addHttpServiceJobReq.getJobExtendData());
         try {
             scheduler.addJob(jobDetail, false);
         } catch (Throwable e) {

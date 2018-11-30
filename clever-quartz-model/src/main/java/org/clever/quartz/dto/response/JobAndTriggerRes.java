@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import org.clever.common.model.response.BaseResponse;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 作者： lzw<br/>
@@ -60,9 +61,9 @@ public class JobAndTriggerRes extends BaseResponse {
     private String requestsRecovery;
 
     /**
-     * TODO 解析 JobDataMap类型
+     * JobDataMap数据
      */
-    private Object jobData;
+    private Map jobData;
 
     /**
      * 触发器

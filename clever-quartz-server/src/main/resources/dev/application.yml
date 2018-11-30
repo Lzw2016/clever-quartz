@@ -178,6 +178,7 @@ mybatis-plus:
     db-config:
       id-type: auto
       field-strategy: not_null
+  type-handlers-package: 'org.clever.quartz.typehandler'
 
 ###################################################################################
 ### clever security配置

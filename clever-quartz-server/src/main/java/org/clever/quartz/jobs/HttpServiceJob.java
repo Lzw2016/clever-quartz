@@ -26,6 +26,7 @@ import java.util.Map;
  * 作者：lizw <br/>
  * 创建时间：2017/6/1 11:34 <br/>
  */
+@SuppressWarnings("NullableProblems")
 @Slf4j
 public class HttpServiceJob extends QuartzJobBean {
 
