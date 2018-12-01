@@ -327,12 +327,12 @@ public class QuartzTriggerService {
      * @return 成功返回true
      */
     @Transactional
-    public Trigger deleteTrigger(TriggerKeyReq triggerKeyReq) {
+    public TriggerInfoRes deleteTrigger(TriggerKeyReq triggerKeyReq) {
         Scheduler scheduler = QuartzManager.getScheduler();
         TriggerKey triggerKey = TriggerKey.triggerKey(triggerKeyReq.getTriggerName(), triggerKeyReq.getTriggerGroup());
-        Trigger trigger;
+        TriggerInfoRes triggerInfoRes;
         try {
-            trigger = scheduler.getTrigger(triggerKey);
+            Trigger trigger = scheduler.getTrigger(triggerKey);
             if (trigger == null) {
                 throw new BusinessException("触发器不存在");
             }
@@ -340,11 +340,12 @@ public class QuartzTriggerService {
             scheduler.pauseTrigger(triggerKey);
             // 移除触发器
             scheduler.unscheduleJob(triggerKey);
+            triggerInfoRes = ConvertUtils.convert(scheduler.getSchedulerName(), trigger, scheduler.getTriggerState(trigger.getKey()));
         } catch (Throwable e) {
             log.error("删除一个Trigger异常", e);
             throw new BusinessException("删除一个Trigger异常", e);
         }
-        return trigger;
+        return triggerInfoRes;
     }
 
     /**
@@ -353,22 +354,23 @@ public class QuartzTriggerService {
      * @return 成功返回true
      */
     @Transactional
-    public Trigger pauseTrigger(TriggerKeyReq triggerKeyReq) {
+    public TriggerInfoRes pauseTrigger(TriggerKeyReq triggerKeyReq) {
         Scheduler scheduler = QuartzManager.getScheduler();
         TriggerKey triggerKey = TriggerKey.triggerKey(triggerKeyReq.getTriggerName(), triggerKeyReq.getTriggerGroup());
-        Trigger trigger;
+        TriggerInfoRes triggerInfoRes;
         try {
-            trigger = scheduler.getTrigger(triggerKey);
+            Trigger trigger = scheduler.getTrigger(triggerKey);
             if (trigger == null) {
                 throw new BusinessException("触发器不存在");
             }
             // 暂停触发器
             scheduler.pauseTrigger(triggerKey);
+            triggerInfoRes = ConvertUtils.convert(scheduler.getSchedulerName(), trigger, scheduler.getTriggerState(trigger.getKey()));
         } catch (Throwable e) {
             log.error("暂停一个Trigger异常", e);
             throw new BusinessException("暂停一个Trigger异常", e);
         }
-        return trigger;
+        return triggerInfoRes;
     }
 
     /**
@@ -377,22 +379,23 @@ public class QuartzTriggerService {
      * @return 成功返回true
      */
     @Transactional
-    public Trigger resumeTrigger(TriggerKeyReq triggerKeyReq) {
+    public TriggerInfoRes resumeTrigger(TriggerKeyReq triggerKeyReq) {
         Scheduler scheduler = QuartzManager.getScheduler();
         TriggerKey triggerKey = TriggerKey.triggerKey(triggerKeyReq.getTriggerName(), triggerKeyReq.getTriggerGroup());
-        Trigger trigger;
+        TriggerInfoRes triggerInfoRes;
         try {
-            trigger = scheduler.getTrigger(triggerKey);
+            Trigger trigger = scheduler.getTrigger(triggerKey);
             if (trigger == null) {
                 throw new BusinessException("触发器不存在");
             }
             // 取消暂停触发器
             scheduler.resumeTrigger(triggerKey);
+            triggerInfoRes = ConvertUtils.convert(scheduler.getSchedulerName(), trigger, scheduler.getTriggerState(trigger.getKey()));
         } catch (Throwable e) {
             log.error("取消暂停一个Trigger异常", e);
             throw new BusinessException("取消暂停一个Trigger异常", e);
         }
-        return trigger;
+        return triggerInfoRes;
     }
 
     /**
