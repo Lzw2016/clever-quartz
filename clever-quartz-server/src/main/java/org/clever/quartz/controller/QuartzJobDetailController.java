@@ -11,7 +11,6 @@ import org.clever.quartz.dto.response.JobDetailInfoRes;
 import org.clever.quartz.dto.response.JobDetailsRes;
 import org.clever.quartz.dto.response.JobKeyRes;
 import org.clever.quartz.service.QuartzJobDetailService;
-import org.quartz.JobDetail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -69,25 +68,25 @@ public class QuartzJobDetailController extends BaseController {
 
     @ApiOperation("删除Job(同时也会删除对应触发器)")
     @DeleteMapping("/job_detail" + JSON_SUFFIX)
-    public JobDetail deleteJobDetail(@Validated JobDetailKeyReq jobDetailKeyReq) {
+    public JobDetailInfoRes deleteJobDetail(@Validated JobDetailKeyReq jobDetailKeyReq) {
         return jobDetailService.deleteJobDetail(jobDetailKeyReq);
     }
 
     @ApiOperation("暂停Job")
     @PostMapping("/job_detail/pause" + JSON_SUFFIX)
-    public JobDetail pauseJob(@Validated @RequestBody JobDetailKeyReq jobDetailKeyReq) {
+    public JobDetailInfoRes pauseJob(@Validated @RequestBody JobDetailKeyReq jobDetailKeyReq) {
         return jobDetailService.pauseJob(jobDetailKeyReq);
     }
 
     @ApiOperation("取消暂停Job")
     @PostMapping("/job_detail/resume" + JSON_SUFFIX)
-    public JobDetail resumeJob(@Validated @RequestBody JobDetailKeyReq jobDetailKeyReq) {
+    public JobDetailInfoRes resumeJob(@Validated @RequestBody JobDetailKeyReq jobDetailKeyReq) {
         return jobDetailService.resumeJob(jobDetailKeyReq);
     }
 
     @ApiOperation("立即运行Job")
     @PostMapping("/job_detail/trigger" + JSON_SUFFIX)
-    public JobDetail triggerJob(@Validated @RequestBody JobDetailKeyReq jobDetailKeyReq) {
+    public JobDetailInfoRes triggerJob(@Validated @RequestBody JobDetailKeyReq jobDetailKeyReq) {
         return jobDetailService.triggerJob(jobDetailKeyReq);
     }
 }

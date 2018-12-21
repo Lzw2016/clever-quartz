@@ -143,11 +143,11 @@ public class QuartzJobDetailService {
      * @return 成功返回true
      */
     @Transactional
-    public JobDetail deleteJobDetail(JobDetailKeyReq jobDetailKeyReq) {
+    public JobDetailInfoRes deleteJobDetail(JobDetailKeyReq jobDetailKeyReq) {
         Scheduler scheduler = QuartzManager.getScheduler();
-        JobDetail jobDetail;
+        JobDetailInfoRes jobDetailInfoRes;
         try {
-            jobDetail = scheduler.getJobDetail(JobKey.jobKey(jobDetailKeyReq.getJobName(), jobDetailKeyReq.getJobGroup()));
+            JobDetail jobDetail = scheduler.getJobDetail(JobKey.jobKey(jobDetailKeyReq.getJobName(), jobDetailKeyReq.getJobGroup()));
             if (jobDetail == null) {
                 throw new BusinessException("删除任务失败,任务不存在");
             }
@@ -164,11 +164,12 @@ public class QuartzJobDetailService {
             }
             // 删除任务
             scheduler.deleteJob(JobKey.jobKey(jobDetailKeyReq.getJobName(), jobDetailKeyReq.getJobGroup()));
+            jobDetailInfoRes = ConvertUtils.convert(scheduler.getSchedulerName(), jobDetail);
         } catch (Throwable e) {
             log.error("删除JobDetail发生异常", e);
             throw ExceptionUtils.unchecked(e);
         }
-        return jobDetail;
+        return jobDetailInfoRes;
     }
 
     /**
@@ -177,19 +178,20 @@ public class QuartzJobDetailService {
      * @return 成功返回true
      */
     @Transactional
-    public JobDetail pauseJob(JobDetailKeyReq jobDetailKeyReq) {
+    public JobDetailInfoRes pauseJob(JobDetailKeyReq jobDetailKeyReq) {
         Scheduler scheduler = QuartzManager.getScheduler();
-        JobDetail jobDetail;
+        JobDetailInfoRes jobDetailInfoRes;
         try {
-            jobDetail = scheduler.getJobDetail(JobKey.jobKey(jobDetailKeyReq.getJobName(), jobDetailKeyReq.getJobGroup()));
+            JobDetail jobDetail = scheduler.getJobDetail(JobKey.jobKey(jobDetailKeyReq.getJobName(), jobDetailKeyReq.getJobGroup()));
             if (jobDetail == null) {
                 throw new BusinessException("暂停任务失败,任务不存在");
             }
             scheduler.pauseJob(JobKey.jobKey(jobDetailKeyReq.getJobName(), jobDetailKeyReq.getJobGroup()));
+            jobDetailInfoRes = ConvertUtils.convert(scheduler.getSchedulerName(), jobDetail);
         } catch (Throwable e) {
             throw new BusinessException("暂停JobDetail异常", e);
         }
-        return jobDetail;
+        return jobDetailInfoRes;
     }
 
     /**
@@ -198,20 +200,21 @@ public class QuartzJobDetailService {
      * @return 成功返回true
      */
     @Transactional
-    public JobDetail resumeJob(JobDetailKeyReq jobDetailKeyReq) {
+    public JobDetailInfoRes resumeJob(JobDetailKeyReq jobDetailKeyReq) {
         Scheduler scheduler = QuartzManager.getScheduler();
-        JobDetail jobDetail;
+        JobDetailInfoRes jobDetailInfoRes;
         try {
-            jobDetail = scheduler.getJobDetail(JobKey.jobKey(jobDetailKeyReq.getJobName(), jobDetailKeyReq.getJobGroup()));
+            JobDetail jobDetail = scheduler.getJobDetail(JobKey.jobKey(jobDetailKeyReq.getJobName(), jobDetailKeyReq.getJobGroup()));
             if (jobDetail == null) {
                 throw new BusinessException("继续运行任务失败,任务不存在");
             }
             scheduler.resumeJob(JobKey.jobKey(jobDetailKeyReq.getJobName(), jobDetailKeyReq.getJobGroup()));
+            jobDetailInfoRes = ConvertUtils.convert(scheduler.getSchedulerName(), jobDetail);
         } catch (Throwable e) {
             log.error("取消暂停JobDetail异常", e);
             throw new BusinessException("取消暂停JobDetail异常", e);
         }
-        return jobDetail;
+        return jobDetailInfoRes;
     }
 
     /**
@@ -220,20 +223,20 @@ public class QuartzJobDetailService {
      * @return 成功返回true
      */
     @Transactional
-    public JobDetail triggerJob(JobDetailKeyReq jobDetailKeyReq) {
+    public JobDetailInfoRes triggerJob(JobDetailKeyReq jobDetailKeyReq) {
         Scheduler scheduler = QuartzManager.getScheduler();
-        JobDetail jobDetail;
+        JobDetailInfoRes jobDetailInfoRes;
         try {
-            jobDetail = scheduler.getJobDetail(JobKey.jobKey(jobDetailKeyReq.getJobName(), jobDetailKeyReq.getJobGroup()));
+            JobDetail jobDetail = scheduler.getJobDetail(JobKey.jobKey(jobDetailKeyReq.getJobName(), jobDetailKeyReq.getJobGroup()));
             if (jobDetail == null) {
                 throw new BusinessException("立即执行任务失败,任务不存在");
             }
             scheduler.triggerJob(JobKey.jobKey(jobDetailKeyReq.getJobName(), jobDetailKeyReq.getJobGroup()));
+            jobDetailInfoRes = ConvertUtils.convert(scheduler.getSchedulerName(), jobDetail);
         } catch (Throwable e) {
             log.error("立即运行JobDetail异常", e);
             throw new BusinessException("立即运行JobDetail异常", e);
         }
-        return jobDetail;
+        return jobDetailInfoRes;
     }
-
 }

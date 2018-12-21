@@ -10,7 +10,6 @@ import org.clever.quartz.dto.response.TriggerKeyRes;
 import org.clever.quartz.dto.response.TriggersRes;
 import org.clever.quartz.entity.QrtzTriggers;
 import org.clever.quartz.service.QuartzTriggerService;
-import org.quartz.Trigger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -63,19 +62,19 @@ public class QuartzTriggerController extends BaseController {
 
     @ApiOperation("暂停而且删除Trigger")
     @DeleteMapping("/trigger" + JSON_SUFFIX)
-    public Trigger deleteTrigger(@Validated TriggerKeyReq triggerKeyReq) {
+    public TriggerInfoRes deleteTrigger(@Validated TriggerKeyReq triggerKeyReq) {
         return triggerService.deleteTrigger(triggerKeyReq);
     }
 
     @ApiOperation("暂停Trigger")
     @PostMapping("/trigger/pause" + JSON_SUFFIX)
-    public Trigger pauseTrigger(@Validated @RequestBody TriggerKeyReq triggerKeyReq) {
+    public TriggerInfoRes pauseTrigger(@Validated @RequestBody TriggerKeyReq triggerKeyReq) {
         return triggerService.pauseTrigger(triggerKeyReq);
     }
 
     @ApiOperation("取消暂停Trigger")
     @PostMapping("/trigger/resume" + JSON_SUFFIX)
-    public Trigger resumeTrigger(@Validated @RequestBody TriggerKeyReq triggerKeyReq) {
+    public TriggerInfoRes resumeTrigger(@Validated @RequestBody TriggerKeyReq triggerKeyReq) {
         return triggerService.resumeTrigger(triggerKeyReq);
     }
 

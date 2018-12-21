@@ -26,10 +26,6 @@ public class HttpServiceJobController extends BaseController {
     private HttpServiceJobService httpServiceJobService;
     @Autowired
     private QuartzTriggerService triggerService;
-//    @Autowired
-//    private QuartzJobDetailService jobDetailService;
-//    @Autowired
-//    private JobLogService qrtzJobLogService;
 
     @ApiOperation("增加HTTP任务")
     @PostMapping("/http_job" + JSON_SUFFIX)
@@ -40,40 +36,4 @@ public class HttpServiceJobController extends BaseController {
         httpServiceJobService.addHttpServiceJob(addHttpServiceJobReq);
         return addHttpServiceJobReq;
     }
-    
-//    @ApiOperation("暂停、继续运行HTTP任务")
-//    @PutMapping("/http_job" + JSON_SUFFIX)
-//    public AjaxMessage<String> pauseOrResumeJob(@Validated @RequestBody PauseOrResumeJobVo pauseOrResumeJobVo) {
-//        AjaxMessage<String> ajaxMessage = new AjaxMessage<>(true, "更新任务状态成功", null);
-//        boolean flag;
-//        JobDetailKeyReq jobDetailKeyVo = new JobDetailKeyReq(pauseOrResumeJobVo.getJobName(), pauseOrResumeJobVo.getJobGroup());
-//        if ("pause".equalsIgnoreCase(pauseOrResumeJobVo.getStatus())) {
-//            flag = jobDetailService.pauseJob(jobDetailKeyVo, ajaxMessage);
-//            if (flag) {
-//                ajaxMessage.setSuccessMessage("暂停定时任务成功");
-//            }
-//        } else if ("resume".equalsIgnoreCase(pauseOrResumeJobVo.getStatus())) {
-//            flag = jobDetailService.resumeJob(jobDetailKeyVo, ajaxMessage);
-//            if (flag) {
-//                ajaxMessage.setSuccessMessage("继续运行定时任务成功");
-//            }
-//        } else if ("trigger".equalsIgnoreCase(pauseOrResumeJobVo.getStatus())) {
-//            flag = jobDetailService.triggerJob(jobDetailKeyVo, ajaxMessage);
-//            if (flag) {
-//                ajaxMessage.setSuccessMessage("立即执行定时任务成功");
-//            }
-//        } else {
-//            ajaxMessage.setSuccess(false);
-//            ajaxMessage.setFailMessage("不能识别的操作:[" + pauseOrResumeJobVo.getStatus() + "]");
-//        }
-//        return ajaxMessage;
-//    }
-
-//    @ApiOperation("停止并且删除HTTP任务")
-//    @DeleteMapping("/http_job/{jobGroup}/{jobName}" + JSON_SUFFIX)
-//    public AjaxMessage<String> deleteJobDetail(@PathVariable() String jobGroup, @PathVariable String jobName) {
-//        AjaxMessage<String> ajaxMessage = new AjaxMessage<>(true, "删除JobDetail成功", null);
-//        jobDetailService.deleteJobDetail(new JobDetailKeyReq(jobName, jobGroup), ajaxMessage);
-//        return ajaxMessage;
-//    }
 }
