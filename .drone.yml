@@ -22,6 +22,7 @@ steps:
       dockerfile: ./Dockerfile
       target: dev
       force_tag: true
+      insecure: true
 #      bip: true
       mirror: http://192.168.159.136:5000
 
