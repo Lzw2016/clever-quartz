@@ -2,7 +2,7 @@ kind: pipeline
 name: 打包部署
 
 steps:
-  - name: 编译
+  - name: 编译项目
     image: maven:3.6.0-jdk-8-alpine
     volumes:
       - name: package-java
@@ -10,8 +10,20 @@ steps:
     commands:
       - mvn install -Dmaven.test.skip=true -Dmaven.javadoc.skip=true -B -V -Pdev --settings /package-java/Maven/settings.xml
       - cp -f clever-quartz-server/target/clever-quartz-server-0.0.1-SNAPSHOT.jar /package-java/clever-quartz-server-0.0.1-SNAPSHOT.jar
+      - echo -n "0.0.1-SNAPSHOT" > .tags
+
+  - name: 构建Docker镜像
+    image: plugins/docker
+    settings:
+      registry: 192.168.159.136:5000
+      repo: java/clever-quartz-server
+      # username:
+      # password:
+      dockerfile: ./Dockerfile
+      target: dev
 
 volumes:
+  # Java打包目录
   - name: package-java
     host:
       path: /opt/package/java
