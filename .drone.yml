@@ -21,7 +21,7 @@ steps:
       target: dev
       force_tag: true
       auto_tag: true
-      auto_tag_suffix:
+      auto_tag_suffix: ''
 
 volumes:
   # Java打包目录
