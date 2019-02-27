@@ -19,6 +19,7 @@ steps:
       repo: 192.168.159.136:5000/java-service/clever-quartz-server
       dockerfile: ./Dockerfile
       target: dev
+      bip: true
       force_tag: true
       auto_tag: true
       auto_tag_suffix: ''
