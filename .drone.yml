@@ -9,7 +9,7 @@ steps:
         path: /package-java
     commands:
       - mvn install -Dmaven.test.skip=true -Dmaven.javadoc.skip=true -B -V -Pdev --settings /package-java/Maven/settings.xml
-      - cp -f clever-quartz-server/target/clever-quartz-server-0.0.1-SNAPSHOT.jar /package-java/clever-quartz-server-0.0.1-SNAPSHOT.jar
+      - cp -f clever-quartz-server/target/clever-quartz-server-*-SNAPSHOT.jar /package-java
       - echo -n "0.0.1-SNAPSHOT" > .tags
 
   - name: 构建Docker镜像
@@ -23,7 +23,6 @@ steps:
       target: dev
       force_tag: true
       insecure: true
-#      mirror: http://192.168.159.136:5000
 
 volumes:
   # Java打包目录
