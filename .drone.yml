@@ -15,8 +15,8 @@ steps:
   - name: 构建Docker镜像
     image: plugins/docker
     settings:
-      registry: http://192.168.159.136:5000
-      repo: java/clever-quartz-server
+      registry: 192.168.159.136:5000
+      repo: 192.168.159.136:5000/java/clever-quartz-server
       # username:
       # password:
       dockerfile: ./Dockerfile
