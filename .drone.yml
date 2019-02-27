@@ -4,14 +4,16 @@ name: 打包部署
 steps:
   - name: 编译
     image: maven:3.6.0-jdk-8-alpine
-    volumes:
-      - name: package-java
-        path: /package-java
+#    volumes:
+#      - name: package-java
+#        path: /package-java
     commands:
       - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V -Pdev --settings /package-java/Maven/settings.xml
-      - cp -f clever-quartz-server/target/clever-quartz-server-0.0.1-SNAPSHOT.jar /package-java/clever-quartz-server-0.0.1-SNAPSHOT.jar
+      - cd clever-quartz-server/target
+      - ls
+      #- cp -f clever-quartz-server/target/clever-quartz-server-0.0.1-SNAPSHOT.jar /package-java/clever-quartz-server-0.0.1-SNAPSHOT.jar
 
-volumes:
-  - name: package-java
-    host:
-      path: /opt/package/java
+#volumes:
+#  - name: package-java
+#    host:
+#      path: /opt/package/java
