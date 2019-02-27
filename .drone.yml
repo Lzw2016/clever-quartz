@@ -8,7 +8,7 @@ steps:
       - name: package-java
         path: /package-java
     commands:
-      - mvn install -Dmaven.test.skip=true -Dmaven.javadoc.skip=true -B -V -Pdev --settings /package-java/Maven/settings.xml
+      - mvn deploy -Dmaven.test.skip=true -Dmaven.javadoc.skip=true -B -V -Pdev --settings /package-java/Maven/settings.xml
       - cp -f clever-quartz-server/target/clever-quartz-server-*-SNAPSHOT.jar /package-java
 
   - name: 构建Docker镜像
