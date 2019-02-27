@@ -21,8 +21,9 @@ steps:
       # password:
       dockerfile: ./Dockerfile
       target: dev
+      force_tag: true
 #      bip: true
-      mirror: 192.168.159.136:5000
+      mirror: http://192.168.159.136:5000
 
 volumes:
   # Java打包目录
