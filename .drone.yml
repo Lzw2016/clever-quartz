@@ -15,14 +15,13 @@ steps:
   - name: 构建Docker镜像
     image: plugins/docker
     settings:
+      insecure: true
       registry: 192.168.159.136:5000
       repo: 192.168.159.136:5000/java-service/clever-quartz-server
-      # username:
-      # password:
       dockerfile: ./Dockerfile
       target: dev
       force_tag: true
-      insecure: true
+      auto_tag: true
 
 volumes:
   # Java打包目录
