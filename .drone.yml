@@ -23,8 +23,7 @@ steps:
       target: dev
       force_tag: true
       insecure: true
-#      bip: true
-      mirror: http://192.168.159.136:5000
+#      mirror: http://192.168.159.136:5000
 
 volumes:
   # Java打包目录
