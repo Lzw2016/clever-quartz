@@ -8,13 +8,15 @@ clone:
 steps:
   - name: 初始化变量
     image: bash:5.0.2
+    environment:
+      DockerContainerName: clever-quartz-server
     commands:
-      - env
+      # - env
+      # - echo "$PATH" > /opt/environment/
 
   - name: 下载源代码
     image: docker:git
     commands:
-      # - env
       - echo "### $DRONE_GIT_HTTP_URL -> $DRONE_BRANCH"
       - git clone $DRONE_GIT_HTTP_URL ./
       - git checkout $DRONE_BRANCH
@@ -31,6 +33,8 @@ steps:
 
   - name: 构建Docker镜像
     image: plugins/docker
+    commands:
+      - env
     settings:
       # bip: true
       insecure: true
