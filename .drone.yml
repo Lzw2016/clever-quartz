@@ -13,20 +13,6 @@ steps:
       - git clone $DRONE_GIT_HTTP_URL ./
       - git checkout $DRONE_BRANCH
 
-  - name: 初始化变量
-    image: bash:5.0.2
-    environment:
-      VAR_DOCKER_CONTAINER_NAME: 'clever-quartz-server'
-      VAR_REGISTRY: '192.168.159.136:5000'
-      VAR_REPO: '192.168.159.136:5000/java-service/clever-quartz-server'
-      VAR_DOCKERFILE: './Dockerfile'
-    commands:
-      - mkdir -p ./drone/environment
-      - echo "$VAR_DOCKER_CONTAINER_NAME" > ./drone/environment/VAR_DOCKER_CONTAINER_NAME
-      - echo "$VAR_REGISTRY" > ./drone/environment/VAR_REGISTRY
-      - echo "$VAR_REPO" > ./drone/environment/VAR_REPO
-      - echo "$VAR_DOCKERFILE" > ./drone/environment/VAR_DOCKERFILE
-
   - name: 编译源代码
     image: maven:3.6.0-jdk-8-alpine
     volumes:
@@ -39,14 +25,6 @@ steps:
 
   - name: 构建Docker镜像
     image: plugins/docker
-    commands:
-      #- export PLUGIN_REGISTRY=$(cat ./drone/environment/VAR_REGISTRY)
-      #- export PLUGIN_REPO=$(cat ./drone/environment/VAR_REPO)
-      #- export PLUGIN_DOCKERFILE=$(cat ./drone/environment/VAR_DOCKERFILE)
-      # - pwd
-      # - cat ./drone/environment/VAR_REPO
-      # - sudo /usr/local/bin/dockerd-entrypoint.sh /bin/drone-docker
-      - env
     settings:
       registry: '192.168.159.136:5000'
       repo: '192.168.159.136:5000/java-service/clever-quartz-server'
@@ -56,7 +34,7 @@ steps:
       target: dev
       tags: ['0.0.1-SNAPSHOT']
       force_tag: true
-      auto_tag: true
+      auto_tag: false
       auto_tag_suffix: ''
 
   - name: 启动Docker容器
