@@ -14,10 +14,11 @@ steps:
       VAR_REPO: '192.168.159.136:5000/java-service/clever-quartz-server'
       VAR_DOCKERFILE: './Dockerfile'
     commands:
-      - echo "VAR_DOCKER_CONTAINER_NAME" > /opt/environment/VAR_DOCKER_CONTAINER_NAME
-      - echo "VAR_REGISTRY" > /opt/environment/VAR_REGISTRY
-      - echo "VAR_REPO" > /opt/environment/VAR_REPO
-      - echo "VAR_DOCKERFILE" > /opt/environment/VAR_DOCKERFILE
+      - mkdir -p /opt/environment
+      - echo "$VAR_DOCKER_CONTAINER_NAME" > /opt/environment/VAR_DOCKER_CONTAINER_NAME
+      - echo "$VAR_REGISTRY" > /opt/environment/VAR_REGISTRY
+      - echo "$VAR_REPO" > /opt/environment/VAR_REPO
+      - echo "$VAR_DOCKERFILE" > /opt/environment/VAR_DOCKERFILE
 
   - name: 下载源代码
     image: docker:git
