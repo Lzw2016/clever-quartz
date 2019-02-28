@@ -8,10 +8,10 @@ steps:
   - name: Clone源代码
     image: docker:git
     commands:
-      - env
+      # - env
       - git clone http://192.168.159.136:3000/lizw/clever-quartz.git
       - cd clever-quartz
-      - git checkout master
+      - git checkout $DRONE_BRANCH
 
   - name: 编译项目
     image: maven:3.6.0-jdk-8-alpine
