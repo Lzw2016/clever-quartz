@@ -10,6 +10,7 @@ steps:
     commands:
       - env
       - git clone http://192.168.159.136:3000/lizw/clever-quartz.git
+      - cd clever-quartz
       - git checkout master
 
   - name: 编译项目
@@ -49,7 +50,7 @@ steps:
         - echo "------------------< 停止容器 >------------------"
         - docker stop clever-quartz-server
         - echo "------------------< 删除容器 >------------------"
-        - docker rm clever-quartz-server
+        - docker rm -v clever-quartz-server
         - echo "------------------< 删除旧镜像 >------------------"
         - docker rmi 192.168.159.136:5000/java-service/clever-quartz-server:0.0.1-SNAPSHOT
         - echo "------------------< 拉取新镜像 >------------------"
