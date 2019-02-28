@@ -30,7 +30,7 @@ steps:
       repo: '192.168.159.136:5000/java-service/clever-quartz-server'
       # bip: true
       insecure: true
-      # dockerfile: ./Dockerfile
+      dockerfile: ./Dockerfile
       target: dev
       tags: ['0.0.1-SNAPSHOT']
       force_tag: true
