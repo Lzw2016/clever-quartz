@@ -6,6 +6,11 @@ clone:
   disable: true
 
 steps:
+  - name: 初始化变量
+    image: bash:5.0.2
+    commands:
+      - env
+
   - name: 下载源代码
     image: docker:git
     commands:
@@ -13,8 +18,6 @@ steps:
       - echo "### $DRONE_GIT_HTTP_URL -> $DRONE_BRANCH"
       - git clone $DRONE_GIT_HTTP_URL ./
       - git checkout $DRONE_BRANCH
-    environment:
-      test: '123456789'
 
   - name: 编译源代码
     image: maven:3.6.0-jdk-8-alpine
@@ -22,7 +25,6 @@ steps:
       - name: package-java
         path: /package-java
     commands:
-      - env
       - mvn install -Dmaven.test.skip=true -Dmaven.javadoc.skip=true -B -V -Pdev --settings /package-java/Maven/settings.xml
       # - mvn deploy -Dmaven.test.skip=true -Dmaven.javadoc.skip=true -B -V -Pdev --settings /package-java/Maven/settings.xml
       # - cp -f clever-quartz-server/target/clever-quartz-server-*-SNAPSHOT.jar /package-java
