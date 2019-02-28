@@ -13,9 +13,6 @@ steps:
       - echo "### $DRONE_GIT_HTTP_URL -> $DRONE_BRANCH"
       - git clone $DRONE_GIT_HTTP_URL ./
       - git checkout $DRONE_BRANCH
-    when:
-      branch:
-        - master1
 
   - name: 编译项目
     image: maven:3.6.0-jdk-8-alpine
