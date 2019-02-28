@@ -36,11 +36,15 @@ steps:
       password: lizhiwei1993
       command_timeout: 300
       script:
+        - echo "------------------< 停止容器 >------------------"
         - docker stop clever-quartz-server
+        - echo "------------------< 删除容器 >------------------"
         - docker rm clever-quartz-server
+        - echo "------------------< 删除旧镜像 >------------------"
         - docker rmi 192.168.159.136:5000/java-service/clever-quartz-server:0.0.1-SNAPSHOT
+        - echo "------------------< 运行新镜像 >------------------"
         - docker run --name clever-quartz-server -d -p 9066:9066 192.168.159.136:5000/java-service/clever-quartz-server:0.0.1-SNAPSHOT
-        # - exit
+        - exit
 
 volumes:
   # Java打包目录
