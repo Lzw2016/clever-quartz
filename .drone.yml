@@ -42,6 +42,8 @@ steps:
         - docker rm clever-quartz-server
         - echo "------------------< 删除旧镜像 >------------------"
         - docker rmi 192.168.159.136:5000/java-service/clever-quartz-server:0.0.1-SNAPSHOT
+        - echo "------------------< 拉取新镜像 >------------------"
+        - docker pull 192.168.159.136:5000/java-service/clever-quartz-server:0.0.1-SNAPSHOT
         - echo "------------------< 运行新镜像 >------------------"
         - docker run --name clever-quartz-server -d -p 9066:9066 192.168.159.136:5000/java-service/clever-quartz-server:0.0.1-SNAPSHOT
         - exit
