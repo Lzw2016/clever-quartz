@@ -9,7 +9,8 @@ steps:
     image: docker:git
     commands:
       # - env
-      - git clone http://192.168.159.136:3000/lizw/clever-quartz.git
+      # - git clone $DRONE_GIT_SSH_URL
+      - git clone $DRONE_GIT_HTTP_URL ./
       - cd clever-quartz
       - git checkout $DRONE_BRANCH
 
