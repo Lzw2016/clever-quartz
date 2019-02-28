@@ -1,7 +1,16 @@
 kind: pipeline
 name: 打包部署
 
+clone:
+  disable: true
+
 steps:
+  - name: Clone源代码
+    image: docker:git
+    commands:
+      - git clone http://192.168.159.136:3000/lizw/clever-quartz.git
+      - git checkout $DRONE_COMMIT
+
   - name: 编译项目
     image: maven:3.6.0-jdk-8-alpine
     volumes:
@@ -10,7 +19,7 @@ steps:
     commands:
       - mvn install -Dmaven.test.skip=true -Dmaven.javadoc.skip=true -B -V -Pdev --settings /package-java/Maven/settings.xml
       # - mvn deploy -Dmaven.test.skip=true -Dmaven.javadoc.skip=true -B -V -Pdev --settings /package-java/Maven/settings.xml
-      - cp -f clever-quartz-server/target/clever-quartz-server-*-SNAPSHOT.jar /package-java
+      # - cp -f clever-quartz-server/target/clever-quartz-server-*-SNAPSHOT.jar /package-java
 
   - name: 构建Docker镜像
     image: plugins/docker
