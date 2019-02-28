@@ -14,11 +14,11 @@ steps:
       VAR_REPO: '192.168.159.136:5000/java-service/clever-quartz-server'
       VAR_DOCKERFILE: './Dockerfile'
     commands:
-      - mkdir -p /opt/environment
-      - echo "$VAR_DOCKER_CONTAINER_NAME" > /opt/environment/VAR_DOCKER_CONTAINER_NAME
-      - echo "$VAR_REGISTRY" > /opt/environment/VAR_REGISTRY
-      - echo "$VAR_REPO" > /opt/environment/VAR_REPO
-      - echo "$VAR_DOCKERFILE" > /opt/environment/VAR_DOCKERFILE
+      - mkdir -p ./drone/environment
+      - echo "$VAR_DOCKER_CONTAINER_NAME" > ./drone/environment/VAR_DOCKER_CONTAINER_NAME
+      - echo "$VAR_REGISTRY" > ./drone/environment/VAR_REGISTRY
+      - echo "$VAR_REPO" > ./drone/environment/VAR_REPO
+      - echo "$VAR_DOCKERFILE" > ./drone/environment/VAR_DOCKERFILE
 
   - name: 下载源代码
     image: docker:git
@@ -41,9 +41,9 @@ steps:
     image: plugins/docker
     commands:
       # - env
-      - export PLUGIN_REGISTRY=$(cat /opt/environment/VAR_REGISTRY)
-      - export PLUGIN_REPO=$(cat /opt/environment/VAR_REPO)
-      - export PLUGIN_DOCKERFILE=$(cat /opt/environment/VAR_DOCKERFILE)
+      - export PLUGIN_REGISTRY=$(cat ./drone/environment/VAR_REGISTRY)
+      - export PLUGIN_REPO=$(cat ./drone/environment/VAR_REPO)
+      - export PLUGIN_DOCKERFILE=$(cat ./drone/environment/VAR_DOCKERFILE)
     settings:
       # registry: 192.168.159.136:5000
       # repo: 192.168.159.136:5000/java-service/clever-quartz-server
