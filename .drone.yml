@@ -43,8 +43,8 @@ steps:
       #- export PLUGIN_REGISTRY=$(cat ./drone/environment/VAR_REGISTRY)
       #- export PLUGIN_REPO=$(cat ./drone/environment/VAR_REPO)
       #- export PLUGIN_DOCKERFILE=$(cat ./drone/environment/VAR_DOCKERFILE)
-      - pwd
-      - cat ./drone/environment/VAR_REPO
+      # - pwd
+      # - cat ./drone/environment/VAR_REPO
       # - sudo /usr/local/bin/dockerd-entrypoint.sh /bin/drone-docker
     settings:
       registry: '192.168.159.136:5000'
