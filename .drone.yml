@@ -40,13 +40,13 @@ steps:
   - name: 构建Docker镜像
     image: plugins/docker
     commands:
-      # - env
+      - env
       - export PLUGIN_REGISTRY=$(cat ./drone/environment/VAR_REGISTRY)
       - export PLUGIN_REPO=$(cat ./drone/environment/VAR_REPO)
       - export PLUGIN_DOCKERFILE=$(cat ./drone/environment/VAR_DOCKERFILE)
     settings:
-      # registry: 192.168.159.136:5000
-      # repo: 192.168.159.136:5000/java-service/clever-quartz-server
+      registry: '192.168.159.136:5000'
+      repo: '192.168.159.136:5000/java-service/clever-quartz-server'
       # bip: true
       insecure: true
       # dockerfile: ./Dockerfile
