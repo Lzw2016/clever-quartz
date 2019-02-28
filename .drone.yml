@@ -6,6 +6,13 @@ clone:
   disable: true
 
 steps:
+  - name: 下载源代码
+    image: docker:git
+    commands:
+      - echo "### $DRONE_GIT_HTTP_URL -> $DRONE_BRANCH"
+      - git clone $DRONE_GIT_HTTP_URL ./
+      - git checkout $DRONE_BRANCH
+
   - name: 初始化变量
     image: bash:5.0.2
     environment:
@@ -19,13 +26,6 @@ steps:
       - echo "$VAR_REGISTRY" > ./drone/environment/VAR_REGISTRY
       - echo "$VAR_REPO" > ./drone/environment/VAR_REPO
       - echo "$VAR_DOCKERFILE" > ./drone/environment/VAR_DOCKERFILE
-
-  - name: 下载源代码
-    image: docker:git
-    commands:
-      - echo "### $DRONE_GIT_HTTP_URL -> $DRONE_BRANCH"
-      - git clone $DRONE_GIT_HTTP_URL ./
-      - git checkout $DRONE_BRANCH
 
   - name: 编译源代码
     image: maven:3.6.0-jdk-8-alpine
