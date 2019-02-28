@@ -1,3 +1,4 @@
+# 跳过构建在Commit Message中添加 [CI SKIP]
 kind: pipeline
 name: 打包部署
 
