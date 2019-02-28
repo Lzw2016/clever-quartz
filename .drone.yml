@@ -11,6 +11,7 @@ steps:
     commands:
       # - env
       - echo "### $DRONE_GIT_HTTP_URL -> $DRONE_BRANCH"
+      - echo "### 提交说明 [$DRONE_COMMIT_MESSAGE]"
       - git clone $DRONE_GIT_HTTP_URL ./
       - git checkout $DRONE_BRANCH
 
@@ -67,3 +68,5 @@ volumes:
   - name: package-java
     host:
       path: /opt/package/java
+
+# -------------------------------------------------------------------------------------------------------------
