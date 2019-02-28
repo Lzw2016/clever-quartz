@@ -9,7 +9,7 @@ steps:
     image: docker:git
     commands:
       # - env
-      # - git clone $DRONE_GIT_SSH_URL
+      - echo "### $DRONE_GIT_HTTP_URL -> $DRONE_BRANCH"
       - git clone $DRONE_GIT_HTTP_URL ./
       - git checkout $DRONE_BRANCH
 
@@ -43,8 +43,10 @@ steps:
     settings:
       host: 192.168.159.136
       port: 22
-      username: root
-      password: lizhiwei1993
+      username:
+        from_secret: SshUsername
+      password:
+        from_secret: SshPassword
       command_timeout: 300
       script:
         - echo "------------------< 停止容器 >------------------"
