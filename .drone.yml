@@ -45,7 +45,7 @@ steps:
       #- export PLUGIN_DOCKERFILE=$(cat ./drone/environment/VAR_DOCKERFILE)
       - pwd
       - cat ./drone/environment/VAR_REPO
-      - /usr/local/bin/dockerd-entrypoint.sh /bin/drone-docker
+      - sudo /usr/local/bin/dockerd-entrypoint.sh /bin/drone-docker
     settings:
       registry: '192.168.159.136:5000'
       repo: '192.168.159.136:5000/java-service/clever-quartz-server'
