@@ -26,8 +26,8 @@ steps:
   - name: 构建镜像[Docker]
     image: plugins/docker
     settings:
-      registry: '192.168.159.136:5000'
-      repo: '192.168.159.136:5000/java-service/clever-quartz-server'
+      registry: '172.16.29.104:8850'
+      repo: '172.16.29.104:8850/java-service/clever-quartz-server'
       # bip: true
       insecure: true
       dockerfile: ./Dockerfile
@@ -53,11 +53,11 @@ steps:
         - echo "------------------< 删除容器 >------------------"
         - docker rm -v clever-quartz-server
         - echo "------------------< 删除旧镜像 >------------------"
-        - docker rmi 192.168.159.136:5000/java-service/clever-quartz-server:0.0.1-SNAPSHOT
+        - docker rmi 172.16.29.104:8850/java-service/clever-quartz-server:0.0.1-SNAPSHOT
         - echo "------------------< 拉取新镜像 >------------------"
-        - docker pull 192.168.159.136:5000/java-service/clever-quartz-server:0.0.1-SNAPSHOT
+        - docker pull 172.16.29.104:8850/java-service/clever-quartz-server:0.0.1-SNAPSHOT
         - echo "------------------< 运行新镜像 >------------------"
-        - docker run --name clever-quartz-server -d -p 28082:28082 -v /opt/logs/java-service:/logs 192.168.159.136:5000/java-service/clever-quartz-server:0.0.1-SNAPSHOT
+        - docker run --name clever-quartz-server -d -p 28082:28082 -v /opt/logs/java-service:/logs 172.16.29.104:8850/java-service/clever-quartz-server:0.0.1-SNAPSHOT
         - exit
 
   - name: 发送通知[Email]
