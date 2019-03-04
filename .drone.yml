@@ -57,7 +57,7 @@ steps:
         - echo "------------------< 拉取新镜像 >------------------"
         - docker pull 172.16.29.104:8850/java-service/clever-quartz-server:0.0.1-SNAPSHOT
         - echo "------------------< 运行新镜像 >------------------"
-        - docker run --name clever-quartz-server -d -p 28082:28082 -v /opt/logs/java-service:/logs 172.16.29.104:8850/java-service/clever-quartz-server:0.0.1-SNAPSHOT
+        - docker run --name clever-quartz-server -d -p 8882:8882 -v /opt/logs/java-service:/logs 172.16.29.104:8850/java-service/clever-quartz-server:0.0.1-SNAPSHOT
         - exit
 
   - name: 发送通知[Email]
