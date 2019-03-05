@@ -1,19 +1,19 @@
 # 跳过构建在Commit Message中添加 [CI SKIP]
 kind: pipeline
-name: 打包部署
+name: 打包部署[Java-Maven]
 
 clone:
   disable: true
 
 steps:
-  - name: 下载源代码
+  - name: 下载源代码[Git]
     image: docker:git
     commands:
       - echo "### $DRONE_GIT_HTTP_URL -> $DRONE_BRANCH"
       - git clone $DRONE_GIT_HTTP_URL ./
       - git checkout $DRONE_BRANCH
 
-  - name: 编译源代码
+  - name: 编译源代码[Maven]
     image: maven:3.6.0-jdk-8-alpine
     volumes:
       - name: package-java
@@ -23,11 +23,11 @@ steps:
       # - mvn deploy -Dmaven.test.skip=true -Dmaven.javadoc.skip=true -B -V -Pdev --settings /package-java/Maven/settings.xml
       # - cp -f clever-quartz-server/target/clever-quartz-server-*-SNAPSHOT.jar /package-java
 
-  - name: 构建Docker镜像
+  - name: 构建镜像[Docker]
     image: plugins/docker
     settings:
-      registry: '192.168.159.136:5000'
-      repo: '192.168.159.136:5000/java-service/clever-quartz-server'
+      registry: '172.16.29.104:8850'
+      repo: '172.16.29.104:8850/java-service/clever-quartz-server'
       # bip: true
       insecure: true
       dockerfile: ./Dockerfile
@@ -37,11 +37,11 @@ steps:
       auto_tag: false
       auto_tag_suffix: ''
 
-  - name: 启动Docker容器
+  - name: 启动Docker容器[SSH]
     image: appleboy/drone-ssh
     settings:
-      host: 192.168.159.136
-      port: 465
+      host: 172.17.0.1
+      port: 22
       username:
         from_secret: SshUsername
       password:
@@ -53,12 +53,30 @@ steps:
         - echo "------------------< 删除容器 >------------------"
         - docker rm -v clever-quartz-server
         - echo "------------------< 删除旧镜像 >------------------"
-        - docker rmi 192.168.159.136:5000/java-service/clever-quartz-server:0.0.1-SNAPSHOT
+        - docker rmi 172.16.29.104:8850/java-service/clever-quartz-server:0.0.1-SNAPSHOT
         - echo "------------------< 拉取新镜像 >------------------"
-        - docker pull 192.168.159.136:5000/java-service/clever-quartz-server:0.0.1-SNAPSHOT
+        - docker pull 172.16.29.104:8850/java-service/clever-quartz-server:0.0.1-SNAPSHOT
         - echo "------------------< 运行新镜像 >------------------"
-        - docker run --name clever-quartz-server -d -p 9066:9066 192.168.159.136:5000/java-service/clever-quartz-server:0.0.1-SNAPSHOT
+        - docker run --name clever-quartz-server -d -p 8882:8882 -v /opt/logs/java-service:/logs 172.16.29.104:8850/java-service/clever-quartz-server:0.0.1-SNAPSHOT
         - exit
+
+  - name: 发送通知[Email]
+    image: drillster/drone-email
+    # detach: true
+    settings:
+      host: smtp.163.com
+      port: 25
+      username:
+        from_secret: EmailUsername
+      password:
+        from_secret: EmailPassword
+      skip_verify: true
+      from:
+        from_secret: EmailUsername
+      recipients: [ 'lzw1000000@163.com' ]
+      recipients_only: true
+      subject: '[#{{build.number}}-{{build.status}}] {{repo.name}}'
+      body: 'file:///drone/src/drone-email.html'
 
 volumes:
   # Java打包目录
