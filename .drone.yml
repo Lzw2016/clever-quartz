@@ -41,7 +41,7 @@ steps:
     image: appleboy/drone-ssh
     settings:
       host: 192.168.159.136
-      port: 22
+      port: 465
       username:
         from_secret: SshUsername
       password:
